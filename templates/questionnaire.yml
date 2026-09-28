@@ -1,0 +1,102 @@
+# Store questionnaire — answer once. appship fills in what the store APIs allow and prints a
+# checklist (appship checklist) with your answers for the parts that must be clicked by hand.
+# Replace every TODO. Docs: docs/questionnaire.md
+
+ios:
+  export_compliance:
+    # true only if the app uses encryption beyond HTTPS/OS-provided crypto (e.g. own crypto library).
+    # Tip: also set ITSAppUsesNonExemptEncryption=false in Info.plist to skip the prompt per build.
+    uses_non_exempt_encryption: false
+
+  content_rights:
+    uses_third_party_content: false        # shows/streams content you do not own the rights to?
+
+  # Contact for Apple's reviewer. demo_user/demo_password: fill in if the app requires login.
+  review_information:
+    first_name: TODO
+    last_name: TODO
+    phone_number: "TODO +84 ..."
+    email_address: TODO
+    demo_user: ""
+    demo_password: ""
+    notes: ""
+
+  # Age rating. Levels: NONE | INFREQUENT_OR_MILD | FREQUENT_OR_INTENSE
+  age_rating:
+    alcoholTobaccoOrDrugUseOrReferences: NONE
+    contests: NONE
+    gamblingSimulated: NONE
+    gunsOrOtherWeapons: NONE
+    horrorOrFearThemes: NONE
+    matureOrSuggestiveThemes: NONE
+    medicalOrTreatmentInformation: NONE
+    profanityOrCrudeHumor: NONE
+    sexualContentGraphicAndNudity: NONE
+    sexualContentOrNudity: NONE
+    violenceCartoonOrFantasy: NONE
+    violenceRealistic: NONE
+    violenceRealisticProlongedGraphicOrSadistic: NONE
+    # true / false
+    advertising: false
+    ageAssurance: false
+    gambling: false
+    healthOrWellnessTopics: false
+    lootBox: false
+    messagingAndChat: false
+    parentalControls: false
+    unrestrictedWebAccess: false
+    userGeneratedContent: false
+    # kidsAgeBand: FIVE_AND_UNDER | SIX_TO_EIGHT | NINE_TO_ELEVEN   (Kids category only)
+
+  # App Privacy ("nutrition label"). Uploading needs an Apple ID login (credentials.ios.apple_id).
+  privacy:
+    collects_data: false
+    data: []
+    # When collects_data is true, list every data type, e.g.:
+    # - category: EMAIL_ADDRESS            # see docs/questionnaire.md for all categories
+    #   purposes: [APP_FUNCTIONALITY]      # APP_FUNCTIONALITY | ANALYTICS | PRODUCT_PERSONALIZATION |
+    #                                      # DEVELOPERS_ADVERTISING | THIRD_PARTY_ADVERTISING | OTHER_PURPOSES
+    #   linked_to_user: true
+    #   used_for_tracking: false
+    # - category: CRASH_DATA
+    #   purposes: [APP_FUNCTIONALITY]
+    #   linked_to_user: false
+    #   used_for_tracking: false
+
+android:
+  # Google Play has no public API for these; "appship checklist --android" prints them for you.
+  privacy_policy_url: TODO https://example.com/privacy
+  app_access:
+    restricted: false                      # true if login or special access is needed
+    instructions: ""                       # credentials + steps for the reviewer
+  contains_ads: false
+  target_audience:
+    age_groups: ["18+"]                    # any of: "5 and under", "6-8", "9-12", "13-15", "16-17", "18+"
+    appeals_to_children: false
+  content_rating:
+    email: TODO
+    category: "All other app types"        # "Game" | "Social, communication or dating" | "All other app types"
+    violence: false
+    sexuality: false
+    language: false
+    controlled_substances: false
+    crude_humor: false
+    gambling: false
+    user_interaction: false                # users can chat / share content with each other
+    shares_location: false
+    digital_purchases: false
+  data_safety:
+    collects_data: false
+    shares_data: false
+    encrypted_in_transit: true
+    deletion_request: true                 # users can request their data be deleted
+    data: []
+    # - type: "Email address"
+    #   collected: true
+    #   shared: false
+    #   optional: false
+    #   purposes: ["App functionality", "Account management"]
+  news_app: false
+  government_app: false
+  health_app: false
+  financial_features: none

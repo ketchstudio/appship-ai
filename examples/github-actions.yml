@@ -1,0 +1,60 @@
+# Copy to .github/workflows/release.yml in your app repo.
+# Push a tag like v1.2.0 to build and upload both platforms; run manually to submit.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      submit:
+        description: "Submit for review / promote to production after upload"
+        type: boolean
+        default: false
+
+env:
+  APPSHIP_ASC_KEY_ID: ${{ secrets.APPSHIP_ASC_KEY_ID }}
+  APPSHIP_ASC_ISSUER_ID: ${{ secrets.APPSHIP_ASC_ISSUER_ID }}
+  APPSHIP_ASC_KEY: ${{ secrets.APPSHIP_ASC_KEY }}
+  APPSHIP_PLAY_JSON: ${{ secrets.APPSHIP_PLAY_JSON }}
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Flutter projects; replace with your toolchain setup.
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install appship and fastlane
+        run: |
+          brew install fastlane
+          npm i -g appship-ai   # or: npm i -g git+https://github.com/ketchstudio/auto-app-store-upload-plugin.git
+
+      # Android signing: restore the upload keystore referenced by android/key.properties.
+      - name: Android keystore
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload.jks
+
+      # iOS signing: e.g. fastlane match in readonly mode, or import a certificate + profile.
+      - name: iOS signing
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+        run: fastlane match appstore --readonly --app_identifier com.example.app --git_url https://github.com/<you>/certificates.git
+
+      - name: Check
+        run: appship doctor --skip-artifacts
+
+      - name: Build and upload
+        run: appship upload --build --yes
+
+      - name: Submit
+        if: ${{ inputs.submit }}
+        run: appship submit --yes

@@ -1,0 +1,239 @@
+# Bundled with appship and copied into release/.appship/fastlane-run on every run.
+# Do not edit the copy in a project — change this file in the appship repo instead.
+#
+# All inputs come from the JSON file at ENV["APPSHIP_CONTEXT"], written by the CLI with
+# absolute paths and resolved credentials, so lanes stay free of config parsing.
+
+require 'json'
+
+opt_out_usage
+skip_docs
+
+def ctx
+  @ctx ||= JSON.parse(File.read(ENV.fetch('APPSHIP_CONTEXT')))
+end
+
+def ios_ctx
+  ctx.fetch('ios')
+end
+
+def android_ctx
+  ctx.fetch('android')
+end
+
+def blank?(value)
+  value.nil? || value.to_s.strip.empty?
+end
+
+def asc_api_key!
+  key = ios_ctx.fetch('api_key')
+  app_store_connect_api_key(
+    key_id: key.fetch('key_id'),
+    issuer_id: key.fetch('issuer_id'),
+    key_filepath: key.fetch('key_filepath'),
+    in_house: false
+  )
+end
+
+def require_apple_id!(purpose)
+  return ios_ctx['apple_id'] unless blank?(ios_ctx['apple_id'])
+  UI.user_error!("#{purpose} needs an Apple ID login (App Store Connect API keys cannot do this). " \
+                 'Set credentials.ios.apple_id in release.yml, your profile, or APPSHIP_APPLE_ID.')
+end
+
+def deliver_base
+  {
+    app_identifier: ios_ctx['bundle_id'],
+    app_version: ios_ctx['version'],
+    metadata_path: ios_ctx['metadata_path'],
+    screenshots_path: ios_ctx['screenshots_path'],
+    app_rating_config_path: ios_ctx['age_rating_path'],
+    app_review_information: ios_ctx['review_information'],
+    force: true,
+    run_precheck_before_submit: false,
+    precheck_include_in_app_purchases: false
+  }
+end
+
+platform :ios do
+  desc 'Create the app record in App Store Connect (and the App ID in the Developer Portal)'
+  lane :create_app do
+    produce(
+      {
+        username: require_apple_id!('Creating an app'),
+        app_identifier: ios_ctx['bundle_id'],
+        app_name: ctx['app']['name'],
+        language: ctx['app']['primary_locale'],
+        sku: ios_ctx['sku'],
+        team_id: ios_ctx['team_id'],
+        itc_team_id: ios_ctx['itc_team_id'],
+        skip_devcenter: ios_ctx['skip_devcenter'] == true
+      }.compact
+    )
+  end
+
+  desc 'Upload App Privacy ("nutrition label") answers'
+  lane :privacy do
+    UI.user_error!('No privacy answers in questionnaire.yml (ios.privacy)') if blank?(ios_ctx['privacy_path'])
+    upload_app_privacy_details_to_app_store(
+      {
+        username: require_apple_id!('Uploading App Privacy details'),
+        app_identifier: ios_ctx['bundle_id'],
+        team_id: ios_ctx['itc_team_id'],
+        json_path: ios_ctx['privacy_path']
+      }.compact
+    )
+  end
+
+  desc 'Upload an .ipa to TestFlight'
+  lane :upload do
+    asc_api_key!
+    upload_to_testflight(
+      {
+        app_identifier: ios_ctx['bundle_id'],
+        ipa: ios_ctx.fetch('ipa'),
+        skip_waiting_for_build_processing: ios_ctx.fetch('skip_waiting', true),
+        changelog: ios_ctx['changelog'],
+        distribute_external: ios_ctx['distribute_external'] == true,
+        groups: ios_ctx['groups']
+      }.compact
+    )
+  end
+
+  desc 'Push metadata, screenshots, age rating and review information (no binary, no submission)'
+  lane :metadata do
+    asc_api_key!
+    deliver(
+      deliver_base.merge(
+        skip_binary_upload: true,
+        skip_screenshots: ios_ctx['upload_screenshots'] != true,
+        overwrite_screenshots: true,
+        submit_for_review: false
+      ).compact
+    )
+  end
+
+  desc 'Attach a processed build and submit the version for App Review'
+  lane :submit do
+    asc_api_key!
+    deliver(
+      deliver_base.merge(
+        build_number: ios_ctx['build_number'],
+        skip_binary_upload: true,
+        skip_metadata: ios_ctx['skip_metadata'] == true,
+        skip_screenshots: ios_ctx['upload_screenshots'] != true,
+        overwrite_screenshots: true,
+        submit_for_review: true,
+        automatic_release: ios_ctx['automatic_release'] == true,
+        phased_release: ios_ctx['phased_release'] == true,
+        reset_ratings: ios_ctx['reset_ratings'] == true,
+        submission_information: ios_ctx['submission_information']
+      ).compact
+    )
+  end
+
+  desc 'Show App Store and TestFlight state'
+  lane :status do
+    asc_api_key!
+    app = Spaceship::ConnectAPI::App.find(ios_ctx['bundle_id'])
+    UI.user_error!("#{ios_ctx['bundle_id']} not found in App Store Connect (create it with: appship first-release --ios --create-app)") unless app
+
+    rows = {
+      'Live' => app.get_live_app_store_version,
+      'Pending release' => app.get_pending_release_app_store_version,
+      'In review' => app.get_in_review_app_store_version,
+      'Editable' => app.get_edit_app_store_version
+    }.filter_map do |label, version|
+      version && [label, version.version_string, version.app_store_state]
+    end
+    rows = [['-', '-', 'no versions yet']] if rows.empty?
+    puts(Terminal::Table.new(title: "iOS · #{app.name}", headings: %w[Slot Version State], rows: rows))
+
+    begin
+      build = latest_testflight_build_number(app_identifier: ios_ctx['bundle_id'])
+      UI.message("Latest TestFlight build: #{build}")
+    rescue StandardError => e
+      UI.important("Could not read TestFlight builds: #{e.message}")
+    end
+  end
+end
+
+def supply_base
+  {
+    package_name: android_ctx['package_name'],
+    json_key: android_ctx['json_key'],
+    metadata_path: android_ctx['metadata_path']
+  }
+end
+
+platform :android do
+  desc 'Upload an .aab to a track'
+  lane :upload do
+    upload_to_play_store(
+      supply_base.merge(
+        aab: android_ctx.fetch('aab'),
+        track: android_ctx['track'],
+        release_status: android_ctx['release_status'],
+        rollout: android_ctx['rollout']&.to_s,
+        skip_upload_apk: true,
+        skip_upload_metadata: true,
+        skip_upload_changelogs: android_ctx['changelogs'] != true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true
+      ).compact
+    )
+  end
+
+  desc 'Push store listing text, images and screenshots'
+  lane :metadata do
+    upload_to_play_store(
+      supply_base.merge(
+        skip_upload_apk: true,
+        skip_upload_aab: true,
+        skip_upload_changelogs: true,
+        skip_upload_metadata: false,
+        skip_upload_images: android_ctx['upload_screenshots'] != true,
+        skip_upload_screenshots: android_ctx['upload_screenshots'] != true,
+        sync_image_upload: true
+      ).compact
+    )
+  end
+
+  desc 'Promote the latest release of one track to another (e.g. internal → production)'
+  lane :promote do
+    upload_to_play_store(
+      supply_base.merge(
+        track: android_ctx.fetch('from_track'),
+        track_promote_to: android_ctx.fetch('to_track'),
+        track_promote_release_status: android_ctx['release_status'],
+        rollout: android_ctx['rollout']&.to_s,
+        version_code: android_ctx['version_code'],
+        skip_upload_apk: true,
+        skip_upload_aab: true,
+        skip_upload_metadata: true,
+        skip_upload_changelogs: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true
+      ).compact
+    )
+  end
+
+  desc 'Show version codes on every track'
+  lane :status do
+    rows = %w[internal alpha beta production].map do |track|
+      codes = begin
+        google_play_track_version_codes(package_name: android_ctx['package_name'], json_key: android_ctx['json_key'], track: track)
+      rescue StandardError => e
+        UI.verbose(e.message)
+        []
+      end
+      names = begin
+        google_play_track_release_names(package_name: android_ctx['package_name'], json_key: android_ctx['json_key'], track: track)
+      rescue StandardError
+        []
+      end
+      [track, codes.empty? ? '-' : codes.join(', '), names.empty? ? '-' : names.join(', ')]
+    end
+    puts(Terminal::Table.new(title: "Android · #{android_ctx['package_name']}", headings: ['Track', 'Version codes', 'Release names'], rows: rows))
+  end
+end

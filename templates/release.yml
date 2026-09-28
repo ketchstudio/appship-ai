@@ -1,0 +1,15 @@
+# appship release config — reference: docs/configuration.md in the appship repo
+# All paths are relative to the project root (the folder that contains release/).
+
+app:
+  name: "{{APP_NAME}}"
+  primary_locale: {{PRIMARY_LOCALE}}        # also the folder name under release/*/metadata/
+
+{{IOS_BLOCK}}
+{{ANDROID_BLOCK}}
+credentials:
+  # Where store keys come from. Per field, the first match wins:
+  #   1. environment variables (CI) — see docs/credentials.md
+  #   2. the ios/android blocks below (paths relative to project root, keep them in release/keys/)
+  #   3. a profile created with "appship credentials add <name>" (stored in ~/.appship)
+{{CREDENTIALS_BLOCK}}

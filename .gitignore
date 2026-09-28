@@ -1,0 +1,12 @@
+node_modules/
+.DS_Store
+*.log
+coverage/
+
+# never commit signing material or store credentials
+*.p8
+*.jks
+*.keystore
+*.mobileprovision
+*.p12
+service-account*.json

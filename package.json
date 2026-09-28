@@ -1,0 +1,47 @@
+{
+  "name": "appship-ai",
+  "version": "0.1.0",
+  "description": "Release Android & iOS apps to Google Play and the App Store from a single config, powered by fastlane.",
+  "type": "module",
+  "bin": {
+    "appship": "bin/appship.js",
+    "appship-ai": "bin/appship.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "fastlane",
+    "templates",
+    "docs"
+  ],
+  "scripts": {
+    "test": "node --test \"test/*.test.js\""
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "fastlane",
+    "app-store",
+    "google-play",
+    "release",
+    "cli",
+    "deploy"
+  ],
+  "license": "MIT",
+  "author": "Ketchsoft",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ketchstudio/auto-app-store-upload-plugin.git"
+  },
+  "homepage": "https://github.com/ketchstudio/auto-app-store-upload-plugin#readme",
+  "bugs": {
+    "url": "https://github.com/ketchstudio/auto-app-store-upload-plugin/issues"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^8.7.2",
+    "commander": "^15.0.0",
+    "picocolors": "^1.1.1",
+    "yaml": "^2.9.1"
+  }
+}
