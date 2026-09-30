@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>appship</title>
+  <!-- langs:head -->
+  <link rel="alternate" hreflang="en" href="../index.html">
+  <link rel="alternate" hreflang="vi" href="../vi/index.html">
+  <link rel="alternate" hreflang="ja" href="../ja/index.html">
+  <link rel="alternate" hreflang="fr" href="../fr/index.html">
+  <link rel="alternate" hreflang="es" href="../es/index.html">
+  <link rel="alternate" hreflang="pt-BR" href="../pt/index.html">
+  <link rel="alternate" hreflang="de" href="../de/index.html">
+  <link rel="alternate" hreflang="ko" href="../ko/index.html">
+  <link rel="alternate" hreflang="x-default" href="../index.html">
+  <!-- /langs:head -->
+  <meta name="description" content="1つの設定ファイルから、iOS と Android アプリを App Store と Google Play にリリース。fastlane 上で動く小さな CLI です。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%230D1B2A' stroke-width='3.2'/%3E%3Crect x='1' y='14.4' width='30' height='3.2' fill='%230D1B2A'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="appship ホーム">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="3.2"/><rect x="1" y="14.4" width="30" height="3.2" fill="currentColor"/></svg>
+      <span>appship</span>
+    </a>
+    <nav class="nav-links" aria-label="セクション">
+      <a href="#loop">ワークフロー</a>
+      <a href="#stores">自動化の範囲</a>
+      <a href="#features">機能</a>
+      <a href="docs.html">ガイド</a>
+      <!-- langs:nav -->
+      <details class="lang-menu">
+        <summary aria-label="Language"><span lang="ja">日本語</span></summary>
+        <ul>
+        <li><a href="../index.html" hreflang="en" lang="en">English</a></li>
+        <li><a href="../vi/index.html" hreflang="vi" lang="vi">Tiếng Việt</a></li>
+        <li><a href="../ja/index.html" hreflang="ja" lang="ja" aria-current="true">日本語</a></li>
+        <li><a href="../fr/index.html" hreflang="fr" lang="fr">Français</a></li>
+        <li><a href="../es/index.html" hreflang="es" lang="es">Español</a></li>
+        <li><a href="../pt/index.html" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li>
+        <li><a href="../de/index.html" hreflang="de" lang="de">Deutsch</a></li>
+        <li><a href="../ko/index.html" hreflang="ko" lang="ko">한국어</a></li>
+        </ul>
+      </details>
+      <!-- /langs:nav -->
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="badge"><span class="badge-dot"></span>v0.1.0 · 初期リリース</p>
+        <h1 class="display">1つのファイルで。<br>2つのストアへ。<br><span class="hl">Ship.</span></h1>
+        <p class="lede">
+          appship は、iOS と Android のアプリを 1 つの
+          <code>release/</code> フォルダから App Store と Google Play にリリースします。fastlane 上で動くので、Fastfile を自分で管理する必要はもうありません。
+        </p>
+        <div class="install">
+          <code id="install-cmd"><span class="prompt">$</span> npm i -g appship-ai</code>
+          <button class="copy" type="button" data-copy="npm i -g appship-ai" aria-label="インストールコマンドをコピー">コピー</button>
+        </div>
+        <div class="hero-cta">
+          <a class="btn btn-signal" href="docs.html">導入ガイドを読む</a>
+        </div>
+      </div>
+
+      <figure class="term" aria-label="ターミナルの実行例">
+        <div class="term-bar">
+          <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="term-title">~/Projects/word-bank</span>
+        </div>
+        <pre class="term-body" id="term"><span class="t-cmd"><span class="t-ps">$</span> appship doctor</span>
+<span class="t-step">▸ Environment</span>
+  <span class="t-ok">✓</span> Node 22.12.0
+  <span class="t-ok">✓</span> fastlane 2.232.2
+<span class="t-step">▸ Security</span>
+  <span class="t-ok">✓</span> No key files tracked by git
+  <span class="t-ok">✓</span> .gitignore protects release/keys/
+<span class="t-step">▸ iOS · store listing</span>
+  <span class="t-ok">✓</span> Metadata OK for en-US, vi
+<span class="t-step">▸ Android · questionnaire</span>
+  <span class="t-ok">✓</span> All answers present
+
+  <span class="t-ok">✓</span> Ready — 0 warning(s)
+<span class="t-cmd"><span class="t-ps">$</span> appship upload --build</span>
+  ios: build/ios/ipa/WordBank.ipa
+<span class="t-step">▸ fastlane ios upload</span>
+  android: build/app/outputs/bundle/release/app-release.aab
+<span class="t-step">▸ fastlane android upload</span></pre>
+      </figure>
+    </div>
+
+    <svg class="waterline" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+      <path class="wave wave-back" d="M0 30 Q 90 14 180 30 T 360 30 T 540 30 T 720 30 T 900 30 T 1080 30 T 1260 30 T 1440 30 T 1620 30 T 1800 30 T 1980 30 T 2160 30 V60 H0 Z"/>
+      <path class="wave wave-front" d="M0 36 Q 120 22 240 36 T 480 36 T 720 36 T 960 36 T 1200 36 T 1440 36 T 1680 36 T 1920 36 T 2160 36 V60 H0 Z"/>
+    </svg>
+  </section>
+
+  <!-- Workflow -->
+  <section class="section" id="loop">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="eyebrow">ワークフロー</p>
+        <h2 class="h2">空のリポジトリからアプリ審査まで、5 つのコマンド。</h2>
+        <p class="section-lede">セットアップはプロジェクトごとに 1 回だけ。すべてを確認したら、リリースのたびに最後の 2 つを繰り返します。</p>
+      </header>
+
+      <ol class="route">
+        <li class="stop reveal">
+          <span class="freq">プロジェクトごとに 1 回</span>
+          <code class="stop-cmd">appship init</code>
+          <p>フレームワーク、bundle id、package name を検出し、コメント付きのテンプレートを含む <code>release/</code> を作成して <code>.gitignore</code> を更新します。</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq">アップロードの前に毎回</span>
+          <code class="stop-cmd">appship doctor</code>
+          <p>ツール、キー、文字数制限、画像サイズ、プレースホルダーの文言を確認し、キーが git にコミットされていればエラーにします。</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq">初回のみ</span>
+          <code class="stop-cmd">appship first-release</code>
+          <p>iOS アプリを作成し、ストア掲載情報と App Privacy を送信して、ストア側で手作業が必要な手順を <code>CHECKLIST.md</code> にまとめます。</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq freq-repeat">リリースごとに毎回</span>
+          <code class="stop-cmd">appship upload --build</code>
+          <p>ビルドコマンドを実行し、<code>.ipa</code> を TestFlight に、<code>.aab</code> を Play のトラックにアップロードします。段階的公開にも対応しています。</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq freq-repeat">リリースごとに毎回</span>
+          <code class="stop-cmd">appship submit</code>
+          <p>確認のあと、iOS ビルドをアプリ審査に提出し、Android のリリースを本番へ昇格します。</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Stores -->
+  <section class="section section-alt" id="stores">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="eyebrow">自動化の範囲</p>
+        <h2 class="h2">ストアがツールに許していることを、正直にお伝えします。</h2>
+        <p class="section-lede">
+          Apple と Google は、意図的に手作業のままにしている手順があります。appship は、各社の API が許す範囲を自動化します。
+          それ以外は、あなたの回答をあらかじめ入力したチェックリストとして提供します。
+        </p>
+      </header>
+
+      <ul class="legend reveal" aria-label="凡例">
+        <li><span class="chip chip-auto">自動</span> appship が実行します</li>
+        <li><span class="chip chip-login">Apple ID</span> 2FA 付きのログインが必要なため、CI では実行できません</li>
+        <li><span class="chip chip-manual">チェックリスト</span> API がないため、回答をコンソールにコピーします</li>
+      </ul>
+
+      <div class="table-scroll reveal">
+        <table class="stores">
+          <thead>
+            <tr><th scope="col">手順</th><th scope="col">App Store</th><th scope="col">Google Play</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">アプリの作成</th>
+              <td><span class="chip chip-login">Apple ID</span><span class="cell-note"><code>first-release --create-app</code></span></td>
+              <td><span class="chip chip-manual">チェックリスト</span><span class="cell-note">Google Play にはこの操作の API がありません</span></td>
+            </tr>
+            <tr>
+              <th scope="row">ビルドのアップロード</th>
+              <td><span class="chip chip-auto">自動</span><span class="cell-note">TestFlight</span></td>
+              <td><span class="chip chip-auto">自動</span><span class="cell-note">internal · alpha · beta · production、段階的公開</span></td>
+            </tr>
+            <tr>
+              <th scope="row">掲載テキストとスクリーンショット</th>
+              <td><span class="chip chip-auto">自動</span><span class="cell-note">プッシュとプル</span></td>
+              <td><span class="chip chip-auto">自動</span><span class="cell-note">プッシュとプル</span></td>
+            </tr>
+            <tr>
+              <th scope="row">ストアの質問項目</th>
+              <td><span class="chip chip-auto">自動</span><span class="cell-note">年齢制限、輸出コンプライアンス、コンテンツの権利、審査連絡先</span></td>
+              <td><span class="chip chip-manual">チェックリスト</span><span class="cell-note">コンテンツのレーティング、データセーフティ、ターゲット層、広告、アプリのアクセス権</span></td>
+            </tr>
+            <tr>
+              <th scope="row">App Privacy</th>
+              <td><span class="chip chip-login">Apple ID</span><span class="cell-note"><code>questionnaire.yml</code> からアップロード</span></td>
+              <td><span class="cell-na">n/a</span></td>
+            </tr>
+            <tr>
+              <th scope="row">提出</th>
+              <td><span class="chip chip-auto">自動</span><span class="cell-note">アプリ審査</span></td>
+              <td><span class="chip chip-auto">自動</span><span class="cell-note">トラックを本番へ昇格</span></td>
+            </tr>
+            <tr>
+              <th scope="row">ステータス</th>
+              <td><span class="chip chip-auto">自動</span><span class="cell-note">公開中、審査中、保留中、最新の TestFlight ビルド</span></td>
+              <td><span class="chip chip-auto">自動</span><span class="cell-note">トラックごとのバージョンコード</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote reveal">
+        Google Play では、最初のバンドルだけは手動でアップロードしてください。また、新しい個人向けデベロッパーアカウントでは、本番公開の前に
+        12 人のテスターによるクローズドテストを 14 日間行う必要があります。
+      </p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section" id="features">
+    <div class="wrap features">
+      <header class="section-head reveal">
+        <p class="eyebrow">機能</p>
+        <h2 class="h2">バイナリ以外の作業は、すべてお任せください。</h2>
+      </header>
+
+      <article class="feature reveal">
+        <div class="feature-text">
+          <h3 class="h3">プロジェクトごとに設定は 1 つ</h3>
+          <p>アプリのリポジトリに追加されるのは <code>release/</code> フォルダだけです。リリースのロジックはツール側にあるため、appship を更新すれば、それを使うすべてのプロジェクトが更新されます。</p>
+        </div>
+        <div class="code-card">
+          <div class="code-name">release/release.yml</div>
+<pre><code><span class="y-k">app</span>:
+  <span class="y-k">name</span>: <span class="y-s">"Word Bank"</span>
+  <span class="y-k">primary_locale</span>: en-US
+<span class="y-k">ios</span>:
+  <span class="y-k">bundle_id</span>: com.ketch.wordbank
+  <span class="y-k">artifact</span>: <span class="y-s">"build/ios/ipa/*.ipa"</span>
+  <span class="y-k">build_command</span>: <span class="y-s">"flutter build ipa --release"</span>
+<span class="y-k">android</span>:
+  <span class="y-k">package_name</span>: com.ketch.wordbank
+  <span class="y-k">track</span>: internal
+  <span class="y-k">rollout</span>: 1         <span class="y-c"># 0.2 = 20% staged rollout</span>
+<span class="y-k">credentials</span>:
+  <span class="y-k">profile</span>: ketch-studio</code></pre>
+        </div>
+      </article>
+
+      <article class="feature feature-flip reveal">
+        <div class="feature-text">
+          <h3 class="h3">ストアの質問は、一度答えるだけ</h3>
+          <p>年齢制限、輸出コンプライアンス、コンテンツの権利、審査担当者の連絡先。回答を <code>questionnaire.yml</code> に書いておけば、appship が API で可能な部分を入力し、残りを <code>CHECKLIST.md</code> にまとめます。</p>
+        </div>
+        <div class="code-card">
+          <div class="code-name">release/questionnaire.yml</div>
+<pre><code><span class="y-k">ios</span>:
+  <span class="y-k">export_compliance</span>:
+    <span class="y-k">uses_non_exempt_encryption</span>: false
+  <span class="y-k">content_rights</span>:
+    <span class="y-k">uses_third_party_content</span>: false
+  <span class="y-k">age_rating</span>:
+    <span class="y-k">gamblingSimulated</span>: NONE
+    <span class="y-k">violenceCartoonOrFantasy</span>: NONE
+    <span class="y-k">messagingAndChat</span>: false
+    <span class="y-k">ageAssurance</span>: false</code></pre>
+        </div>
+      </article>
+
+      <article class="feature reveal">
+        <div class="feature-text">
+          <h3 class="h3">ストアより先に <code class="h3-code">doctor</code> が問題を見つけます</h3>
+          <p>文字数制限、無効な URL、消し忘れの <code>TODO</code>、誤った画像サイズ、古いアーティファクト、不足しているキー。どの問題にも対処方法が添えられます。</p>
+        </div>
+        <div class="code-card code-card-term">
+          <div class="code-name">appship doctor</div>
+<pre><code><span class="t-step">▸ iOS · store listing</span>
+  <span class="t-fail">✗</span> ios/metadata/en-US/subtitle.txt is 34 characters (max 30)
+  <span class="t-warn">!</span> ios/screenshots/vi has no 6.9"/6.5" iPhone screenshot
+<span class="t-step">▸ Android · store listing</span>
+  <span class="t-fail">✗</span> images/icon.png is 1024x1024, expected 512x512
+
+  <span class="t-fail">✗</span> 2 error(s), 1 warning(s)</code></pre>
+        </div>
+      </article>
+
+      <div class="minor-grid">
+        <article class="minor reveal">
+          <h3 class="h4">キーを git に残さない</h3>
+          <p>キーは、環境変数、<code>release/keys/</code>(gitignore 済み)、モード 600 で保存された <code>~/.appship</code> 内のプロファイルの順に解決されます。パスワードは <code>--dry-run</code> ではマスクされます。</p>
+        </article>
+        <article class="minor reveal">
+          <h3 class="h4">どんな技術スタックにも対応</h3>
+          <p>appship はビルドコマンドを実行し、<code>.ipa</code> と <code>.aab</code> を自動で取得します。Flutter、React Native、Cocos Creator、ネイティブのプロジェクトは <code>init</code> 時に検出されます。</p>
+        </article>
+        <article class="minor reveal">
+          <h3 class="h4">書き込む前に確認</h3>
+          <p>提出、本番へのプッシュ、公開中の掲載情報の上書きは、いずれも確認を求めます。CI では <code>--yes</code> を明示的に指定してください。</p>
+        </article>
+        <article class="minor reveal">
+          <h3 class="h4">CI にそのまま使える</h3>
+          <p><code>.p8</code> キーは、プレーンテキストまたは base64 で <code>APPSHIP_ASC_KEY</code> に渡します。すぐ使える GitHub Actions のワークフローは導入ガイドに掲載しています。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing -->
+  <section class="closing">
+    <div class="wrap closing-inner reveal">
+      <h2 class="display display-sm">リリースの準備はできましたか?</h2>
+      <p>appship は npm で配布されています。必要なのは Node.js 22 以上、<a href="https://docs.fastlane.tools">fastlane</a>、そして iOS ビルド用の macOS です(Android は Linux でも動作します)。</p>
+      <div class="closing-cmds">
+        <div class="install install-light">
+          <code><span class="prompt">$</span> npm i -g appship-ai</code>
+          <button class="copy" type="button" data-copy="npm i -g appship-ai" aria-label="インストールコマンドをコピー">コピー</button>
+        </div>
+        <a class="btn btn-ink" href="docs.html">導入ガイド →</a>
+      </div>
+      <p class="status-note">
+        v0.1.0 はテストとドライランで検証済みですが、実際のストアではまだ実行されていません。
+        まずは <code>--dry-run</code> と、<code>appship status</code> のような読み取り専用のコマンドから始めてください。
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="3.2"/><rect x="1" y="14.4" width="30" height="3.2" fill="currentColor"/></svg>
+      <p>このマークはプリムソル線、船体に描かれた喫水(載貨)の目安線です。<br>Powered by Ketchsoft · MIT License</p>
+    </div>
+    <nav class="footer-links" aria-label="フッター">
+      <a href="docs.html">導入ガイド</a>
+      <a href="https://fastlane.tools">fastlane</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../main.js"></script>
+</body>
+</html>

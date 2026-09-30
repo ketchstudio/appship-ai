@@ -140,6 +140,10 @@ pre code { background: none; padding: 0; font-size: inherit; }
 
 .display-sm { font-size: clamp(2rem, 5vw, 3.4rem); }
 
+:lang(ja) .display, :lang(ko) .display { font-size: clamp(2rem, 4.2vw, 3.2rem); line-height: 1.2; letter-spacing: 0; }
+:lang(ko) body { word-break: keep-all; }
+:lang(ja) .display-sm, :lang(ko) .display-sm { font-size: clamp(1.7rem, 3.8vw, 2.7rem); }
+
 .h2 {
   font-family: var(--font-display);
   font-variation-settings: "wdth" 112;
@@ -219,13 +223,38 @@ pre code { background: none; padding: 0; font-size: inherit; }
 .nav-links { display: flex; align-items: center; gap: clamp(12px, 2.4vw, 28px); font-size: 0.93rem; }
 .nav-links a { text-decoration: none; color: var(--on-navy-muted); transition: color 0.2s; }
 .nav-links a:hover { color: var(--on-navy); }
-.nav-links .nav-gh {
+.lang-menu { position: relative; }
+.lang-menu summary {
+  list-style: none;
+  cursor: pointer;
   color: var(--on-navy);
   border: 1px solid var(--navy-line);
   padding: 6px 12px;
   border-radius: 999px;
+  white-space: nowrap;
+  user-select: none;
 }
-.nav-links .nav-gh:hover { border-color: var(--signal); }
+.lang-menu summary::-webkit-details-marker { display: none; }
+.lang-menu summary::after { content: "▾"; margin-left: 0.5em; font-size: 0.8em; color: var(--on-navy-muted); }
+.lang-menu summary:hover, .lang-menu[open] summary { border-color: var(--signal); }
+.lang-menu summary:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.lang-menu ul {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 30;
+  min-width: 11rem;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--navy);
+  border: 1px solid var(--navy-line);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+.nav-links .lang-menu li a { display: block; padding: 8px 12px; border-radius: 8px; white-space: nowrap; }
+.nav-links .lang-menu li a:hover { background: rgba(255, 255, 255, 0.08); }
+.nav-links .lang-menu li a[aria-current="true"] { color: var(--on-navy); font-weight: 600; }
 
 @media (max-width: 720px) {
   /* keep page links (Guide, Overview), drop in-page anchors */
@@ -235,7 +264,7 @@ pre code { background: none; padding: 0; font-size: inherit; }
 @media (max-width: 400px) {
   .nav-links { gap: 12px; font-size: 0.88rem; }
   .nav-links a[aria-current="page"] { display: none; }
-  .nav-links .nav-gh { padding: 5px 10px; }
+  .lang-menu summary { padding: 5px 10px; }
 }
 
 /* Hero */

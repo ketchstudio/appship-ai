@@ -4,6 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>appship Integration Guide</title>
+  <!-- langs:head -->
+  <link rel="alternate" hreflang="en" href="docs.html">
+  <link rel="alternate" hreflang="vi" href="vi/docs.html">
+  <link rel="alternate" hreflang="ja" href="ja/docs.html">
+  <link rel="alternate" hreflang="fr" href="fr/docs.html">
+  <link rel="alternate" hreflang="es" href="es/docs.html">
+  <link rel="alternate" hreflang="pt-BR" href="pt/docs.html">
+  <link rel="alternate" hreflang="de" href="de/docs.html">
+  <link rel="alternate" hreflang="ko" href="ko/docs.html">
+  <link rel="alternate" hreflang="x-default" href="docs.html">
+  <!-- /langs:head -->
   <meta name="description" content="Add appship to an iOS or Android project: install from npm, connect store keys, configure release/, and ship from your machine or CI.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%230D1B2A' stroke-width='3.2'/%3E%3Crect x='1' y='14.4' width='30' height='3.2' fill='%230D1B2A'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,7 +33,21 @@
     <nav class="nav-links" aria-label="Site">
       <a href="index.html">Overview</a>
       <a href="docs.html" aria-current="page">Guide</a>
-      <a class="nav-gh" href="https://github.com/ketchstudio/auto-app-store-upload-plugin">GitHub</a>
+      <!-- langs:nav -->
+      <details class="lang-menu">
+        <summary aria-label="Language"><span lang="en">English</span></summary>
+        <ul>
+        <li><a href="docs.html" hreflang="en" lang="en" aria-current="true">English</a></li>
+        <li><a href="vi/docs.html" hreflang="vi" lang="vi">Tiếng Việt</a></li>
+        <li><a href="ja/docs.html" hreflang="ja" lang="ja">日本語</a></li>
+        <li><a href="fr/docs.html" hreflang="fr" lang="fr">Français</a></li>
+        <li><a href="es/docs.html" hreflang="es" lang="es">Español</a></li>
+        <li><a href="pt/docs.html" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li>
+        <li><a href="de/docs.html" hreflang="de" lang="de">Deutsch</a></li>
+        <li><a href="ko/docs.html" hreflang="ko" lang="ko">한국어</a></li>
+        </ul>
+      </details>
+      <!-- /langs:nav -->
     </nav>
   </div>
 </header>
@@ -55,6 +80,9 @@
     <p class="eyebrow toc-ref">Reference</p>
     <ul>
       <li><a href="#signing">Signing</a></li>
+      <li><a href="#not-owner">iOS signing without owner access</a></li>
+      <li><a href="#languages">Languages and release notes</a></li>
+      <li><a href="#suggested-languages">Suggested languages</a></li>
       <li><a href="#credentials">Where keys are read from</a></li>
       <li><a href="#leaked-key">If a key gets committed</a></li>
     </ul>
@@ -109,6 +137,7 @@ appship --version</code></pre>
         <li>Download <code>AuthKey_XXXXXXXXXX.p8</code>. Apple lets you download it only once.</li>
         <li>Note the <b>Key ID</b> (10 characters, also in the file name) and the <b>Issuer ID</b> (the UUID above the key table).</li>
       </ol>
+      <p class="note">Team Keys can only be created by an Account Holder or Admin. If that isn't you, ask the owner to send the key, or see <a href="#not-owner">iOS signing without owner access</a> for an individual key.</p>
       <p class="note">An Apple ID (email) is optional. It is only needed to create the app record and upload App Privacy answers, because Apple's API key can't do either. It needs 2FA, so it never works in CI.</p>
 
       <h3 class="doc-h3">Android: Google Play service account</h3>
@@ -195,9 +224,85 @@ appship init --profile my-company</code></pre>
       <ul class="doc-list">
         <li><b><code>release/questionnaire.yml</code></b>: age rating, export compliance, content rights, reviewer contact, App Privacy, and the Android App content answers.</li>
         <li><b>Text</b>: <code>release/ios/metadata/&lt;locale&gt;/*.txt</code> and <code>release/android/metadata/&lt;locale&gt;/*.txt</code>.</li>
+        <li><b>Release notes per language</b>: one folder per locale. See <a href="#languages">Languages and release notes</a> below.</li>
         <li><b>iOS screenshots</b> in <code>release/ios/screenshots/&lt;locale&gt;/</code>: at least one iPhone 6.9" set (1320×2868) or 6.5" set (1284×2778).</li>
         <li><b>Android images</b> in <code>release/android/metadata/&lt;locale&gt;/images/</code>: <code>icon.png</code> 512×512, <code>featureGraphic.png</code> 1024×500, and at least 2 images in <code>phoneScreenshots/</code>.</li>
       </ul>
+
+      <h3 class="doc-h3" id="languages">Languages and release notes</h3>
+      <p>Both stores take a separate "What's New" text for every language. Each language is a folder, and each folder holds its own release notes:</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Store</th><th scope="col">File, one per locale folder</th><th scope="col">Max</th></tr></thead>
+          <tbody>
+            <tr><td>App Store</td><td><code>release/ios/metadata/&lt;locale&gt;/<wbr>release_notes.txt</code></td><td>4000 characters</td></tr>
+            <tr><td>Google Play</td><td><code>release/android/metadata/&lt;locale&gt;/<wbr>changelogs/default.txt</code></td><td>500 characters</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>To add a language:</p>
+      <ol class="doc-steps">
+        <li>List it in <code>release.yml</code>. The list is optional; without it appship uses every folder it finds. iOS and Android use different locale codes, so each platform has its own list:
+
+          <div class="code-card">
+            <div class="code-name">release/release.yml<button class="copy copy-sm" type="button">Copy</button></div>
+<pre><code><span class="y-k">ios</span>:
+  <span class="y-k">locales</span>: [en-US, vi, ja]
+<span class="y-k">android</span>:
+  <span class="y-k">locales</span>: [en-US, vi, ja-JP]   <span class="y-c"># Play codes differ, e.g. zh-CN here, zh-Hans on iOS</span></code></pre>
+          </div></li>
+        <li>Create the folder, for example <code>release/ios/metadata/vi/</code>, and fill in the required files: <code>name.txt</code>, <code>description.txt</code>, <code>keywords.txt</code>, <code>support_url.txt</code>, <code>privacy_url.txt</code> and <code>release_notes.txt</code> on iOS; <code>title.txt</code>, <code>short_description.txt</code>, <code>full_description.txt</code> and <code>changelogs/default.txt</code> on Android.</li>
+        <li>Add iOS screenshots to <code>release/ios/screenshots/&lt;locale&gt;/</code>. Enable the language in Play Console first for Android.</li>
+        <li>Run <code>appship doctor</code>. A listed locale with no folder is an error. A folder that is not listed is a warning, because it is still pushed to the store.</li>
+      </ol>
+      <p>Things to know:</p>
+      <ul class="doc-list">
+        <li>You don't need to add the language in App Store Connect first. It is created when the metadata is pushed.</li>
+        <li>Leave <code>release_notes.txt</code> empty for the very first version of an app. Apple does not accept release notes on version 1.0.</li>
+        <li>A locale without release notes shows an empty "What's New" in that language. <code>doctor</code> warns when some locales have notes and others don't.</li>
+        <li>iOS folder names must be one of Apple's codes, such as <code>en-US</code>, <code>vi</code>, <code>ja</code>, <code>ko</code>, <code>de-DE</code>, <code>fr-FR</code>, <code>es-ES</code>, <code>pt-BR</code>, <code>zh-Hans</code> or <code>zh-Hant</code>. <code>doctor</code> rejects anything else, for example <code>zh-CN</code>.</li>
+        <li>fastlane's shared <code>default</code> folder is not supported yet.</li>
+      </ul>
+
+      <h3 class="doc-h3" id="suggested-languages">Suggested languages</h3>
+      <p>Not sure which languages to add next? appship suggests six with large audiences: Spanish (Spain and Latin America), Brazilian Portuguese, German, French, Japanese and Korean. The two stores use different codes:</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Language</th><th scope="col"><code>--locales</code> id</th><th scope="col">iOS folder</th><th scope="col">Android folder</th></tr></thead>
+          <tbody>
+            <tr><td>Spanish, Spain</td><td><code>es</code></td><td><code>es-ES</code></td><td><code>es-ES</code></td></tr>
+            <tr><td>Spanish, Latin America</td><td><code>es</code></td><td><code>es-MX</code></td><td><code>es-419</code></td></tr>
+            <tr><td>Portuguese, Brazil</td><td><code>pt-BR</code></td><td><code>pt-BR</code></td><td><code>pt-BR</code></td></tr>
+            <tr><td>German</td><td><code>de</code></td><td><code>de-DE</code></td><td><code>de-DE</code></td></tr>
+            <tr><td>French</td><td><code>fr</code></td><td><code>fr-FR</code></td><td><code>fr-FR</code></td></tr>
+            <tr><td>Japanese</td><td><code>ja</code></td><td><code>ja</code></td><td><code>ja-JP</code></td></tr>
+            <tr><td>Korean</td><td><code>ko</code></td><td><code>ko</code></td><td><code>ko-KR</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="doc-list">
+        <li>Create the folders when you set up a project: <code>appship init --locales preset</code> for all six, or <code>--locales es,ja</code> for some. It writes <code>locales</code> for each platform with the right codes and creates listing files filled with <code>TODO</code> for you to translate. <code>doctor</code> fails until every <code>TODO</code> is replaced.</li>
+        <li>For a project that already exists, add the folders by hand with the codes above (<code>init --force</code> would rewrite <code>release.yml</code>).</li>
+        <li>Keep only the Spanish variant you will really write. <code>es-MX</code> on iOS and <code>es-419</code> on Play cover all of Latin America.</li>
+        <li>Store limits count characters, not bytes or words. Japanese and Korean text is usually shorter than English; German and French run longer and often hit the 30-character title limit.</li>
+        <li>Enable each language in Play Console before uploading. <code>doctor</code> warns about an Android folder that is not a Play language code and suggests the fix, for example <code>ja</code> should be <code>ja-JP</code>.</li>
+        <li>The <code>release-notes</code> skill knows each language's conventions: formal or informal address, regional variants, Japanese full-width punctuation and French spacing before <code>? ! : ;</code>.</li>
+      </ul>
+
+      <h3 class="doc-h3" id="release-notes-skill">Write release notes with Claude Code</h3>
+      <p><code>appship init</code> installs a Claude Code skill, <code>release-notes</code>, into <code>.claude/skills/</code> of your project. Before a release, ask Claude to "write the release notes for this version" (or run <code>/release-notes</code>). It will:</p>
+      <ol class="doc-steps">
+        <li>Read <code>release.yml</code> and the locale folders.</li>
+        <li>Read <code>git log</code> since the last tag, and <code>CHANGELOG.md</code> if you have one.</li>
+        <li>Write short, user-facing notes in your primary language and translate them into every other locale.</li>
+        <li>Fit the store limits, write the files, then run <code>appship doctor</code>.</li>
+      </ol>
+      <p>The notes stay plain files, so you can review and edit them. The skill asks before overwriting text that is already there, and it never pushes anything to a store. For a project that was set up before this feature, copy the skill in by hand:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Copy</button></div>
+<pre><code>mkdir -p .claude/skills
+cp -r "$(npm root -g)/appship-ai/skills/release-notes" .claude/skills/</code></pre>
+      </div>
     </section>
 
     <!-- 6 -->
@@ -254,7 +359,8 @@ appship submit</code></pre>
       <p>Bump the version and build number in your project, then:</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">Copy</button></div>
-<pre><code>appship upload --build   <span class="y-c"># build, then TestFlight + Google Play track (internal by default)</span>
+<pre><code><span class="y-c"># ask Claude Code to write the release notes (see Languages and release notes)</span>
+appship upload --build   <span class="y-c"># build, then TestFlight + Google Play track (internal by default)</span>
 <span class="y-c"># test on TestFlight / the internal track</span>
 appship submit           <span class="y-c"># iOS: App Review · Android: promote to production</span>
 appship status           <span class="y-c"># review state and versions on both stores</span></code></pre>
@@ -308,7 +414,7 @@ appship promote --from production --to production --rollout 100%</code></pre>
       - <span class="y-k">if</span>: ${{ inputs.submit }}
         <span class="y-k">run</span>: appship submit --yes</code></pre>
       </div>
-      <p>The complete workflow, with Flutter setup, signing and a manual submit trigger, is in <a href="https://github.com/ketchstudio/auto-app-store-upload-plugin/blob/main/examples/github-actions.yml"><code>examples/github-actions.yml</code></a>.</p>
+      <p>Add your own Flutter setup, signing step and, if you want a manual trigger for <code>submit</code>, a <code>workflow_dispatch</code> input like the one above.</p>
       <ul class="doc-list">
         <li>Creating the iOS app and uploading App Privacy need the Apple ID with 2FA. Do those once on your machine, not in CI.</li>
         <li>To pin a fastlane version, use a Gemfile and set <code>APPSHIP_FASTLANE="bundle exec fastlane"</code>.</li>
@@ -325,6 +431,82 @@ appship promote --from production --to production --rollout 100%</code></pre>
         <li><b>iOS:</b> the simplest setup is Automatic signing in Xcode (Signing &amp; Capabilities). For teams and CI, use <a href="https://docs.fastlane.tools/actions/match/">fastlane match</a>.</li>
         <li><b>Android:</b> create an upload keystore, configure <code>signingConfigs</code> in Gradle, and turn on Play App Signing with the first upload. Keep the keystore out of git, for example in the gitignored <code>release/keys/</code>.</li>
       </ul>
+    </section>
+
+    <section id="not-owner" class="doc-section doc-ref">
+      <h2 class="doc-h2">iOS signing without owner access</h2>
+      <p>On iOS, <em>signing</em> the app and <em>uploading</em> it need different things, and both are usually held by the Account Holder or an Admin. appship still doesn't build or sign for you. It audits the files you were given, installs them, and passes the signing setup to your build command.</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Your situation</th><th scope="col">Sign with</th><th scope="col">Upload with</th></tr></thead>
+          <tbody>
+            <tr><td>Account Holder or Admin</td><td>Automatic signing, or fastlane match</td><td>Team API key</td></tr>
+            <tr><td>Owner sent signing files and a team API key</td><td><code>ios.signing</code> files</td><td>Team API key</td></tr>
+            <tr><td>Owner sent signing files, no API key</td><td><code>ios.signing</code> files</td><td>Your own individual API key</td></tr>
+            <tr><td>No API key at all</td><td><code>ios.signing</code> files</td><td>Transporter or Xcode Organizer, by hand</td></tr>
+            <tr><td>Owner sent only an API key</td><td>Ask for a certificate and profile, or Xcode automatic signing if your role allows it</td><td>API key</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="doc-h3">Ask the owner for</h3>
+      <ul class="doc-list">
+        <li>An <b>Apple Distribution</b> certificate as <code>.p12</code>, exported from Keychain Access with a password. It must include the private key.</li>
+        <li>An <b>App Store</b> provisioning profile (<code>.mobileprovision</code>) for each bundle id, including app extensions.</li>
+        <li>Optionally a team API key: <code>.p8</code>, Key ID and Issuer ID.</li>
+      </ul>
+      <p class="note">To avoid moving a private key around, create a certificate signing request on your own Mac and have the owner issue the certificate from it. Then the private key never leaves your machine, and you don't need the <code>.p12</code>.</p>
+
+      <h3 class="doc-h3">Configure and install</h3>
+      <div class="code-card">
+        <div class="code-name">release/release.yml<button class="copy copy-sm" type="button">Copy</button></div>
+<pre><code><span class="y-k">ios</span>:
+  <span class="y-k">bundle_id</span>: com.example.app
+  <span class="y-k">team_id</span>: ABCDE12345
+  <span class="y-k">build_command</span>: 'flutter build ipa --release --export-options-plist="$APPSHIP_EXPORT_OPTIONS"'
+  <span class="y-k">signing</span>:
+    <span class="y-k">style</span>: manual
+    <span class="y-k">certificate</span>: release/keys/AppleDistribution.p12
+    <span class="y-k">profiles</span>: [release/keys/AppStore.mobileprovision]</code></pre>
+      </div>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Copy</button></div>
+<pre><code>APPSHIP_P12_PASSWORD=... appship signing import   <span class="y-c"># install profiles, import the .p12</span>
+appship build --ios
+appship doctor                                    <span class="y-c"># audit the profiles, keychain and the built .ipa</span>
+appship upload --ios</code></pre>
+      </div>
+      <p>The <code>.p12</code> password is never stored in <code>release.yml</code>; pass it in <code>APPSHIP_P12_PASSWORD</code>. The build command receives <code>$APPSHIP_EXPORT_OPTIONS</code> (a generated <code>ExportOptions.plist</code>), <code>$APPSHIP_IOS_BUNDLE_ID</code> and <code>$APPSHIP_IOS_TEAM_ID</code>. For fastlane gym use <code>--export_options "$APPSHIP_EXPORT_OPTIONS"</code>. The plist controls the export step only; with manual signing, also turn off automatic signing in the Xcode project so the archive step uses the same profile.</p>
+
+      <h3 class="doc-h3">What doctor checks</h3>
+      <ul class="doc-list">
+        <li>Each profile is an iOS <b>App Store</b> profile, not expired (a warning under 30 days), from the team in <code>ios.team_id</code>, and covers <code>ios.bundle_id</code>.</li>
+        <li>The <code>.p12</code> exists and is not world-readable, and a matching certificate with its private key is in the keychain (macOS only).</li>
+        <li>The built <code>.ipa</code> is signed for the right bundle id, with a valid profile from <code>ios.signing.profiles</code>.</li>
+        <li><code>build_command</code> actually uses <code>$APPSHIP_EXPORT_OPTIONS</code>.</li>
+      </ul>
+
+      <h3 class="doc-h3">No team API key</h3>
+      <ul class="doc-list">
+        <li><b>Individual key:</b> in App Store Connect, Integrations → <b>Individual Keys</b>. It has no Issuer ID, so leave <code>issuer_id</code> empty: <code>appship credentials add my-key --asc-key AuthKey_XXX.p8 --asc-key-id XXXXXXXXXX</code>. It carries your own role's permissions, and an Admin can turn the feature off. Not yet verified against a real account.</li>
+        <li><b>No key at all:</b> sign and build the same way, then upload the <code>.ipa</code> with Transporter or Xcode → Organizer → Distribute App. <code>doctor</code> still audits the file first. appship doesn't upload with an Apple ID, since that needs interactive 2FA.</li>
+      </ul>
+
+      <h3 class="doc-h3">In CI</h3>
+      <div class="code-card">
+        <div class="code-name">GitHub Actions steps<button class="copy copy-sm" type="button">Copy</button></div>
+<pre><code>- <span class="y-k">run</span>: |
+    mkdir -p release/keys
+    echo "$P12_B64"     | base64 --decode > release/keys/AppleDistribution.p12
+    echo "$PROFILE_B64" | base64 --decode > release/keys/AppStore.mobileprovision
+  <span class="y-k">env</span>: { <span class="y-k">P12_B64</span>: ${{ secrets.IOS_DIST_P12_BASE64 }}, <span class="y-k">PROFILE_B64</span>: ${{ secrets.IOS_PROFILE_BASE64 }} }
+- <span class="y-k">run</span>: appship signing import --yes --keychain "$RUNNER_TEMP/appship.keychain-db"
+  <span class="y-k">env</span>:
+    <span class="y-k">APPSHIP_P12_PASSWORD</span>: ${{ secrets.IOS_DIST_P12_PASSWORD }}
+    <span class="y-k">APPSHIP_KEYCHAIN_PASSWORD</span>: ${{ secrets.KEYCHAIN_PASSWORD }}</code></pre>
+      </div>
+      <p>This creates a dedicated keychain, so the runner's login keychain is untouched. Profiles and certificates expire after about a year; <code>doctor</code> warns 30 days before.</p>
+      <p>Roles differ in what they may do; check the role table in App Store Connect Help. Apple's screens change, so treat the steps as of 09/2026.</p>
     </section>
 
     <section id="credentials" class="doc-section doc-ref">
@@ -358,8 +540,7 @@ appship promote --from production --to production --rollout 100%</code></pre>
     </section>
 
     <nav class="doc-next" aria-label="More">
-      <a href="https://github.com/ketchstudio/auto-app-store-upload-plugin/tree/main/docs">Full documentation (Vietnamese) →</a>
-      <a href="https://github.com/ketchstudio/auto-app-store-upload-plugin/issues">Report a problem →</a>
+      <a href="index.html">← Back to overview</a>
     </nav>
   </article>
 </div>
@@ -372,8 +553,6 @@ appship promote --from production --to production --rollout 100%</code></pre>
     </div>
     <nav class="footer-links" aria-label="Footer">
       <a href="index.html">Overview</a>
-      <a href="https://github.com/ketchstudio/auto-app-store-upload-plugin">GitHub</a>
-      <a href="https://github.com/ketchstudio/auto-app-store-upload-plugin/issues">Issues</a>
       <a href="https://fastlane.tools">fastlane</a>
     </nav>
   </div>

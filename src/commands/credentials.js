@@ -19,7 +19,7 @@ export async function credentialsAddCommand(name, opts) {
       values.ascKeyPath = (await input({ message: 'Path to AuthKey_XXXX.p8:' })) || undefined;
       const guessedId = values.ascKeyPath?.match(/AuthKey_([A-Z0-9]+)\.p8$/)?.[1];
       values.ascKeyId = (await input({ message: 'Key ID:', default: guessedId })) || undefined;
-      values.ascIssuerId = (await input({ message: 'Issuer ID:' })) || undefined;
+      values.ascIssuerId = (await input({ message: 'Issuer ID (leave empty for an individual API key):' })) || undefined;
       values.appleId = (await input({ message: 'Apple ID email (optional, for creating apps / App Privacy):' })) || undefined;
     }
     if (await confirm({ message: 'Add Google Play credentials?', default: true })) {
@@ -29,7 +29,7 @@ export async function credentialsAddCommand(name, opts) {
 
   const { dir, profile } = saveProfile(name, values);
   log.ok(`Profile "${name}" saved in ${dir}`);
-  if (profile.ios) log.hint(`iOS: key_id=${profile.ios.key_id ?? '-'} issuer_id=${profile.ios.issuer_id ?? '-'} apple_id=${profile.ios.apple_id ?? '-'}`);
+  if (profile.ios) log.hint(`iOS: key_id=${profile.ios.key_id ?? '-'} issuer_id=${profile.ios.issuer_id ?? '- (individual key)'} apple_id=${profile.ios.apple_id ?? '-'}`);
   if (profile.android) log.hint('Android: service account JSON stored');
   log.info(`\nUse it in a project's release/release.yml:\n  credentials:\n    profile: ${name}`);
 }

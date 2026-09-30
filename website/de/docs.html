@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>appship-Integrationsleitfaden</title>
+  <!-- langs:head -->
+  <link rel="alternate" hreflang="en" href="../docs.html">
+  <link rel="alternate" hreflang="vi" href="../vi/docs.html">
+  <link rel="alternate" hreflang="ja" href="../ja/docs.html">
+  <link rel="alternate" hreflang="fr" href="../fr/docs.html">
+  <link rel="alternate" hreflang="es" href="../es/docs.html">
+  <link rel="alternate" hreflang="pt-BR" href="../pt/docs.html">
+  <link rel="alternate" hreflang="de" href="../de/docs.html">
+  <link rel="alternate" hreflang="ko" href="../ko/docs.html">
+  <link rel="alternate" hreflang="x-default" href="../docs.html">
+  <!-- /langs:head -->
+  <meta name="description" content="appship in ein iOS- oder Android-Projekt einbinden: über npm installieren, Store-Schlüssel verbinden, release/ konfigurieren und vom eigenen Rechner oder aus der CI veröffentlichen.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%230D1B2A' stroke-width='3.2'/%3E%3Crect x='1' y='14.4' width='30' height='3.2' fill='%230D1B2A'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body class="docs-page">
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html" aria-label="appship Startseite">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="3.2"/><rect x="1" y="14.4" width="30" height="3.2" fill="currentColor"/></svg>
+      <span>appship</span>
+    </a>
+    <nav class="nav-links" aria-label="Website">
+      <a href="index.html">Übersicht</a>
+      <a href="docs.html" aria-current="page">Leitfaden</a>
+      <!-- langs:nav -->
+      <details class="lang-menu">
+        <summary aria-label="Language"><span lang="de">Deutsch</span></summary>
+        <ul>
+        <li><a href="../docs.html" hreflang="en" lang="en">English</a></li>
+        <li><a href="../vi/docs.html" hreflang="vi" lang="vi">Tiếng Việt</a></li>
+        <li><a href="../ja/docs.html" hreflang="ja" lang="ja">日本語</a></li>
+        <li><a href="../fr/docs.html" hreflang="fr" lang="fr">Français</a></li>
+        <li><a href="../es/docs.html" hreflang="es" lang="es">Español</a></li>
+        <li><a href="../pt/docs.html" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li>
+        <li><a href="../de/docs.html" hreflang="de" lang="de" aria-current="true">Deutsch</a></li>
+        <li><a href="../ko/docs.html" hreflang="ko" lang="ko">한국어</a></li>
+        </ul>
+      </details>
+      <!-- /langs:nav -->
+    </nav>
+  </div>
+</header>
+
+<section class="doc-hero">
+  <div class="wrap">
+    <p class="badge"><span class="badge-dot"></span>Integrationsleitfaden · v0.1.0</p>
+    <h1 class="h1-doc">appship zu Ihrem Projekt hinzufügen</h1>
+    <p class="lede">
+      Von einer App, die noch nie in den Stores war, bis zu einem Build im App Review. Planen Sie beim ersten Mal etwa eine Stunde ein,
+      der größte Teil davon entfällt auf die Apple- und Google-Konsolen, um Schlüssel zu besorgen.
+    </p>
+  </div>
+</section>
+
+<div class="wrap doc-layout">
+  <aside class="toc" aria-label="Auf dieser Seite">
+    <p class="eyebrow">Auf dieser Seite</p>
+    <ol>
+      <li><a href="#requirements">Voraussetzungen</a></li>
+      <li><a href="#install">Installation</a></li>
+      <li><a href="#keys">Store-Schlüssel besorgen</a></li>
+      <li><a href="#init">Projekt einrichten</a></li>
+      <li><a href="#listing">Store-Eintrag ausfüllen</a></li>
+      <li><a href="#doctor">Mit doctor prüfen</a></li>
+      <li><a href="#first-release">Erstes Release</a></li>
+      <li><a href="#every-release">Jedes weitere Release</a></li>
+      <li><a href="#ci">In der CI ausführen</a></li>
+    </ol>
+    <p class="eyebrow toc-ref">Referenz</p>
+    <ul>
+      <li><a href="#signing">Signierung</a></li>
+      <li><a href="#not-owner">iOS-Signierung ohne Inhaberzugriff</a></li>
+      <li><a href="#languages">Sprachen und Release Notes</a></li>
+      <li><a href="#suggested-languages">Empfohlene Sprachen</a></li>
+      <li><a href="#credentials">Woher Schlüssel gelesen werden</a></li>
+      <li><a href="#leaked-key">Wenn ein Schlüssel committet wurde</a></li>
+    </ul>
+  </aside>
+
+  <article class="doc">
+
+    <div class="callout">
+      <strong>Frühe Version.</strong> v0.1.0 ist durch Tests und Dry-Runs abgedeckt, wurde aber noch nicht gegen die echten Stores ausgeführt.
+      Jeder Befehl, der in einen Store schreibt, unterstützt <code>--dry-run</code>; beginnen Sie mit reinen Lesebefehlen wie <code>appship status</code>.
+    </div>
+
+    <!-- 1 -->
+    <section id="requirements" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">1</span>Voraussetzungen</h2>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Sie benötigen</th><th scope="col">Hinweise</th></tr></thead>
+          <tbody>
+            <tr><td>Node.js 22 oder neuer</td><td>appship ist ein npm-Paket.</td></tr>
+            <tr><td><a href="https://docs.fastlane.tools">fastlane</a></td><td>appship führt fastlane für jeden Store-Aufruf aus. Installieren Sie es so, wie die fastlane-Dokumentation es für Ihren Rechner empfiehlt.</td></tr>
+            <tr><td>macOS mit Xcode</td><td>Nur für iOS-Builds und -Uploads. Reine Android-Projekte funktionieren auch unter Linux.</td></tr>
+            <tr><td>Apple Developer Program</td><td>99 USD pro Jahr.</td></tr>
+            <tr><td>Google-Play-Console-Konto</td><td>25 USD, einmalig.</td></tr>
+            <tr><td>Eine App, die ein signiertes Release baut</td><td>appship signiert nicht für Sie. Siehe <a href="#signing">Signierung</a>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="install" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">2</span>Installation</h2>
+      <p>Installieren Sie appship einmal pro Rechner, global. Ihrer App-<code>package.json</code> wird nichts hinzugefügt.</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code>npm i -g appship-ai
+appship --version</code></pre>
+      </div>
+      <p>Das Paket heißt <code>appship-ai</code> und installiert den Befehl <code>appship</code>. Um es ohne Installation auszuprobieren, führen Sie <code>npx appship-ai --help</code> aus.</p>
+    </section>
+
+    <!-- 3 -->
+    <section id="keys" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">3</span>Store-Schlüssel besorgen</h2>
+      <p>Das erledigen Sie einmal pro Entwicklerkonto, nicht pro Projekt. Mit beiden Schlüsseln können Builds in Ihrem Namen veröffentlicht werden, committen Sie sie daher niemals in git.</p>
+
+      <h3 class="doc-h3">iOS: App-Store-Connect-API-Schlüssel</h3>
+      <ol class="doc-steps">
+        <li>Öffnen Sie in <a href="https://appstoreconnect.apple.com">App Store Connect</a> <b>Users and Access → Integrations → App Store Connect API</b>.</li>
+        <li>Klicken Sie unter <b>Team Keys</b> auf <b>+</b>. Nennen Sie ihn <code>appship</code> und geben Sie ihm die Rolle <b>App Manager</b>.</li>
+        <li>Laden Sie <code>AuthKey_XXXXXXXXXX.p8</code> herunter. Apple erlaubt den Download nur ein einziges Mal.</li>
+        <li>Notieren Sie die <b>Key ID</b> (10 Zeichen, auch im Dateinamen) und die <b>Issuer ID</b> (die UUID über der Schlüsseltabelle).</li>
+      </ol>
+      <p class="note">Team Keys können nur vom Account Holder oder von Admins erstellt werden. Falls Sie das nicht sind, bitten Sie den Inhaber, Ihnen den Schlüssel zu schicken, oder lesen Sie <a href="#not-owner">iOS-Signierung ohne Inhaberzugriff</a> für einen individuellen Schlüssel.</p>
+      <p class="note">Eine Apple-ID (E-Mail) ist optional. Sie wird nur benötigt, um den App-Eintrag anzulegen und die App-Privacy-Angaben hochzuladen, da der API-Schlüssel von Apple beides nicht kann. Sie erfordert 2FA und funktioniert deshalb nie in der CI.</p>
+
+      <h3 class="doc-h3">Android: Google-Play-Dienstkonto</h3>
+      <ol class="doc-steps">
+        <li>Wählen Sie in der <a href="https://console.cloud.google.com">Google Cloud Console</a> ein Projekt aus und aktivieren Sie die <b>Google Play Android Developer API</b>.</li>
+        <li>Gehen Sie zu <b>IAM &amp; Admin → Service Accounts → Create service account</b>. Es ist keine GCP-Rolle nötig.</li>
+        <li>Öffnen Sie das Konto und laden Sie über <b>Keys → Add key → JSON</b> die Schlüsseldatei herunter.</li>
+        <li>Gehen Sie in der <a href="https://play.google.com/console">Play Console</a> zu <b>Users and permissions → Invite new users</b> und laden Sie die <code>client_email</code> aus der JSON-Datei ein. Erteilen Sie <b>Release apps to testing tracks</b>, <b>Release to production</b> und <b>Manage store presence</b>.</li>
+        <li>Warten Sie einige Minuten, bis die Berechtigungen wirksam werden. Bei einem neuen Konto kann es bis zu 24 Stunden dauern.</li>
+      </ol>
+
+      <h3 class="doc-h3">Als Profil speichern</h3>
+      <p>Ein Profil kopiert die Schlüssel mit Modus 600 nach <code>~/.appship/credentials/&lt;name&gt;/</code>, sodass alle Projekte auf diesem Rechner sie gemeinsam nutzen können. Führen Sie den Befehl ohne Flags aus, um Schritt für Schritt gefragt zu werden.</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code>appship credentials add my-company \
+  --asc-key ~/Downloads/AuthKey_ABC123DEFG.p8 \
+  --asc-key-id ABC123DEFG \
+  --asc-issuer-id 69a6de7a-0000-0000-0000-000000000000 \
+  --play-json ~/Downloads/play-service-account.json
+
+appship credentials list</code></pre>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section id="init" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">4</span>Projekt einrichten</h2>
+      <p>Führen Sie <code>init</code> im Stammverzeichnis Ihres App-Repos aus.</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code>cd ~/Projects/my-app
+appship init --profile my-company</code></pre>
+      </div>
+      <p><code>init</code> erkennt Flutter-, React-Native-, Cocos-Creator- oder native Projekte, liest Ihre Bundle-ID und den Paketnamen und trägt Build-Befehl und Artefaktpfad ein. Es legt diesen Ordner an und ergänzt <code>release/keys/*</code> und <code>release/.appship/</code> in <code>.gitignore</code>:</p>
+      <div class="code-card">
+        <div class="code-name">project layout</div>
+<pre><code>my-app/
+└── release/
+    ├── release.yml            <span class="y-c"># IDs, Artefakte, Build-Befehle, Tracks, Zugangsdaten</span>
+    ├── questionnaire.yml      <span class="y-c"># Antworten auf Store-Fragen</span>
+    ├── ios/metadata/&lt;locale&gt;/*.txt
+    ├── ios/screenshots/&lt;locale&gt;/*.png
+    ├── android/metadata/&lt;locale&gt;/{*.txt, images/}
+    ├── keys/                  <span class="y-c"># in .gitignore; nur wenn Sie kein Profil nutzen</span>
+    └── .appship/              <span class="y-c"># in .gitignore; temporäre Dateien für fastlane</span></code></pre>
+      </div>
+      <p>Öffnen Sie <code>release/release.yml</code> und prüfen Sie <code>artifact</code> und <code>build_command</code> für jede Plattform. Für eine Flutter-App sieht das so aus:</p>
+      <div class="code-card">
+        <div class="code-name">release/release.yml</div>
+<pre><code><span class="y-k">app</span>:
+  <span class="y-k">name</span>: <span class="y-s">"My App"</span>
+  <span class="y-k">primary_locale</span>: en-US
+<span class="y-k">ios</span>:
+  <span class="y-k">bundle_id</span>: com.example.myapp
+  <span class="y-k">artifact</span>: <span class="y-s">"build/ios/ipa/*.ipa"</span>
+  <span class="y-k">build_command</span>: <span class="y-s">"flutter build ipa --release"</span>
+  <span class="y-k">upload_screenshots</span>: true
+  <span class="y-k">submit</span>:
+    <span class="y-k">automatic_release</span>: false   <span class="y-c"># sofort veröffentlichen, sobald Apple freigibt</span>
+    <span class="y-k">phased_release</span>: false      <span class="y-c"># 7-tägiger gestaffelter Rollout</span>
+<span class="y-k">android</span>:
+  <span class="y-k">package_name</span>: com.example.myapp
+  <span class="y-k">artifact</span>: <span class="y-s">"build/app/outputs/bundle/release/*.aab"</span>
+  <span class="y-k">build_command</span>: <span class="y-s">"flutter build appbundle --release"</span>
+  <span class="y-k">track</span>: internal              <span class="y-c"># internal | alpha | beta | production</span>
+  <span class="y-k">release_status</span>: completed    <span class="y-c"># draft, solange die App unveröffentlicht ist</span>
+  <span class="y-k">rollout</span>: 1                   <span class="y-c"># 0.2 = 20 % gestaffelter Rollout</span>
+<span class="y-k">credentials</span>:
+  <span class="y-k">profile</span>: my-company</code></pre>
+      </div>
+      <p>Committen Sie den gesamten Ordner <code>release/</code> außer <code>keys/</code> und <code>.appship/</code>. Ihr Repo erhält kein Fastfile: Die Release-Logik bleibt in appship, sodass ein Update von appship jedes Projekt aktualisiert.</p>
+    </section>
+
+    <!-- 5 -->
+    <section id="listing" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">5</span>Store-Eintrag ausfüllen</h2>
+      <p>Wenn die App bereits live ist, laden Sie den aktuellen Eintrag herunter, statt ihn abzutippen:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code>appship metadata pull</code></pre>
+      </div>
+      <p>Andernfalls ersetzen Sie jedes <code>TODO</code> in diesen Dateien:</p>
+      <ul class="doc-list">
+        <li><b><code>release/questionnaire.yml</code></b>: Altersfreigabe, Exportvorschriften, Inhaberrechte, Kontakt für den Reviewer, App Privacy und die Android-Angaben unter „App content“.</li>
+        <li><b>Text</b>: <code>release/ios/metadata/&lt;locale&gt;/*.txt</code> und <code>release/android/metadata/&lt;locale&gt;/*.txt</code>.</li>
+        <li><b>Release Notes pro Sprache</b>: ein Ordner pro Locale. Siehe unten <a href="#languages">Sprachen und Release Notes</a>.</li>
+        <li><b>iOS-Screenshots</b> in <code>release/ios/screenshots/&lt;locale&gt;/</code>: mindestens ein Satz für iPhone 6,9" (1320×2868) oder 6,5" (1284×2778).</li>
+        <li><b>Android-Bilder</b> in <code>release/android/metadata/&lt;locale&gt;/images/</code>: <code>icon.png</code> 512×512, <code>featureGraphic.png</code> 1024×500 und mindestens 2 Bilder in <code>phoneScreenshots/</code>.</li>
+      </ul>
+
+      <h3 class="doc-h3" id="languages">Sprachen und Release Notes</h3>
+      <p>Beide Stores nehmen für jede Sprache einen eigenen „What's New“-Text entgegen. Jede Sprache ist ein Ordner, und jeder Ordner enthält seine eigenen Release Notes:</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Store</th><th scope="col">Datei, eine pro Locale-Ordner</th><th scope="col">Max.</th></tr></thead>
+          <tbody>
+            <tr><td>App Store</td><td><code>release/ios/metadata/&lt;locale&gt;/<wbr>release_notes.txt</code></td><td>4000 Zeichen</td></tr>
+            <tr><td>Google Play</td><td><code>release/android/metadata/&lt;locale&gt;/<wbr>changelogs/default.txt</code></td><td>500 Zeichen</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>So fügen Sie eine Sprache hinzu:</p>
+      <ol class="doc-steps">
+        <li>Tragen Sie sie in <code>release.yml</code> ein. Die Liste ist optional; ohne sie verwendet appship jeden Ordner, den es findet. iOS und Android nutzen unterschiedliche Locale-Codes, daher hat jede Plattform ihre eigene Liste:
+
+          <div class="code-card">
+            <div class="code-name">release/release.yml<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code><span class="y-k">ios</span>:
+  <span class="y-k">locales</span>: [en-US, vi, ja]
+<span class="y-k">android</span>:
+  <span class="y-k">locales</span>: [en-US, vi, ja-JP]   <span class="y-c"># Play-Codes weichen ab, z. B. hier zh-CN, unter iOS zh-Hans</span></code></pre>
+          </div></li>
+        <li>Legen Sie den Ordner an, zum Beispiel <code>release/ios/metadata/vi/</code>, und füllen Sie die erforderlichen Dateien aus: unter iOS <code>name.txt</code>, <code>description.txt</code>, <code>keywords.txt</code>, <code>support_url.txt</code>, <code>privacy_url.txt</code> und <code>release_notes.txt</code>; unter Android <code>title.txt</code>, <code>short_description.txt</code>, <code>full_description.txt</code> und <code>changelogs/default.txt</code>.</li>
+        <li>Fügen Sie iOS-Screenshots in <code>release/ios/screenshots/&lt;locale&gt;/</code> hinzu. Für Android aktivieren Sie die Sprache zuerst in der Play Console.</li>
+        <li>Führen Sie <code>appship doctor</code> aus. Eine aufgelistete Locale ohne Ordner ist ein Fehler. Ein Ordner, der nicht aufgelistet ist, ergibt eine Warnung, weil er trotzdem in den Store übertragen wird.</li>
+      </ol>
+      <p>Gut zu wissen:</p>
+      <ul class="doc-list">
+        <li>Sie müssen die Sprache nicht zuerst in App Store Connect hinzufügen. Sie wird beim Übertragen der Metadaten angelegt.</li>
+        <li>Lassen Sie <code>release_notes.txt</code> bei der allerersten Version einer App leer. Apple akzeptiert bei Version 1.0 keine Release Notes.</li>
+        <li>Eine Locale ohne Release Notes zeigt in dieser Sprache ein leeres „What's New“. <code>doctor</code> warnt, wenn manche Locales Notes haben und andere nicht.</li>
+        <li>iOS-Ordnernamen müssen einer der Apple-Codes sein, etwa <code>en-US</code>, <code>vi</code>, <code>ja</code>, <code>ko</code>, <code>de-DE</code>, <code>fr-FR</code>, <code>es-ES</code>, <code>pt-BR</code>, <code>zh-Hans</code> oder <code>zh-Hant</code>. <code>doctor</code> lehnt alles andere ab, zum Beispiel <code>zh-CN</code>.</li>
+        <li>Der gemeinsame Ordner <code>default</code> von fastlane wird noch nicht unterstützt.</li>
+      </ul>
+
+      <h3 class="doc-h3" id="suggested-languages">Empfohlene Sprachen</h3>
+      <p>Sie wissen nicht, welche Sprachen Sie als Nächstes hinzufügen sollen? appship schlägt sechs Sprachen mit großer Reichweite vor: Spanisch (Spanien und Lateinamerika), brasilianisches Portugiesisch, Deutsch, Französisch, Japanisch und Koreanisch. Die beiden Stores verwenden unterschiedliche Codes:</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Sprache</th><th scope="col"><code>--locales</code> id</th><th scope="col">iOS-Ordner</th><th scope="col">Android-Ordner</th></tr></thead>
+          <tbody>
+            <tr><td>Spanisch, Spanien</td><td><code>es</code></td><td><code>es-ES</code></td><td><code>es-ES</code></td></tr>
+            <tr><td>Spanisch, Lateinamerika</td><td><code>es</code></td><td><code>es-MX</code></td><td><code>es-419</code></td></tr>
+            <tr><td>Portugiesisch, Brasilien</td><td><code>pt-BR</code></td><td><code>pt-BR</code></td><td><code>pt-BR</code></td></tr>
+            <tr><td>Deutsch</td><td><code>de</code></td><td><code>de-DE</code></td><td><code>de-DE</code></td></tr>
+            <tr><td>Französisch</td><td><code>fr</code></td><td><code>fr-FR</code></td><td><code>fr-FR</code></td></tr>
+            <tr><td>Japanisch</td><td><code>ja</code></td><td><code>ja</code></td><td><code>ja-JP</code></td></tr>
+            <tr><td>Koreanisch</td><td><code>ko</code></td><td><code>ko</code></td><td><code>ko-KR</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="doc-list">
+        <li>Legen Sie die Ordner beim Einrichten eines Projekts an: <code>appship init --locales preset</code> für alle sechs oder <code>--locales es,ja</code> für einzelne. Der Befehl schreibt <code>locales</code> für jede Plattform mit den richtigen Codes und erstellt Eintragsdateien, die mit <code>TODO</code> gefüllt sind und von Ihnen übersetzt werden müssen. <code>doctor</code> schlägt fehl, bis jedes <code>TODO</code> ersetzt ist.</li>
+        <li>Bei einem bereits bestehenden Projekt legen Sie die Ordner mit den obigen Codes von Hand an (<code>init --force</code> würde <code>release.yml</code> überschreiben).</li>
+        <li>Behalten Sie nur die spanische Variante, die Sie wirklich schreiben werden. <code>es-MX</code> unter iOS und <code>es-419</code> bei Play decken ganz Lateinamerika ab.</li>
+        <li>Die Store-Limits zählen Zeichen, nicht Bytes oder Wörter. Japanische und koreanische Texte sind meist kürzer als englische; deutsche und französische sind länger und stoßen oft ans Titellimit von 30 Zeichen.</li>
+        <li>Aktivieren Sie jede Sprache in der Play Console, bevor Sie hochladen. <code>doctor</code> warnt vor einem Android-Ordner, der kein Play-Sprachcode ist, und schlägt die Korrektur vor, zum Beispiel muss aus <code>ja</code> dann <code>ja-JP</code> werden.</li>
+        <li>Der Skill <code>release-notes</code> kennt die Konventionen jeder Sprache: förmliche oder informelle Anrede, regionale Varianten, japanische Satzzeichen in Vollbreite und den Leerraum im Französischen vor <code>? ! : ;</code>.</li>
+      </ul>
+
+      <h3 class="doc-h3" id="release-notes-skill">Release Notes mit Claude Code schreiben</h3>
+      <p><code>appship init</code> installiert einen Claude-Code-Skill namens <code>release-notes</code> in <code>.claude/skills/</code> Ihres Projekts. Bitten Sie Claude vor einem Release, „die Release Notes für diese Version zu schreiben“ (oder führen Sie <code>/release-notes</code> aus). Der Skill wird:</p>
+      <ol class="doc-steps">
+        <li><code>release.yml</code> und die Locale-Ordner lesen.</li>
+        <li><code>git log</code> seit dem letzten Tag lesen, sowie <code>CHANGELOG.md</code>, falls vorhanden.</li>
+        <li>Kurze, nutzerorientierte Notes in Ihrer Hauptsprache schreiben und in jede andere Locale übersetzen.</li>
+        <li>Die Store-Limits einhalten, die Dateien schreiben und dann <code>appship doctor</code> ausführen.</li>
+      </ol>
+      <p>Die Notes bleiben einfache Dateien, Sie können sie also prüfen und bearbeiten. Der Skill fragt nach, bevor er vorhandenen Text überschreibt, und überträgt nie etwas in einen Store. Bei einem Projekt, das vor dieser Funktion eingerichtet wurde, kopieren Sie den Skill von Hand hinein:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code>mkdir -p .claude/skills
+cp -r "$(npm root -g)/appship-ai/skills/release-notes" .claude/skills/</code></pre>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section id="doctor" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">6</span>Mit doctor prüfen</h2>
+      <p><code>doctor</code> prüft Tools, Konfiguration, Schlüssel, Artefakte, Zeichenlimits, Bildgrößen und Platzhaltertexte und schlägt fehl, wenn eine Schlüsseldatei von git verfolgt wird. Wiederholen Sie den Lauf, bis kein <span class="mono-fail">✗</span> mehr erscheint. Ein <span class="mono-warn">!</span> ist eine Warnung und blockiert kein Release.</p>
+      <div class="code-card code-card-term">
+        <div class="code-name">appship doctor</div>
+<pre><code><span class="t-step">▸ Security</span>
+  <span class="t-ok">✓</span> No key files tracked by git
+  <span class="t-ok">✓</span> .gitignore protects release/keys/
+<span class="t-step">▸ iOS · store listing</span>
+  <span class="t-fail">✗</span> ios/metadata/en-US/subtitle.txt is 34 characters (max 30)
+<span class="t-step">▸ Android · store listing</span>
+  <span class="t-ok">✓</span> Metadata OK for en-US
+
+  <span class="t-fail">✗</span> 1 error(s), 0 warning(s)</code></pre>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section id="first-release" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">7</span>Erstes Release</h2>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code>appship build
+appship first-release --create-app</code></pre>
+      </div>
+      <ul class="doc-list">
+        <li><b>iOS:</b> legt die App in App Store Connect an (benötigt die Apple-ID und fragt eventuell nach einem 2FA-Code) und überträgt dann Eintrag, Screenshots, Altersfreigabe, Review-Infos und App Privacy.</li>
+        <li><b>Android:</b> Google Play bietet keine API zum Anlegen einer App, daher gibt appship stattdessen die Schritte aus.</li>
+        <li>Beide schreiben <code>release/CHECKLIST.md</code>: die Konsolenschritte, die von Hand erledigt werden müssen, mit Ihren Antworten aus <code>questionnaire.yml</code> zum Kopieren.</li>
+      </ul>
+      <p>Folgen Sie bei Google Play der Checkliste, um:</p>
+      <ol class="doc-steps">
+        <li>die App in der Play Console anzulegen.</li>
+        <li>das Dienstkonto zur App einzuladen.</li>
+        <li>die erste <code>.aab</code> von Hand in Internal testing hochzuladen.</li>
+        <li>den Abschnitt „App content“ auszufüllen.</li>
+      </ol>
+      <p class="note">Solange die Android-App noch nie veröffentlicht wurde, setzen Sie <code>release_status: draft</code> in <code>release.yml</code>. Neue persönliche Entwicklerkonten benötigen vor der Produktion außerdem einen geschlossenen Test mit 12 Testern über 14 Tage.</p>
+      <p>Schließen Sie dann das erste Release ab:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code>appship metadata --android
+appship upload
+appship submit</code></pre>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section id="every-release" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">8</span>Jedes weitere Release</h2>
+      <p>Erhöhen Sie Version und Build-Nummer in Ihrem Projekt, dann:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code><span class="y-c"># Claude Code die Release Notes schreiben lassen (siehe Sprachen und Release Notes)</span>
+appship upload --build   <span class="y-c"># bauen, dann TestFlight + Google-Play-Track (standardmäßig internal)</span>
+<span class="y-c"># auf TestFlight / im internal Track testen</span>
+appship submit           <span class="y-c"># iOS: App Review · Android: auf production hochstufen</span>
+appship status           <span class="y-c"># Review-Status und Versionen in beiden Stores</span></code></pre>
+      </div>
+      <p>Für einen gestaffelten Rollout auf Android:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code>appship submit --android --rollout 10%
+appship promote --from production --to production --rollout 50%
+appship promote --from production --to production --rollout 100%</code></pre>
+      </div>
+      <p>Jeder Befehl, der in einen Store schreibt, fragt zuerst nach Bestätigung. Fügen Sie <code>--dry-run</code> hinzu, um genau zu sehen, was gesendet würde.</p>
+    </section>
+
+    <!-- 9 -->
+    <section id="ci" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">9</span>In der CI ausführen</h2>
+      <p>In der CI stammen die Schlüssel aus Secrets über <code>APPSHIP_*</code>-Umgebungsvariablen, und jeder Schreibbefehl benötigt <code>--yes</code>. Legen Sie diese Repository-Secrets an (in GitHub: <b>Settings → Secrets and variables → Actions</b>):</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Secret</th><th scope="col">Wert</th></tr></thead>
+          <tbody>
+            <tr><td><code>APPSHIP_ASC_KEY_ID</code></td><td>Key ID</td></tr>
+            <tr><td><code>APPSHIP_ASC_ISSUER_ID</code></td><td>Issuer ID</td></tr>
+            <tr><td><code>APPSHIP_ASC_KEY</code></td><td>Ausgabe von <code>base64 -i AuthKey_XXX.p8</code></td></tr>
+            <tr><td><code>APPSHIP_PLAY_JSON</code></td><td>Ausgabe von <code>base64 -i play-service-account.json</code></td></tr>
+            <tr><td>Signatur-Secrets</td><td>Hängen davon ab, wie Sie signieren, zum Beispiel <code>MATCH_PASSWORD</code> für fastlane match oder ein Android-Keystore in base64</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Die Release-Schritte eines GitHub-Actions-Workflows:</p>
+      <div class="code-card">
+        <div class="code-name">.github/workflows/release.yml<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code><span class="y-k">env</span>:
+  <span class="y-k">APPSHIP_ASC_KEY_ID</span>: ${{ secrets.APPSHIP_ASC_KEY_ID }}
+  <span class="y-k">APPSHIP_ASC_ISSUER_ID</span>: ${{ secrets.APPSHIP_ASC_ISSUER_ID }}
+  <span class="y-k">APPSHIP_ASC_KEY</span>: ${{ secrets.APPSHIP_ASC_KEY }}
+  <span class="y-k">APPSHIP_PLAY_JSON</span>: ${{ secrets.APPSHIP_PLAY_JSON }}
+
+<span class="y-k">jobs</span>:
+  <span class="y-k">release</span>:
+    <span class="y-k">runs-on</span>: macos-latest     <span class="y-c"># iOS-Builds benötigen macOS</span>
+    <span class="y-k">steps</span>:
+      - <span class="y-k">uses</span>: actions/checkout@v4
+      - <span class="y-k">uses</span>: actions/setup-node@v4
+        <span class="y-k">with</span>: { <span class="y-k">node-version</span>: 22 }
+      <span class="y-c"># ...Ihre Toolchain, fastlane und Signierung einrichten...</span>
+      - <span class="y-k">run</span>: npm i -g appship-ai
+      - <span class="y-k">run</span>: appship doctor --skip-artifacts
+      - <span class="y-k">run</span>: appship upload --build --yes
+      - <span class="y-k">if</span>: ${{ inputs.submit }}
+        <span class="y-k">run</span>: appship submit --yes</code></pre>
+      </div>
+      <p>Ergänzen Sie Ihr eigenes Flutter-Setup, den Signierschritt und, falls Sie <code>submit</code> manuell auslösen möchten, einen <code>workflow_dispatch</code>-Input wie den oben gezeigten.</p>
+      <ul class="doc-list">
+        <li>Das Anlegen der iOS-App und der Upload von App Privacy benötigen die Apple-ID mit 2FA. Erledigen Sie das einmalig auf Ihrem Rechner, nicht in der CI.</li>
+        <li>Um eine fastlane-Version festzulegen, verwenden Sie ein Gemfile und setzen <code>APPSHIP_FASTLANE="bundle exec fastlane"</code>.</li>
+        <li>Testen Sie die Pipeline mit <code>--dry-run</code> vollständig, bevor Sie sie etwas übertragen lassen.</li>
+      </ul>
+    </section>
+
+    <!-- Reference -->
+    <section id="signing" class="doc-section doc-ref">
+      <p class="eyebrow">Referenz</p>
+      <h2 class="doc-h2">Signierung</h2>
+      <p>appship baut und signiert Ihre App nicht. Es führt Ihren <code>build_command</code> aus und übernimmt das signierte Artefakt.</p>
+      <ul class="doc-list">
+        <li><b>iOS:</b> Am einfachsten ist die automatische Signierung in Xcode (Signing &amp; Capabilities). Für Teams und die CI nutzen Sie <a href="https://docs.fastlane.tools/actions/match/">fastlane match</a>.</li>
+        <li><b>Android:</b> Erstellen Sie einen Upload-Keystore, konfigurieren Sie <code>signingConfigs</code> in Gradle und aktivieren Sie Play App Signing beim ersten Upload. Halten Sie den Keystore aus git heraus, zum Beispiel im per .gitignore ausgeschlossenen <code>release/keys/</code>.</li>
+      </ul>
+    </section>
+
+    <section id="not-owner" class="doc-section doc-ref">
+      <h2 class="doc-h2">iOS-Signierung ohne Inhaberzugriff</h2>
+      <p>Unter iOS erfordern das <em>Signieren</em> der App und das <em>Hochladen</em> unterschiedliche Dinge, und beides liegt meist beim Account Holder oder einem Admin. appship baut und signiert auch hier nicht für Sie. Es prüft die Dateien, die Sie erhalten haben, installiert sie und reicht die Signier-Einstellungen an Ihren Build-Befehl weiter.</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Ihre Situation</th><th scope="col">Signieren mit</th><th scope="col">Hochladen mit</th></tr></thead>
+          <tbody>
+            <tr><td>Account Holder oder Admin</td><td>Automatische Signierung oder fastlane match</td><td>Team-API-Schlüssel</td></tr>
+            <tr><td>Inhaber hat Signierdateien und einen Team-API-Schlüssel geschickt</td><td><code>ios.signing</code>-Dateien</td><td>Team-API-Schlüssel</td></tr>
+            <tr><td>Inhaber hat Signierdateien geschickt, aber keinen API-Schlüssel</td><td><code>ios.signing</code>-Dateien</td><td>Ihr eigener individueller API-Schlüssel</td></tr>
+            <tr><td>Überhaupt kein API-Schlüssel</td><td><code>ios.signing</code>-Dateien</td><td>Transporter oder Xcode Organizer, von Hand</td></tr>
+            <tr><td>Inhaber hat nur einen API-Schlüssel geschickt</td><td>Zertifikat und Profil anfordern, oder automatische Xcode-Signierung, falls Ihre Rolle das erlaubt</td><td>API-Schlüssel</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="doc-h3">Beim Inhaber anfordern</h3>
+      <ul class="doc-list">
+        <li>Ein <b>Apple Distribution</b>-Zertifikat als <code>.p12</code>, aus Keychain Access mit Passwort exportiert. Es muss den privaten Schlüssel enthalten.</li>
+        <li>Ein <b>App Store</b>-Provisioning-Profil (<code>.mobileprovision</code>) für jede Bundle-ID, einschließlich App-Extensions.</li>
+        <li>Optional einen Team-API-Schlüssel: <code>.p8</code>, Key ID und Issuer ID.</li>
+      </ul>
+      <p class="note">Um zu vermeiden, dass ein privater Schlüssel weitergegeben wird, erstellen Sie auf Ihrem eigenen Mac eine Certificate Signing Request und lassen den Inhaber das Zertifikat daraus ausstellen. Dann verlässt der private Schlüssel Ihren Rechner nie, und Sie brauchen die <code>.p12</code> nicht.</p>
+
+      <h3 class="doc-h3">Konfigurieren und installieren</h3>
+      <div class="code-card">
+        <div class="code-name">release/release.yml<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code><span class="y-k">ios</span>:
+  <span class="y-k">bundle_id</span>: com.example.app
+  <span class="y-k">team_id</span>: ABCDE12345
+  <span class="y-k">build_command</span>: 'flutter build ipa --release --export-options-plist="$APPSHIP_EXPORT_OPTIONS"'
+  <span class="y-k">signing</span>:
+    <span class="y-k">style</span>: manual
+    <span class="y-k">certificate</span>: release/keys/AppleDistribution.p12
+    <span class="y-k">profiles</span>: [release/keys/AppStore.mobileprovision]</code></pre>
+      </div>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code>APPSHIP_P12_PASSWORD=... appship signing import   <span class="y-c"># Profile installieren, die .p12 importieren</span>
+appship build --ios
+appship doctor                                    <span class="y-c"># Profile, Keychain und die gebaute .ipa prüfen</span>
+appship upload --ios</code></pre>
+      </div>
+      <p>Das Passwort der <code>.p12</code> wird nie in <code>release.yml</code> gespeichert; übergeben Sie es in <code>APPSHIP_P12_PASSWORD</code>. Der Build-Befehl erhält <code>$APPSHIP_EXPORT_OPTIONS</code> (eine generierte <code>ExportOptions.plist</code>), <code>$APPSHIP_IOS_BUNDLE_ID</code> und <code>$APPSHIP_IOS_TEAM_ID</code>. Für fastlane gym verwenden Sie <code>--export_options "$APPSHIP_EXPORT_OPTIONS"</code>. Die plist steuert nur den Export-Schritt; bei manueller Signierung schalten Sie im Xcode-Projekt außerdem die automatische Signierung aus, damit der Archive-Schritt dasselbe Profil verwendet.</p>
+
+      <h3 class="doc-h3">Was doctor prüft</h3>
+      <ul class="doc-list">
+        <li>Jedes Profil ist ein iOS-<b>App Store</b>-Profil, nicht abgelaufen (Warnung unter 30 Tagen), stammt vom Team in <code>ios.team_id</code> und deckt <code>ios.bundle_id</code> ab.</li>
+        <li>Die <code>.p12</code> existiert und ist nicht für alle lesbar, und ein passendes Zertifikat mit privatem Schlüssel liegt in der Keychain (nur macOS).</li>
+        <li>Die gebaute <code>.ipa</code> ist für die richtige Bundle-ID signiert, mit einem gültigen Profil aus <code>ios.signing.profiles</code>.</li>
+        <li><code>build_command</code> verwendet tatsächlich <code>$APPSHIP_EXPORT_OPTIONS</code>.</li>
+      </ul>
+
+      <h3 class="doc-h3">Kein Team-API-Schlüssel</h3>
+      <ul class="doc-list">
+        <li><b>Individueller Schlüssel:</b> in App Store Connect unter Integrations → <b>Individual Keys</b>. Er hat keine Issuer ID, lassen Sie <code>issuer_id</code> daher leer: <code>appship credentials add my-key --asc-key AuthKey_XXX.p8 --asc-key-id XXXXXXXXXX</code>. Er trägt die Berechtigungen Ihrer eigenen Rolle, und ein Admin kann die Funktion abschalten. Noch nicht mit einem echten Konto verifiziert.</li>
+        <li><b>Gar kein Schlüssel:</b> signieren und bauen Sie auf dieselbe Weise und laden Sie die <code>.ipa</code> dann mit Transporter oder Xcode → Organizer → Distribute App hoch. <code>doctor</code> prüft die Datei vorher trotzdem. appship lädt nicht mit einer Apple-ID hoch, da das eine interaktive 2FA erfordert.</li>
+      </ul>
+
+      <h3 class="doc-h3">In der CI</h3>
+      <div class="code-card">
+        <div class="code-name">GitHub Actions steps<button class="copy copy-sm" type="button">Kopieren</button></div>
+<pre><code>- <span class="y-k">run</span>: |
+    mkdir -p release/keys
+    echo "$P12_B64"     | base64 --decode > release/keys/AppleDistribution.p12
+    echo "$PROFILE_B64" | base64 --decode > release/keys/AppStore.mobileprovision
+  <span class="y-k">env</span>: { <span class="y-k">P12_B64</span>: ${{ secrets.IOS_DIST_P12_BASE64 }}, <span class="y-k">PROFILE_B64</span>: ${{ secrets.IOS_PROFILE_BASE64 }} }
+- <span class="y-k">run</span>: appship signing import --yes --keychain "$RUNNER_TEMP/appship.keychain-db"
+  <span class="y-k">env</span>:
+    <span class="y-k">APPSHIP_P12_PASSWORD</span>: ${{ secrets.IOS_DIST_P12_PASSWORD }}
+    <span class="y-k">APPSHIP_KEYCHAIN_PASSWORD</span>: ${{ secrets.KEYCHAIN_PASSWORD }}</code></pre>
+      </div>
+      <p>Dadurch wird eine eigene Keychain angelegt, sodass die Login-Keychain des Runners unangetastet bleibt. Profile und Zertifikate laufen nach etwa einem Jahr ab; <code>doctor</code> warnt 30 Tage vorher.</p>
+      <p>Rollen unterscheiden sich in dem, was sie dürfen; sehen Sie in die Rollentabelle in der App-Store-Connect-Hilfe. Die Bildschirme von Apple ändern sich, betrachten Sie die Schritte daher als Stand 09/2026.</p>
+    </section>
+
+    <section id="credentials" class="doc-section doc-ref">
+      <h2 class="doc-h2">Woher Schlüssel gelesen werden</h2>
+      <p>Für jeden Wert gewinnt die erste gefundene Quelle. Sie können sie mischen, zum Beispiel ein Profil auf Ihrem Rechner und Umgebungsvariablen in der CI.</p>
+      <ol class="doc-steps">
+        <li><b>Umgebungsvariablen</b>: <code>APPSHIP_ASC_KEY_ID</code>, <code>APPSHIP_ASC_ISSUER_ID</code>, <code>APPSHIP_ASC_KEY_PATH</code> oder <code>APPSHIP_ASC_KEY</code> (Inhalt, Klartext oder base64), <code>APPSHIP_APPLE_ID</code>, <code>APPSHIP_PLAY_JSON_PATH</code> oder <code>APPSHIP_PLAY_JSON</code> sowie <code>APPSHIP_PROFILE</code>.</li>
+        <li><b><code>release/release.yml</code></b>: Pfade zu Dateien im per .gitignore ausgeschlossenen <code>release/keys/</code>. Key ID und Issuer ID sind keine Geheimnisse und dürfen committet werden.</li>
+        <li><b>Ein Profil</b>: <code>credentials.profile: my-company</code>, das auf <code>~/.appship/credentials/my-company/</code> verweist.</li>
+      </ol>
+      <div class="code-card">
+        <div class="code-name">release/release.yml, ohne Profil</div>
+<pre><code><span class="y-k">credentials</span>:
+  <span class="y-k">ios</span>:
+    <span class="y-k">key_id</span>: ABC123DEFG
+    <span class="y-k">issuer_id</span>: 69a6de7a-0000-0000-0000-000000000000
+    <span class="y-k">key_path</span>: release/keys/AuthKey_ABC123DEFG.p8
+    <span class="y-k">apple_id</span>: you@example.com   <span class="y-c"># optional</span>
+  <span class="y-k">android</span>:
+    <span class="y-k">json_key_path</span>: release/keys/play-service-account.json</code></pre>
+      </div>
+    </section>
+
+    <section id="leaked-key" class="doc-section doc-ref">
+      <h2 class="doc-h2">Wenn ein Schlüssel committet wurde</h2>
+      <ol class="doc-steps">
+        <li><b>Widerrufen Sie ihn sofort.</b> iOS: App Store Connect → Integrations → Revoke. Android: Cloud Console → das Dienstkonto → Keys → Delete.</li>
+        <li>Erstellen Sie einen neuen Schlüssel und aktualisieren Sie Ihr Profil oder die CI-Secrets.</li>
+        <li>Führen Sie <code>git rm --cached &lt;file&gt;</code> aus. Der Schlüssel bleibt in der git-Historie, weshalb der Widerruf der entscheidende Schritt ist.</li>
+      </ol>
+    </section>
+
+    <nav class="doc-next" aria-label="Mehr">
+      <a href="index.html">← Zurück zur Übersicht</a>
+    </nav>
+  </article>
+</div>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="3.2"/><rect x="1" y="14.4" width="30" height="3.2" fill="currentColor"/></svg>
+      <p>Das Zeichen ist eine Plimsoll-Linie, die Ladelinie am Rumpf eines Schiffs.<br>Powered by Ketchsoft · MIT-Lizenz</p>
+    </div>
+    <nav class="footer-links" aria-label="Fußbereich">
+      <a href="index.html">Übersicht</a>
+      <a href="https://fastlane.tools">fastlane</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../main.js"></script>
+</body>
+</html>

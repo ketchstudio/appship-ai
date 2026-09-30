@@ -15,15 +15,16 @@ Secrets cần tạo trong repo (Settings → Secrets and variables → Actions):
 | Secret | Giá trị |
 |---|---|
 | `APPSHIP_ASC_KEY_ID` | Key ID |
-| `APPSHIP_ASC_ISSUER_ID` | Issuer ID |
+| `APPSHIP_ASC_ISSUER_ID` | Issuer ID (bỏ nếu dùng API key cá nhân) |
 | `APPSHIP_ASC_KEY` | `base64 -i AuthKey_XXX.p8` |
 | `APPSHIP_PLAY_JSON` | `base64 -i play-service-account.json` |
-| Signing iOS | Tuỳ cách ký: `MATCH_PASSWORD` + `MATCH_GIT_BASIC_AUTHORIZATION` nếu dùng match |
+| Signing iOS | Tuỳ cách ký: `MATCH_PASSWORD` + `MATCH_GIT_BASIC_AUTHORIZATION` nếu dùng match. Ký bằng file owner đưa (`ios.signing`): `.p12` và `.mobileprovision` dạng base64, mật khẩu `.p12` (`APPSHIP_P12_PASSWORD`) và mật khẩu keychain tạm (`APPSHIP_KEYCHAIN_PASSWORD`). Các bước: [signing.md](signing.md#chạy-trên-ci) |
 | Signing Android | Keystore base64 + mật khẩu, tuỳ cấu hình Gradle |
 
 ## Lưu ý
 
 - **iOS phải build trên runner macOS.** Runner Linux chỉ dùng được cho `upload`/`submit` nếu `.ipa` được build ở job khác.
 - `apple_id` (tạo app, App Privacy) **không chạy được trên CI** vì cần 2FA. Hãy làm các bước này ở máy local một lần.
+- Khi ký iOS bằng file, dùng `appship signing import --yes --keychain <path>` để tạo keychain riêng cho runner.
 - Nếu cần pin phiên bản fastlane, dùng Gemfile và đặt `APPSHIP_FASTLANE="bundle exec fastlane"`.
 - Các lệnh đều có `--dry-run`, dùng được để thử pipeline mà không đẩy gì lên store.

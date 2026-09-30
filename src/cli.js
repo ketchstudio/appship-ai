@@ -4,6 +4,7 @@ import { Command, Option } from 'commander';
 import { PACKAGE_ROOT } from './paths.js';
 import { initCommand } from './commands/init.js';
 import { doctorCommand } from './commands/doctor.js';
+import { signingExportOptionsCommand, signingImportCommand } from './commands/signing.js';
 import { credentialsAddCommand, credentialsListCommand, credentialsRemoveCommand } from './commands/credentials.js';
 import {
   buildCommand,
@@ -39,6 +40,7 @@ export function buildProgram() {
     .option('--package-name <name>', 'Android package name')
     .option('--locale <code>', 'primary store locale', undefined)
     .option('--profile <name>', 'credential profile to use')
+    .option('--locales <list>', 'also create store listings for popular markets: "preset" or a list of es,pt-BR,de,fr,ja,ko')
     .option('--dir <path>', 'project directory (default: current)')
     .option('-f, --force', 'regenerate release.yml and questionnaire.yml')
     .option('-y, --yes', 'no prompts; use detected values and flags')
@@ -58,12 +60,22 @@ export function buildProgram() {
     .description('create or update a profile (interactive when no flags are given)')
     .option('--asc-key <path>', 'App Store Connect API key (.p8)')
     .option('--asc-key-id <id>', 'App Store Connect key ID')
-    .option('--asc-issuer-id <id>', 'App Store Connect issuer ID')
+    .option('--asc-issuer-id <id>', 'App Store Connect issuer ID (omit for an individual API key)')
     .option('--apple-id <email>', 'Apple ID (only for creating apps and App Privacy)')
     .option('--play-json <path>', 'Google Play service account JSON')
     .action(credentialsAddCommand);
   credentials.command('list').description('list profiles').action(credentialsListCommand);
   credentials.command('remove <profile>').option('-y, --yes', 'no confirmation').description('delete a profile').action(credentialsRemoveCommand);
+
+  const signing = program.command('signing').description('iOS code signing from files: import a certificate + provisioning profiles, write ExportOptions.plist');
+  signing
+    .command('import')
+    .description('install ios.signing profiles for Xcode and import the .p12 certificate into a keychain')
+    .option('--keychain <path>', 'use (and create if missing) this keychain instead of the default one; needs APPSHIP_KEYCHAIN_PASSWORD')
+    .option('-y, --yes', 'no confirmation (required in CI)')
+    .option('--dry-run', 'print what would run')
+    .action(signingImportCommand);
+  signing.command('export-options').description('write release/.appship/ExportOptions.plist from ios.signing').action(signingExportOptionsCommand);
 
   withPlatforms(program.command('build').description('run the build_command from release.yml')).action(buildCommand);
 

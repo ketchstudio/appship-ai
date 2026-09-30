@@ -1,6 +1,6 @@
 # Trạng thái và lộ trình
 
-Cập nhật lần cuối: 2026-09-28
+Cập nhật lần cuối: 2026-09-30
 
 ## Trạng thái hiện tại (v0.1.0)
 
@@ -12,7 +12,12 @@ Cập nhật lần cuối: 2026-09-28
 - [x] Chuyển `questionnaire.yml` thành age rating, App Privacy JSON, thông tin cho reviewer, submission info, và checklist cho Android
 - [x] Tự nhận diện Flutter, React Native, Cocos, native
 - [x] Kiểm tra bảo mật: gitignore, phát hiện key bị commit
-- [x] 8 test (`npm test`): unit và luồng CLI end-to-end ở chế độ dry-run
+- [x] `doctor` cảnh báo release notes iOS thiếu ở một số locale; tài liệu release notes nhiều ngôn ngữ
+- [x] `ios.locales` / `android.locales` trong `release.yml`, kiểm tra tên locale iOS
+- [x] Skill `release-notes` (Claude Code) sinh release notes đa ngôn ngữ, cài bởi `init`
+- [x] Gói ngôn ngữ gợi ý (es, pt-BR, de, fr, ja, ko): `init --locales`, mã riêng cho iOS và Play, `doctor` cảnh báo mã Android sai, skill `release-notes` có hướng dẫn từng ngôn ngữ
+- [x] Ký iOS khi không phải chủ tài khoản: `ios.signing`, `appship signing import|export-options`, `$APPSHIP_EXPORT_OPTIONS` cho `build_command`, `doctor` kiểm tra profile/certificate/`.ipa`; `issuer_id` tuỳ chọn cho API key cá nhân; hướng dẫn cho 5 trường hợp ở `docs/signing.md`
+- [x] 29 test (`npm test`): unit (kể cả đọc `.mobileprovision` giả và certificate tạo bằng openssl) và luồng CLI end-to-end ở chế độ dry-run
 - [x] Tài liệu tiếng Việt và mẫu GitHub Actions
 - [x] License MIT; `package.json` có `author`, `repository`, `homepage`, `bugs`
 - [x] README tiếng Anh cho npm/GitHub (bản tiếng Việt ở `docs/README.vi.md`)
@@ -25,6 +30,11 @@ Cập nhật lần cuối: 2026-09-28
 - [ ] `first-release --create-app` (Apple ID, 2FA)
 - [ ] Upload App Privacy JSON
 - [ ] `submit` iOS và promote Android
+- [ ] Ký iOS bằng file trên máy thật: `signing import` với `.p12` và profile thật (mới thử bằng file giả và `--dry-run`, chưa import vào keychain thật), build bằng `--export-options-plist` / gym `--export_options`, và cấu hình archive thủ công trong Xcode
+- [ ] API key cá nhân (không Issuer ID) với `deliver`/`pilot` thật, cùng các role Developer / App Manager
+- [ ] `signing import --keychain` trên runner CI macOS
+- [ ] Skill `release-notes` chạy thật trong Claude Code (mới kiểm tra file được copy đúng chỗ, chưa thử sinh nội dung)
+- [ ] Gói ngôn ngữ gợi ý với store thật: push metadata `es-419`, `ja-JP`, `ko-KR` lên Play và `es-MX`, `ja`, `ko` lên App Store Connect; chất lượng bản dịch của skill `release-notes` do người bản ngữ kiểm tra
 - [ ] Đường dẫn artifact mặc định cho Cocos và React Native
 - [ ] Danh sách category App Privacy trong `docs/questionnaire.md` có còn khớp tên hiện hành của Apple không
 
@@ -53,9 +63,11 @@ Cập nhật lần cuối: 2026-09-28
 - Bật 2FA cho tài khoản npm rồi publish `appship-ai` (các bước ở `docs/development.md`). Việc này được hoãn lại cho đến khi đã chạy thật với store.
 - Dịch các tài liệu chính (`getting-started`, `credentials`) sang tiếng Anh nếu có người dùng nước ngoài.
 - Homebrew tap (tuỳ chọn).
-- [x] Trang giới thiệu tĩnh trong `website/` (tiếng Anh), gồm trang chủ và hướng dẫn tích hợp (`docs.html`). Chưa deploy; có thể dùng GitHub Pages. Khi sửa `docs/getting-started.md`, `credentials.md` hoặc `ci.md`, nhớ sửa cả `website/docs.html`.
+- [x] Website 8 ngôn ngữ (en, vi, ja, fr, es, pt-BR, de, ko) với menu dropdown chọn ngôn ngữ; cách thêm ngôn ngữ ở `docs/development.md`. Bản dịch do máy dịch, chưa có người bản ngữ rà soát.
+- [x] Trang giới thiệu tĩnh trong `website/` (tiếng Anh), gồm trang chủ và hướng dẫn tích hợp (`docs.html`). Đã deploy tại https://appship.ketchsoft.com (cách cập nhật: `docs/development.md`). Khi sửa `docs/getting-started.md`, `credentials.md` hoặc `ci.md`, nhớ sửa cả `website/docs.html`.
 - Site tài liệu (VitePress) nếu có người dùng bên ngoài.
 - Sinh tự động phần tham chiếu lệnh và config từ code.
+- Ký iOS: tích hợp `fastlane match` (hiện chỉ hướng dẫn chạy trước `build_command`); tự sinh CSR cho người không phải owner.
 
 ## Câu hỏi còn mở
 

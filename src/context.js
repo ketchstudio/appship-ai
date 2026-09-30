@@ -35,7 +35,7 @@ export function iosContext(project, extra = {}) {
       team_id: ios.team_id ?? null,
       itc_team_id: ios.itc_team_id ?? null,
       sku: ios.sku ?? ios.bundle_id,
-      api_key: { key_id: creds.ios.key_id, issuer_id: creds.ios.issuer_id, key_filepath: creds.ios.key_path },
+      api_key: { key_id: creds.ios.key_id, issuer_id: creds.ios.issuer_id ?? null, key_filepath: creds.ios.key_path },
       apple_id: creds.ios.apple_id ?? null,
       version: extra.version ?? ios.version ?? null,
       build_number: extra.buildNumber ?? null,

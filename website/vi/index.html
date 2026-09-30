@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>appship</title>
+  <!-- langs:head -->
+  <link rel="alternate" hreflang="en" href="../index.html">
+  <link rel="alternate" hreflang="vi" href="../vi/index.html">
+  <link rel="alternate" hreflang="ja" href="../ja/index.html">
+  <link rel="alternate" hreflang="fr" href="../fr/index.html">
+  <link rel="alternate" hreflang="es" href="../es/index.html">
+  <link rel="alternate" hreflang="pt-BR" href="../pt/index.html">
+  <link rel="alternate" hreflang="de" href="../de/index.html">
+  <link rel="alternate" hreflang="ko" href="../ko/index.html">
+  <link rel="alternate" hreflang="x-default" href="../index.html">
+  <!-- /langs:head -->
+  <meta name="description" content="Release app iOS và Android lên App Store và Google Play từ một file config. Một CLI nhỏ chạy trên nền fastlane.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%230D1B2A' stroke-width='3.2'/%3E%3Crect x='1' y='14.4' width='30' height='3.2' fill='%230D1B2A'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="Trang chủ appship">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="3.2"/><rect x="1" y="14.4" width="30" height="3.2" fill="currentColor"/></svg>
+      <span>appship</span>
+    </a>
+    <nav class="nav-links" aria-label="Các mục">
+      <a href="#loop">Quy trình</a>
+      <a href="#stores">Tự động hóa gì</a>
+      <a href="#features">Tính năng</a>
+      <a href="docs.html">Hướng dẫn</a>
+      <!-- langs:nav -->
+      <details class="lang-menu">
+        <summary aria-label="Language"><span lang="vi">Tiếng Việt</span></summary>
+        <ul>
+        <li><a href="../index.html" hreflang="en" lang="en">English</a></li>
+        <li><a href="../vi/index.html" hreflang="vi" lang="vi" aria-current="true">Tiếng Việt</a></li>
+        <li><a href="../ja/index.html" hreflang="ja" lang="ja">日本語</a></li>
+        <li><a href="../fr/index.html" hreflang="fr" lang="fr">Français</a></li>
+        <li><a href="../es/index.html" hreflang="es" lang="es">Español</a></li>
+        <li><a href="../pt/index.html" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li>
+        <li><a href="../de/index.html" hreflang="de" lang="de">Deutsch</a></li>
+        <li><a href="../ko/index.html" hreflang="ko" lang="ko">한국어</a></li>
+        </ul>
+      </details>
+      <!-- /langs:nav -->
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="badge"><span class="badge-dot"></span>v0.1.0 · bản phát hành đầu tiên</p>
+        <h1 class="display">Một file.<br>Hai store.<br><span class="hl">Ship.</span></h1>
+        <p class="lede">
+          appship release app iOS và Android của bạn lên App Store và Google Play từ một thư mục
+          <code>release/</code> duy nhất. Tool chạy trên nền fastlane, nên bạn không cần tự duy trì Fastfile nữa.
+        </p>
+        <div class="install">
+          <code id="install-cmd"><span class="prompt">$</span> npm i -g appship-ai</code>
+          <button class="copy" type="button" data-copy="npm i -g appship-ai" aria-label="Sao chép lệnh cài đặt">Sao chép</button>
+        </div>
+        <div class="hero-cta">
+          <a class="btn btn-signal" href="docs.html">Đọc hướng dẫn tích hợp</a>
+        </div>
+      </div>
+
+      <figure class="term" aria-label="Phiên terminal ví dụ">
+        <div class="term-bar">
+          <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="term-title">~/Projects/word-bank</span>
+        </div>
+        <pre class="term-body" id="term"><span class="t-cmd"><span class="t-ps">$</span> appship doctor</span>
+<span class="t-step">▸ Environment</span>
+  <span class="t-ok">✓</span> Node 22.12.0
+  <span class="t-ok">✓</span> fastlane 2.232.2
+<span class="t-step">▸ Security</span>
+  <span class="t-ok">✓</span> No key files tracked by git
+  <span class="t-ok">✓</span> .gitignore protects release/keys/
+<span class="t-step">▸ iOS · store listing</span>
+  <span class="t-ok">✓</span> Metadata OK for en-US, vi
+<span class="t-step">▸ Android · questionnaire</span>
+  <span class="t-ok">✓</span> All answers present
+
+  <span class="t-ok">✓</span> Ready — 0 warning(s)
+<span class="t-cmd"><span class="t-ps">$</span> appship upload --build</span>
+  ios: build/ios/ipa/WordBank.ipa
+<span class="t-step">▸ fastlane ios upload</span>
+  android: build/app/outputs/bundle/release/app-release.aab
+<span class="t-step">▸ fastlane android upload</span></pre>
+      </figure>
+    </div>
+
+    <svg class="waterline" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+      <path class="wave wave-back" d="M0 30 Q 90 14 180 30 T 360 30 T 540 30 T 720 30 T 900 30 T 1080 30 T 1260 30 T 1440 30 T 1620 30 T 1800 30 T 1980 30 T 2160 30 V60 H0 Z"/>
+      <path class="wave wave-front" d="M0 36 Q 120 22 240 36 T 480 36 T 720 36 T 960 36 T 1200 36 T 1440 36 T 1680 36 T 1920 36 T 2160 36 V60 H0 Z"/>
+    </svg>
+  </section>
+
+  <!-- Workflow -->
+  <section class="section" id="loop">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="eyebrow">Quy trình</p>
+        <h2 class="h2">Năm lệnh, từ repo trống đến App Review.</h2>
+        <p class="section-lede">Thiết lập một lần cho mỗi dự án, kiểm tra mọi thứ, rồi lặp lại hai lệnh cuối ở mỗi lần release.</p>
+      </header>
+
+      <ol class="route">
+        <li class="stop reveal">
+          <span class="freq">Một lần mỗi dự án</span>
+          <code class="stop-cmd">appship init</code>
+          <p>Tự nhận framework, bundle id và package name, rồi tạo <code>release/</code> với các template có chú thích và cập nhật <code>.gitignore</code>.</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq">Trước mỗi lần upload</span>
+          <code class="stop-cmd">appship doctor</code>
+          <p>Kiểm tra công cụ, key, giới hạn ký tự, kích thước ảnh và placeholder, và báo lỗi nếu key bị commit vào git.</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq">Chỉ lần đầu</span>
+          <code class="stop-cmd">appship first-release</code>
+          <p>Tạo app iOS, đẩy listing và App Privacy, và ghi <code>CHECKLIST.md</code> cho các bước store bắt làm tay.</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq freq-repeat">Mỗi lần release</span>
+          <code class="stop-cmd">appship upload --build</code>
+          <p>Chạy lệnh build của bạn, rồi đẩy <code>.ipa</code> lên TestFlight và <code>.aab</code> lên một track của Google Play, có staged rollout.</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq freq-repeat">Mỗi lần release</span>
+          <code class="stop-cmd">appship submit</code>
+          <p>Gửi bản build iOS đi App Review và promote bản Android lên production, sau khi bạn xác nhận.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Stores -->
+  <section class="section section-alt" id="stores">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="eyebrow">Tự động hóa gì</p>
+        <h2 class="h2">Nói thẳng về những gì store cho phép tool làm.</h2>
+        <p class="section-lede">
+          Apple và Google cố ý để một số bước phải làm tay. appship tự động hóa những gì API của họ cho phép.
+          Với phần còn lại, tool đưa bạn một checklist có sẵn câu trả lời của bạn.
+        </p>
+      </header>
+
+      <ul class="legend reveal" aria-label="Chú giải">
+        <li><span class="chip chip-auto">Tự động</span> appship làm</li>
+        <li><span class="chip chip-login">Apple ID</span> cần đăng nhập có 2FA, nên không chạy trên CI</li>
+        <li><span class="chip chip-manual">Checklist</span> không có API; chép câu trả lời của bạn vào console</li>
+      </ul>
+
+      <div class="table-scroll reveal">
+        <table class="stores">
+          <thead>
+            <tr><th scope="col">Bước</th><th scope="col">App Store</th><th scope="col">Google Play</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Tạo app</th>
+              <td><span class="chip chip-login">Apple ID</span><span class="cell-note"><code>first-release --create-app</code></span></td>
+              <td><span class="chip chip-manual">Checklist</span><span class="cell-note">Google Play không có API cho việc này</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Upload bản build</th>
+              <td><span class="chip chip-auto">Tự động</span><span class="cell-note">TestFlight</span></td>
+              <td><span class="chip chip-auto">Tự động</span><span class="cell-note">internal · alpha · beta · production, staged rollout</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Nội dung listing &amp; screenshots</th>
+              <td><span class="chip chip-auto">Tự động</span><span class="cell-note">push và pull</span></td>
+              <td><span class="chip chip-auto">Tự động</span><span class="cell-note">push và pull</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Câu hỏi của store</th>
+              <td><span class="chip chip-auto">Tự động</span><span class="cell-note">Age rating, export compliance, content rights, thông tin liên hệ review</span></td>
+              <td><span class="chip chip-manual">Checklist</span><span class="cell-note">Content rating, data safety, target audience, ads, app access</span></td>
+            </tr>
+            <tr>
+              <th scope="row">App Privacy</th>
+              <td><span class="chip chip-login">Apple ID</span><span class="cell-note">Upload từ <code>questionnaire.yml</code></span></td>
+              <td><span class="cell-na">n/a</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Submit</th>
+              <td><span class="chip chip-auto">Tự động</span><span class="cell-note">App Review</span></td>
+              <td><span class="chip chip-auto">Tự động</span><span class="cell-note">Promote một track lên production</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Trạng thái</th>
+              <td><span class="chip chip-auto">Tự động</span><span class="cell-note">Live, in review, pending, bản TestFlight mới nhất</span></td>
+              <td><span class="chip chip-auto">Tự động</span><span class="cell-note">Version code theo từng track</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote reveal">
+        Trên Google Play, bundle đầu tiên phải upload tay. Tài khoản developer cá nhân mới còn cần chạy closed test
+        với 12 tester trong 14 ngày trước khi lên production.
+      </p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section" id="features">
+    <div class="wrap features">
+      <header class="section-head reveal">
+        <p class="eyebrow">Tính năng</p>
+        <h2 class="h2">Mọi thứ xung quanh file binary, đều lo xong.</h2>
+      </header>
+
+      <article class="feature reveal">
+        <div class="feature-text">
+          <h3 class="h3">Một config cho mỗi dự án</h3>
+          <p>Repo app của bạn chỉ có thêm thư mục <code>release/</code>. Logic release nằm trong tool, nên cập nhật appship là cập nhật mọi dự án đang dùng nó.</p>
+        </div>
+        <div class="code-card">
+          <div class="code-name">release/release.yml</div>
+<pre><code><span class="y-k">app</span>:
+  <span class="y-k">name</span>: <span class="y-s">"Word Bank"</span>
+  <span class="y-k">primary_locale</span>: en-US
+<span class="y-k">ios</span>:
+  <span class="y-k">bundle_id</span>: com.ketch.wordbank
+  <span class="y-k">artifact</span>: <span class="y-s">"build/ios/ipa/*.ipa"</span>
+  <span class="y-k">build_command</span>: <span class="y-s">"flutter build ipa --release"</span>
+<span class="y-k">android</span>:
+  <span class="y-k">package_name</span>: com.ketch.wordbank
+  <span class="y-k">track</span>: internal
+  <span class="y-k">rollout</span>: 1         <span class="y-c"># 0.2 = 20% staged rollout</span>
+<span class="y-k">credentials</span>:
+  <span class="y-k">profile</span>: ketch-studio</code></pre>
+        </div>
+      </article>
+
+      <article class="feature feature-flip reveal">
+        <div class="feature-text">
+          <h3 class="h3">Câu hỏi của store, trả lời một lần</h3>
+          <p>Age rating, export compliance, content rights, liên hệ của reviewer. Viết câu trả lời vào <code>questionnaire.yml</code>; appship điền phần API cho phép và đưa phần còn lại vào <code>CHECKLIST.md</code>.</p>
+        </div>
+        <div class="code-card">
+          <div class="code-name">release/questionnaire.yml</div>
+<pre><code><span class="y-k">ios</span>:
+  <span class="y-k">export_compliance</span>:
+    <span class="y-k">uses_non_exempt_encryption</span>: false
+  <span class="y-k">content_rights</span>:
+    <span class="y-k">uses_third_party_content</span>: false
+  <span class="y-k">age_rating</span>:
+    <span class="y-k">gamblingSimulated</span>: NONE
+    <span class="y-k">violenceCartoonOrFantasy</span>: NONE
+    <span class="y-k">messagingAndChat</span>: false
+    <span class="y-k">ageAssurance</span>: false</code></pre>
+        </div>
+      </article>
+
+      <article class="feature reveal">
+        <div class="feature-text">
+          <h3 class="h3"><code class="h3-code">doctor</code> bắt lỗi trước khi store làm điều đó</h3>
+          <p>Giới hạn ký tự, URL không hợp lệ, <code>TODO</code> còn sót, sai kích thước ảnh, artifact cũ, thiếu key. Mỗi vấn đề đều kèm cách sửa.</p>
+        </div>
+        <div class="code-card code-card-term">
+          <div class="code-name">appship doctor</div>
+<pre><code><span class="t-step">▸ iOS · store listing</span>
+  <span class="t-fail">✗</span> ios/metadata/en-US/subtitle.txt is 34 characters (max 30)
+  <span class="t-warn">!</span> ios/screenshots/vi has no 6.9"/6.5" iPhone screenshot
+<span class="t-step">▸ Android · store listing</span>
+  <span class="t-fail">✗</span> images/icon.png is 1024x1024, expected 512x512
+
+  <span class="t-fail">✗</span> 2 error(s), 1 warning(s)</code></pre>
+        </div>
+      </article>
+
+      <div class="minor-grid">
+        <article class="minor reveal">
+          <h3 class="h4">Key không vào git</h3>
+          <p>Key được tìm theo thứ tự: biến môi trường, rồi <code>release/keys/</code> (đã gitignore), rồi profile trong <code>~/.appship</code> lưu với mode 600. Mật khẩu được che trong <code>--dry-run</code>.</p>
+        </article>
+        <article class="minor reveal">
+          <h3 class="h4">Chạy với mọi stack</h3>
+          <p>appship chạy lệnh build của bạn và lấy <code>.ipa</code> và <code>.aab</code>. Dự án Flutter, React Native, Cocos Creator và native được nhận diện khi <code>init</code>.</p>
+        </article>
+        <article class="minor reveal">
+          <h3 class="h4">Hỏi trước khi ghi</h3>
+          <p>Submit, đẩy lên production và ghi đè listing đang live đều hỏi xác nhận. Trên CI, hãy truyền <code>--yes</code> một cách tường minh.</p>
+        </article>
+        <article class="minor reveal">
+          <h3 class="h4">Sẵn sàng cho CI</h3>
+          <p>Truyền key <code>.p8</code> dạng plain text hoặc base64 qua <code>APPSHIP_ASC_KEY</code>. Workflow GitHub Actions dựng sẵn có trong hướng dẫn tích hợp.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing -->
+  <section class="closing">
+    <div class="wrap closing-inner reveal">
+      <h2 class="display display-sm">Sẵn sàng ship?</h2>
+      <p>appship được phát hành trên npm. Bạn cần Node.js 22+, <a href="https://docs.fastlane.tools">fastlane</a>, và macOS để build iOS (Android chạy được cả trên Linux).</p>
+      <div class="closing-cmds">
+        <div class="install install-light">
+          <code><span class="prompt">$</span> npm i -g appship-ai</code>
+          <button class="copy" type="button" data-copy="npm i -g appship-ai" aria-label="Sao chép lệnh cài đặt">Sao chép</button>
+        </div>
+        <a class="btn btn-ink" href="docs.html">Hướng dẫn tích hợp →</a>
+      </div>
+      <p class="status-note">
+        v0.1.0 đã có test và dry-run nhưng chưa được chạy thử trên store thật.
+        Hãy bắt đầu với <code>--dry-run</code> và các lệnh chỉ đọc như <code>appship status</code>.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="3.2"/><rect x="1" y="14.4" width="30" height="3.2" fill="currentColor"/></svg>
+      <p>Biểu tượng là vạch Plimsoll, vạch tải trọng sơn trên thân tàu.<br>Powered by Ketchsoft · MIT License</p>
+    </div>
+    <nav class="footer-links" aria-label="Chân trang">
+      <a href="docs.html">Hướng dẫn tích hợp</a>
+      <a href="https://fastlane.tools">fastlane</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../main.js"></script>
+</body>
+</html>

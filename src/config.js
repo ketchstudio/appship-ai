@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 import { AppshipError } from './log.js';
+import { IOS_LOCALES } from './metadata.js';
+import { validateSigning } from './signing.js';
 import { CONFIG_FILE, QUESTIONNAIRE_FILE, RELEASE_DIR, WORK_DIR } from './paths.js';
 
 export const PLATFORMS = ['ios', 'android'];
@@ -66,6 +68,20 @@ export function normalizeConfig(raw) {
   return config;
 }
 
+function validateLocales(config, platform, errors) {
+  const { locales } = config[platform];
+  if (locales === undefined) return;
+  if (!Array.isArray(locales) || !locales.length || locales.some((l) => typeof l !== 'string' || !l)) {
+    errors.push(`${platform}.locales must be a non-empty list of locale codes, e.g. [en-US, vi]`);
+    return;
+  }
+  if (new Set(locales).size !== locales.length) errors.push(`${platform}.locales has duplicates`);
+  if (platform === 'ios') {
+    for (const l of locales.filter((x) => !IOS_LOCALES.includes(x))) errors.push(`ios.locales: "${l}" is not a valid App Store locale (e.g. zh-Hans, not zh-CN)`);
+  }
+  if (!locales.includes(config.app.primary_locale)) errors.push(`${platform}.locales must include app.primary_locale (${config.app.primary_locale})`);
+}
+
 export function validateConfig(config) {
   const errors = [];
   if (!config.app?.name) errors.push('app.name is required');
@@ -74,6 +90,8 @@ export function validateConfig(config) {
   if (ios.enabled) {
     if (!ios.bundle_id) errors.push('ios.bundle_id is required');
     if (ios.bundle_id && !/^[A-Za-z0-9.-]+$/.test(ios.bundle_id)) errors.push(`ios.bundle_id "${ios.bundle_id}" is not a valid bundle identifier`);
+    validateLocales(config, 'ios', errors);
+    validateSigning(config, errors);
   }
 
   const android = config.android;
@@ -82,6 +100,7 @@ export function validateConfig(config) {
     if (android.package_name && !/^[a-zA-Z][\w]*(\.[a-zA-Z][\w]*)+$/.test(android.package_name)) {
       errors.push(`android.package_name "${android.package_name}" is not a valid package name`);
     }
+    validateLocales(config, 'android', errors);
     if (!ANDROID_TRACKS.includes(android.track)) {
       errors.push(`android.track must be one of ${ANDROID_TRACKS.join(', ')} (got "${android.track}")`);
     }

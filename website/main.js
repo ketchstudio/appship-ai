@@ -87,16 +87,27 @@
   if (term && !reduceMotion) play();
 
   // ---------- Copy buttons ----------
+  const LABELS = {
+    en: { copy: 'Copy', copied: 'Copied', manual: 'Press ⌘C' },
+    vi: { copy: 'Sao chép', copied: 'Đã chép', manual: 'Nhấn ⌘C' },
+    ja: { copy: 'コピー', copied: 'コピーしました', manual: '⌘C を押す' },
+    fr: { copy: 'Copier', copied: 'Copié', manual: 'Appuyez sur ⌘C' },
+    es: { copy: 'Copiar', copied: 'Copiado', manual: 'Pulsa ⌘C' },
+    pt: { copy: 'Copiar', copied: 'Copiado', manual: 'Pressione ⌘C' },
+    de: { copy: 'Kopieren', copied: 'Kopiert', manual: '⌘C drücken' },
+    ko: { copy: '복사', copied: '복사됨', manual: '⌘C를 누르세요' },
+  };
+  const label = LABELS[document.documentElement.lang.split('-')[0]] ?? LABELS.en;
   document.querySelectorAll('.copy').forEach((btn) => {
     // Buttons without data-copy sit in a code card header and copy that card's block.
     const block = btn.closest('.code-card')?.querySelector('pre code');
     btn.addEventListener('click', () => {
       const text = btn.dataset.copy ?? block.innerText;
       const done = () => {
-        btn.textContent = 'Copied';
+        btn.textContent = label.copied;
         btn.classList.add('done');
         setTimeout(() => {
-          btn.textContent = 'Copy';
+          btn.textContent = label.copy;
           btn.classList.remove('done');
         }, 1600);
       };
@@ -107,12 +118,26 @@
         const sel = window.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
-        btn.textContent = 'Press ⌘C';
+        btn.textContent = label.manual;
       };
       if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done, selectFallback);
       else selectFallback();
     });
   });
+
+  // ---------- Language menu ----------
+  const langMenu = document.querySelector('.lang-menu');
+  if (langMenu) {
+    document.addEventListener('click', (e) => {
+      if (!langMenu.contains(e.target)) langMenu.removeAttribute('open');
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && langMenu.hasAttribute('open')) {
+        langMenu.removeAttribute('open');
+        langMenu.querySelector('summary').focus();
+      }
+    });
+  }
 
   // ---------- Nav shadow ----------
   const nav = document.getElementById('nav');

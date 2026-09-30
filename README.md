@@ -99,6 +99,41 @@ my-app/
     └── .appship/              # gitignored; scratch files for fastlane runs
 ```
 
+## Release notes in several languages
+
+Both stores accept per-language release notes. Each locale is a folder:
+
+- **iOS** ("What's New", max 4000 characters): `release/ios/metadata/<locale>/release_notes.txt`, e.g. `en-US`, `vi`, `ja`, `zh-Hans`. Missing locales are created on App Store Connect automatically. Leave it empty for the very first version, which Apple does not accept notes for.
+- **Android** (max 500 characters): `release/android/metadata/<locale>/changelogs/default.txt`. The language must be enabled in Play Console first.
+
+`appship init` also installs a Claude Code skill, `release-notes`, into `.claude/skills/`. Ask Claude to "write the release notes": it reads `git log` since the last tag, writes the primary-locale text, translates it into every locale folder, fits the store limits, and runs `appship doctor`. It only edits the files above; you review them and push. Release notes stay plain files, so you can always edit them by hand.
+
+Declare the languages per platform in `release.yml` (optional; without it every folder is used):
+
+```yaml
+ios:
+  locales: [en-US, vi, ja]
+android:
+  locales: [en-US, vi, ja-JP]
+```
+
+`appship doctor` then errors on a listed locale that has no folder, warns about a folder that is not listed, and rejects invalid App Store locale names before fastlane does. iOS and Android locale codes differ (`zh-Hans` vs `zh-CN`), so name the folders per platform. `appship doctor` checks length and warns when some locales have release notes and others don't. The full list of valid iOS locales is in [docs/configuration.md](docs/configuration.md) (Vietnamese).
+
+### Suggested languages
+
+To expand beyond the primary language, `appship init --locales preset` (or `--locales es,ja`) creates folders for Spanish (Spain and Latin America), Brazilian Portuguese, German, French, Japanese and Korean, and writes `locales` for each platform with that store's own codes:
+
+| Language | iOS folder | Android folder |
+|---|---|---|
+| Spanish, Spain / Latin America | `es-ES` / `es-MX` | `es-ES` / `es-419` |
+| Portuguese, Brazil | `pt-BR` | `pt-BR` |
+| German | `de-DE` | `de-DE` |
+| French | `fr-FR` | `fr-FR` |
+| Japanese | `ja` | `ja-JP` |
+| Korean | `ko` | `ko-KR` |
+
+The new folders hold `TODO` placeholders that `appship doctor` fails on until you translate them. `doctor` also warns about an Android folder that is not a Google Play language code (for example `ja` instead of `ja-JP`) and suggests the right one. The `release-notes` skill knows each language's conventions (formal or informal address, regional variants, Japanese punctuation, French spacing). Details are in [docs/configuration.md](docs/configuration.md) (Vietnamese).
+
 ## Credentials
 
 For each value, the first source found wins:
@@ -109,6 +144,28 @@ For each value, the first source found wins:
 
 A ready-to-use GitHub Actions workflow is in [`examples/github-actions.yml`](examples/github-actions.yml).
 
+## iOS signing when you are not the account owner
+
+Team API keys need an Account Holder or Admin, and so does creating certificates and profiles. If the owner gave you files instead, appship can work from them (it still doesn't build or sign for you; it audits the files, installs them and hands the signing setup to your build command):
+
+```yaml
+ios:
+  build_command: 'flutter build ipa --release --export-options-plist="$APPSHIP_EXPORT_OPTIONS"'
+  signing:
+    style: manual
+    certificate: release/keys/AppleDistribution.p12           # Apple Distribution certificate + private key
+    profiles: [release/keys/AppStore.mobileprovision]         # App Store profile, one per bundle id
+```
+
+```bash
+APPSHIP_P12_PASSWORD=... appship signing import   # install profiles, import the .p12
+appship doctor                                    # profile type/expiry/team/bundle id, keychain, the built .ipa
+```
+
+- No team API key? Create an **individual** key (no Issuer ID, leave `issuer_id` empty). Not verified against a real account yet.
+- No API key at all? Sign and build the same way, then upload the `.ipa` with Transporter or Xcode.
+- All five cases, CI usage and what `doctor` checks: [docs/signing.md](docs/signing.md) (Vietnamese).
+
 ## Commands
 
 | Command | What it does |
@@ -116,6 +173,7 @@ A ready-to-use GitHub Actions workflow is in [`examples/github-actions.yml`](exa
 | `init` | Create `release/` with config, questionnaire and metadata templates, and update `.gitignore` |
 | `doctor` | Check tools, config, credentials, git safety, artifacts, listing and questionnaire |
 | `credentials add/list/remove` | Manage credential profiles |
+| `signing import` / `signing export-options` | iOS: install the profiles and certificate you were given; write `ExportOptions.plist` for your build command |
 | `build` | Run the configured build commands |
 | `upload` | `.ipa` to TestFlight, `.aab` to a Play track (`--track`, `--rollout 20%`) |
 | `metadata [push\|pull]` | Sync listing text and screenshots |
@@ -133,6 +191,7 @@ The detailed guides are currently in Vietnamese:
 
 - [Getting started](docs/getting-started.md)
 - [Getting store keys](docs/credentials.md)
+- [iOS signing when you are not the owner](docs/signing.md)
 - [Configuration reference](docs/configuration.md)
 - [Questionnaire reference](docs/questionnaire.md)
 - [Commands](docs/commands.md)

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { AppshipError, log } from './log.js';
+import { buildEnv } from './signing.js';
 
 /** Resolve the configured artifact glob to the most recently modified matching file, or null. */
 export function findArtifact(project, platform) {
@@ -34,6 +35,6 @@ export function runBuild(project, platform) {
   const command = project.config[platform].build_command;
   if (!command) throw new AppshipError(`${platform}.build_command is not set in release.yml`);
   log.step(`Building ${platform}: ${command}`);
-  const res = spawnSync(command, { cwd: project.root, stdio: 'inherit', shell: true });
+  const res = spawnSync(command, { cwd: project.root, stdio: 'inherit', shell: true, env: { ...process.env, ...buildEnv(project, platform) } });
   if (res.status !== 0) throw new AppshipError(`${platform} build failed (exit ${res.status})`);
 }

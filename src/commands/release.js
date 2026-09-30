@@ -32,7 +32,7 @@ async function confirmAction(message, opts) {
 
 function assertMetadata(project, platform, { force, checkScreenshots }) {
   const cfg = project.config[platform];
-  const opts = { primaryLocale: project.config.app.primary_locale, checkScreenshots };
+  const opts = { primaryLocale: project.config.app.primary_locale, checkScreenshots, declaredLocales: cfg.locales };
   const { issues } =
     platform === 'ios'
       ? validateIosMetadata(project.resolve(cfg.metadata_path), project.resolve(cfg.screenshots_path), opts)

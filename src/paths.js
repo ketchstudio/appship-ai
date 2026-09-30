@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 export const PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const TEMPLATES_DIR = path.join(PACKAGE_ROOT, 'templates');
+export const SKILLS_DIR = path.join(PACKAGE_ROOT, 'skills');
 export const FASTFILE_SOURCE = path.join(PACKAGE_ROOT, 'fastlane', 'Fastfile');
 
 export const RELEASE_DIR = 'release';

@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { ANDROID_LOCALES, androidCodeFor } from './locales.js';
 
 export const TODO = 'TODO';
 
@@ -15,6 +16,12 @@ export const IOS_LOCALIZED = {
   'marketing_url.txt': { url: true },
   'privacy_url.txt': { required: true, url: true },
 };
+// Folder names App Store Connect accepts (fastlane deliver 2.232.2, Deliver::Languages::ALL_LANGUAGES).
+export const IOS_LOCALES = [
+  'ar-SA', 'ca', 'cs', 'da', 'de-DE', 'el', 'en-AU', 'en-CA', 'en-GB', 'en-US', 'es-ES', 'es-MX', 'fi', 'fr-CA', 'fr-FR',
+  'he', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ko', 'ms', 'nl-NL', 'no', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sk', 'sv',
+  'th', 'tr', 'uk', 'vi', 'zh-Hans', 'zh-Hant',
+];
 export const IOS_GLOBAL = {
   'copyright.txt': { required: true },
   'primary_category.txt': { required: true },
@@ -33,6 +40,8 @@ const IOS_REQUIRED_IPHONE_SIZES = [
   [1320, 2868], [1290, 2796], [1260, 2736], [1284, 2778], [1242, 2688],
 ];
 const IOS_SUBDIRS = new Set(['review_information', 'trade_representative_contact_information']);
+// Special folders deliver accepts besides locales.
+const IOS_SPECIAL_DIRS = new Set(['appleTV', 'iMessage', 'default']);
 
 export function iosTemplates(appName, year = new Date().getFullYear()) {
   return {
@@ -105,6 +114,21 @@ function checkFields(baseDir, rules, label, issues) {
   }
 }
 
+/** Compare the locale folders on disk with `<platform>.locales` from release.yml (when declared). */
+function checkDeclaredLocales(locales, declared, { platform, dir, hint }, issues) {
+  if (!declared) return;
+  for (const locale of declared.filter((l) => !locales.includes(l))) {
+    issues.push({ level: 'error', msg: `${platform}.locales lists ${locale} but ${dir}/${locale} does not exist`, hint: hint(locale) });
+  }
+  for (const locale of locales.filter((l) => !declared.includes(l))) {
+    issues.push({
+      level: 'warn',
+      msg: `${dir}/${locale} is not listed in ${platform}.locales`,
+      hint: `It is still pushed to the store. Add ${locale} to ${platform}.locales or delete the folder.`,
+    });
+  }
+}
+
 /** Read width/height from a PNG header; null for other formats. */
 export function pngSize(file) {
   const fd = fs.openSync(file, 'r');
@@ -120,7 +144,7 @@ export function pngSize(file) {
 
 const isImage = (f) => /\.(png|jpe?g)$/i.test(f);
 
-export function validateIosMetadata(metadataPath, screenshotsPath, { primaryLocale, checkScreenshots = true } = {}) {
+export function validateIosMetadata(metadataPath, screenshotsPath, { primaryLocale, checkScreenshots = true, declaredLocales } = {}) {
   const issues = [];
   const locales = listLocales(metadataPath, IOS_SUBDIRS);
   if (!locales.length) {
@@ -128,8 +152,32 @@ export function validateIosMetadata(metadataPath, screenshotsPath, { primaryLoca
     return { issues, locales };
   }
   if (primaryLocale && !locales.includes(primaryLocale)) issues.push({ level: 'error', msg: `Primary locale ${primaryLocale} has no metadata folder` });
+  for (const locale of locales.filter((l) => !IOS_LOCALES.includes(l) && !IOS_SPECIAL_DIRS.has(l))) {
+    issues.push({
+      level: 'error',
+      msg: `ios/metadata/${locale} is not a valid App Store locale`,
+      hint: `Rename it (e.g. zh-CN → zh-Hans). Valid names: ${IOS_LOCALES.join(', ')}`,
+    });
+  }
+  checkDeclaredLocales(locales, declaredLocales, {
+    platform: 'ios',
+    dir: 'ios/metadata',
+    hint: (l) => `Create it: mkdir -p ${path.join(metadataPath, l)}, then add name.txt, description.txt, keywords.txt, release_notes.txt… (see docs/configuration.md)`,
+  }, issues);
   checkFields(metadataPath, IOS_GLOBAL, 'ios/metadata', issues);
   for (const locale of locales) checkFields(path.join(metadataPath, locale), IOS_LOCALIZED, `ios/metadata/${locale}`, issues);
+
+  // Release notes are per locale; a locale without them shows an empty "What's New" for that language.
+  const hasNotes = (locale) => Boolean(readText(path.join(metadataPath, locale, 'release_notes.txt')));
+  if (locales.some(hasNotes)) {
+    for (const locale of locales.filter((l) => !hasNotes(l))) {
+      issues.push({
+        level: 'warn',
+        msg: `ios/metadata/${locale}/release_notes.txt is empty while other locales have release notes`,
+        hint: `Add "What's New" text for ${locale}, or the store shows none for that language.`,
+      });
+    }
+  }
 
   if (checkScreenshots) {
     for (const locale of locales) {
@@ -155,7 +203,7 @@ export function validateIosMetadata(metadataPath, screenshotsPath, { primaryLoca
   return { issues, locales };
 }
 
-export function validateAndroidMetadata(metadataPath, { primaryLocale, checkScreenshots = true } = {}) {
+export function validateAndroidMetadata(metadataPath, { primaryLocale, checkScreenshots = true, declaredLocales } = {}) {
   const issues = [];
   const locales = listLocales(metadataPath);
   if (!locales.length) {
@@ -163,6 +211,21 @@ export function validateAndroidMetadata(metadataPath, { primaryLocale, checkScre
     return { issues, locales };
   }
   if (primaryLocale && !locales.includes(primaryLocale)) issues.push({ level: 'error', msg: `Primary locale ${primaryLocale} has no metadata folder` });
+  checkDeclaredLocales(locales, declaredLocales, {
+    platform: 'android',
+    dir: 'android/metadata',
+    hint: (l) => `Create it: mkdir -p ${path.join(metadataPath, l)}, then add title.txt, short_description.txt, full_description.txt, changelogs/default.txt… The language must also be enabled in Play Console.`,
+  }, issues);
+  for (const locale of locales.filter((l) => !ANDROID_LOCALES.includes(l))) {
+    const fix = androidCodeFor(locale);
+    issues.push({
+      level: 'warn',
+      msg: `android/metadata/${locale} is not a Google Play language code`,
+      hint: fix
+        ? `Play uses ${fix} here, not ${locale} (iOS and Play codes differ). Rename the folder.`
+        : 'Play rejects unknown language codes. Valid examples: en-US, es-419, pt-BR, ja-JP, ko-KR, zh-CN (see docs/configuration.md).',
+    });
+  }
   for (const locale of locales) checkFields(path.join(metadataPath, locale), ANDROID_LOCALIZED, `android/metadata/${locale}`, issues);
 
   if (checkScreenshots) {

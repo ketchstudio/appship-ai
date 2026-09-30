@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>appship</title>
+  <!-- langs:head -->
+  <link rel="alternate" hreflang="en" href="../index.html">
+  <link rel="alternate" hreflang="vi" href="../vi/index.html">
+  <link rel="alternate" hreflang="ja" href="../ja/index.html">
+  <link rel="alternate" hreflang="fr" href="../fr/index.html">
+  <link rel="alternate" hreflang="es" href="../es/index.html">
+  <link rel="alternate" hreflang="pt-BR" href="../pt/index.html">
+  <link rel="alternate" hreflang="de" href="../de/index.html">
+  <link rel="alternate" hreflang="ko" href="../ko/index.html">
+  <link rel="alternate" hreflang="x-default" href="../index.html">
+  <!-- /langs:head -->
+  <meta name="description" content="Publique apps iOS e Android na App Store e no Google Play a partir de um único arquivo de configuração. Uma CLI pequena sobre o fastlane.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%230D1B2A' stroke-width='3.2'/%3E%3Crect x='1' y='14.4' width='30' height='3.2' fill='%230D1B2A'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="Início do appship">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="3.2"/><rect x="1" y="14.4" width="30" height="3.2" fill="currentColor"/></svg>
+      <span>appship</span>
+    </a>
+    <nav class="nav-links" aria-label="Seções">
+      <a href="#loop">Fluxo de trabalho</a>
+      <a href="#stores">O que é automatizado</a>
+      <a href="#features">Recursos</a>
+      <a href="docs.html">Guia</a>
+      <!-- langs:nav -->
+      <details class="lang-menu">
+        <summary aria-label="Language"><span lang="pt-BR">Português (Brasil)</span></summary>
+        <ul>
+        <li><a href="../index.html" hreflang="en" lang="en">English</a></li>
+        <li><a href="../vi/index.html" hreflang="vi" lang="vi">Tiếng Việt</a></li>
+        <li><a href="../ja/index.html" hreflang="ja" lang="ja">日本語</a></li>
+        <li><a href="../fr/index.html" hreflang="fr" lang="fr">Français</a></li>
+        <li><a href="../es/index.html" hreflang="es" lang="es">Español</a></li>
+        <li><a href="../pt/index.html" hreflang="pt-BR" lang="pt-BR" aria-current="true">Português (Brasil)</a></li>
+        <li><a href="../de/index.html" hreflang="de" lang="de">Deutsch</a></li>
+        <li><a href="../ko/index.html" hreflang="ko" lang="ko">한국어</a></li>
+        </ul>
+      </details>
+      <!-- /langs:nav -->
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="badge"><span class="badge-dot"></span>v0.1.0 · lançamento inicial</p>
+        <h1 class="display">Um arquivo.<br>Duas lojas.<br><span class="hl">Publique.</span></h1>
+        <p class="lede">
+          O appship publica seu app iOS e Android na App Store e no Google Play a partir de uma única pasta
+          <code>release/</code>. Ele roda sobre o fastlane, então você nunca mais precisa manter um Fastfile.
+        </p>
+        <div class="install">
+          <code id="install-cmd"><span class="prompt">$</span> npm i -g appship-ai</code>
+          <button class="copy" type="button" data-copy="npm i -g appship-ai" aria-label="Copiar comando de instalação">Copiar</button>
+        </div>
+        <div class="hero-cta">
+          <a class="btn btn-signal" href="docs.html">Ler o guia de integração</a>
+        </div>
+      </div>
+
+      <figure class="term" aria-label="Exemplo de sessão no terminal">
+        <div class="term-bar">
+          <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="term-title">~/Projects/word-bank</span>
+        </div>
+        <pre class="term-body" id="term"><span class="t-cmd"><span class="t-ps">$</span> appship doctor</span>
+<span class="t-step">▸ Environment</span>
+  <span class="t-ok">✓</span> Node 22.12.0
+  <span class="t-ok">✓</span> fastlane 2.232.2
+<span class="t-step">▸ Security</span>
+  <span class="t-ok">✓</span> No key files tracked by git
+  <span class="t-ok">✓</span> .gitignore protects release/keys/
+<span class="t-step">▸ iOS · store listing</span>
+  <span class="t-ok">✓</span> Metadata OK for en-US, vi
+<span class="t-step">▸ Android · questionnaire</span>
+  <span class="t-ok">✓</span> All answers present
+
+  <span class="t-ok">✓</span> Ready — 0 warning(s)
+<span class="t-cmd"><span class="t-ps">$</span> appship upload --build</span>
+  ios: build/ios/ipa/WordBank.ipa
+<span class="t-step">▸ fastlane ios upload</span>
+  android: build/app/outputs/bundle/release/app-release.aab
+<span class="t-step">▸ fastlane android upload</span></pre>
+      </figure>
+    </div>
+
+    <svg class="waterline" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+      <path class="wave wave-back" d="M0 30 Q 90 14 180 30 T 360 30 T 540 30 T 720 30 T 900 30 T 1080 30 T 1260 30 T 1440 30 T 1620 30 T 1800 30 T 1980 30 T 2160 30 V60 H0 Z"/>
+      <path class="wave wave-front" d="M0 36 Q 120 22 240 36 T 480 36 T 720 36 T 960 36 T 1200 36 T 1440 36 T 1680 36 T 1920 36 T 2160 36 V60 H0 Z"/>
+    </svg>
+  </section>
+
+  <!-- Workflow -->
+  <section class="section" id="loop">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="eyebrow">Fluxo de trabalho</p>
+        <h2 class="h2">Cinco comandos, de um repositório vazio até a App Review.</h2>
+        <p class="section-lede">Configure uma vez por projeto, verifique tudo e repita os dois últimos a cada lançamento.</p>
+      </header>
+
+      <ol class="route">
+        <li class="stop reveal">
+          <span class="freq">Uma vez por projeto</span>
+          <code class="stop-cmd">appship init</code>
+          <p>Detecta seu framework, bundle id e nome do pacote, depois cria <code>release/</code> com modelos comentados e atualiza o <code>.gitignore</code>.</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq">Antes de cada upload</span>
+          <code class="stop-cmd">appship doctor</code>
+          <p>Verifica ferramentas, chaves, limites de caracteres, tamanhos de imagem e textos provisórios, e falha se houver uma chave commitada no git.</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq">Só na primeira vez</span>
+          <code class="stop-cmd">appship first-release</code>
+          <p>Cria o app iOS, envia a página da loja e a App Privacy, e gera o <code>CHECKLIST.md</code> com as etapas que as lojas mantêm manuais.</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq freq-repeat">A cada lançamento</span>
+          <code class="stop-cmd">appship upload --build</code>
+          <p>Executa seu comando de build e envia o <code>.ipa</code> para o TestFlight e o <code>.aab</code> para uma faixa do Google Play, com lançamento gradual.</p>
+        </li>
+        <li class="stop reveal">
+          <span class="freq freq-repeat">A cada lançamento</span>
+          <code class="stop-cmd">appship submit</code>
+          <p>Envia o build iOS para a App Review e promove o lançamento Android para produção, depois da sua confirmação.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Stores -->
+  <section class="section section-alt" id="stores">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="eyebrow">O que é automatizado</p>
+        <h2 class="h2">Sem rodeios sobre o que as lojas deixam uma ferramenta fazer.</h2>
+        <p class="section-lede">
+          Apple e Google mantêm algumas etapas manuais de propósito. O appship automatiza o que as APIs delas permitem.
+          Para todo o resto, ele entrega um checklist com as suas respostas já preenchidas.
+        </p>
+      </header>
+
+      <ul class="legend reveal" aria-label="Legenda">
+        <li><span class="chip chip-auto">Automatizado</span> o appship faz</li>
+        <li><span class="chip chip-login">Apple ID</span> exige login com 2FA, então não roda no CI</li>
+        <li><span class="chip chip-manual">Checklist</span> sem API; copie suas respostas para o console</li>
+      </ul>
+
+      <div class="table-scroll reveal">
+        <table class="stores">
+          <thead>
+            <tr><th scope="col">Etapa</th><th scope="col">App Store</th><th scope="col">Google Play</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Criar o app</th>
+              <td><span class="chip chip-login">Apple ID</span><span class="cell-note"><code>first-release --create-app</code></span></td>
+              <td><span class="chip chip-manual">Checklist</span><span class="cell-note">O Google Play não tem API para isso</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Enviar um build</th>
+              <td><span class="chip chip-auto">Automatizado</span><span class="cell-note">TestFlight</span></td>
+              <td><span class="chip chip-auto">Automatizado</span><span class="cell-note">internal · alpha · beta · production, lançamento gradual</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Textos da página e capturas de tela</th>
+              <td><span class="chip chip-auto">Automatizado</span><span class="cell-note">envio e download</span></td>
+              <td><span class="chip chip-auto">Automatizado</span><span class="cell-note">envio e download</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Questionários das lojas</th>
+              <td><span class="chip chip-auto">Automatizado</span><span class="cell-note">Classificação etária, conformidade de exportação, direitos de conteúdo, contato da revisão</span></td>
+              <td><span class="chip chip-manual">Checklist</span><span class="cell-note">Classificação de conteúdo, segurança dos dados, público-alvo, anúncios, acesso ao app</span></td>
+            </tr>
+            <tr>
+              <th scope="row">App Privacy</th>
+              <td><span class="chip chip-login">Apple ID</span><span class="cell-note">Enviada a partir do <code>questionnaire.yml</code></span></td>
+              <td><span class="cell-na">n/a</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Enviar para revisão</th>
+              <td><span class="chip chip-auto">Automatizado</span><span class="cell-note">App Review</span></td>
+              <td><span class="chip chip-auto">Automatizado</span><span class="cell-note">Promover uma faixa para produção</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Status</th>
+              <td><span class="chip chip-auto">Automatizado</span><span class="cell-note">Publicado, em revisão, pendente, último build do TestFlight</span></td>
+              <td><span class="chip chip-auto">Automatizado</span><span class="cell-note">Códigos de versão por faixa</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote reveal">
+        No Google Play, envie o primeiro bundle manualmente. Contas pessoais de desenvolvedor novas também precisam de um teste fechado
+        com 12 testadores por 14 dias antes da produção.
+      </p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section" id="features">
+    <div class="wrap features">
+      <header class="section-head reveal">
+        <p class="eyebrow">Recursos</p>
+        <h2 class="h2">Tudo ao redor do binário, resolvido.</h2>
+      </header>
+
+      <article class="feature reveal">
+        <div class="feature-text">
+          <h3 class="h3">Uma configuração por projeto</h3>
+          <p>O repositório do seu app ganha apenas uma pasta <code>release/</code>. A lógica de lançamento fica na ferramenta, então atualizar o appship atualiza todos os projetos que o usam.</p>
+        </div>
+        <div class="code-card">
+          <div class="code-name">release/release.yml</div>
+<pre><code><span class="y-k">app</span>:
+  <span class="y-k">name</span>: <span class="y-s">"Word Bank"</span>
+  <span class="y-k">primary_locale</span>: en-US
+<span class="y-k">ios</span>:
+  <span class="y-k">bundle_id</span>: com.ketch.wordbank
+  <span class="y-k">artifact</span>: <span class="y-s">"build/ios/ipa/*.ipa"</span>
+  <span class="y-k">build_command</span>: <span class="y-s">"flutter build ipa --release"</span>
+<span class="y-k">android</span>:
+  <span class="y-k">package_name</span>: com.ketch.wordbank
+  <span class="y-k">track</span>: internal
+  <span class="y-k">rollout</span>: 1         <span class="y-c"># 0.2 = 20% staged rollout</span>
+<span class="y-k">credentials</span>:
+  <span class="y-k">profile</span>: ketch-studio</code></pre>
+        </div>
+      </article>
+
+      <article class="feature feature-flip reveal">
+        <div class="feature-text">
+          <h3 class="h3">Perguntas das lojas, respondidas uma vez</h3>
+          <p>Classificação etária, conformidade de exportação, direitos de conteúdo, contato do revisor. Escreva as respostas em <code>questionnaire.yml</code>; o appship preenche o que as APIs permitem e coloca o resto no <code>CHECKLIST.md</code>.</p>
+        </div>
+        <div class="code-card">
+          <div class="code-name">release/questionnaire.yml</div>
+<pre><code><span class="y-k">ios</span>:
+  <span class="y-k">export_compliance</span>:
+    <span class="y-k">uses_non_exempt_encryption</span>: false
+  <span class="y-k">content_rights</span>:
+    <span class="y-k">uses_third_party_content</span>: false
+  <span class="y-k">age_rating</span>:
+    <span class="y-k">gamblingSimulated</span>: NONE
+    <span class="y-k">violenceCartoonOrFantasy</span>: NONE
+    <span class="y-k">messagingAndChat</span>: false
+    <span class="y-k">ageAssurance</span>: false</code></pre>
+        </div>
+      </article>
+
+      <article class="feature reveal">
+        <div class="feature-text">
+          <h3 class="h3"><code class="h3-code">doctor</code> pega o problema antes das lojas</h3>
+          <p>Limites de caracteres, URLs inválidas, <code>TODO</code>s esquecidos, tamanhos de imagem errados, artefatos desatualizados, chaves ausentes. Cada problema vem com a correção.</p>
+        </div>
+        <div class="code-card code-card-term">
+          <div class="code-name">appship doctor</div>
+<pre><code><span class="t-step">▸ iOS · store listing</span>
+  <span class="t-fail">✗</span> ios/metadata/en-US/subtitle.txt is 34 characters (max 30)
+  <span class="t-warn">!</span> ios/screenshots/vi has no 6.9"/6.5" iPhone screenshot
+<span class="t-step">▸ Android · store listing</span>
+  <span class="t-fail">✗</span> images/icon.png is 1024x1024, expected 512x512
+
+  <span class="t-fail">✗</span> 2 error(s), 1 warning(s)</code></pre>
+        </div>
+      </article>
+
+      <div class="minor-grid">
+        <article class="minor reveal">
+          <h3 class="h4">Chaves fora do git</h3>
+          <p>As chaves são buscadas primeiro nas variáveis de ambiente, depois em <code>release/keys/</code> (ignorada pelo git) e por fim em um perfil em <code>~/.appship</code> salvo com permissão 600. Senhas são mascaradas no <code>--dry-run</code>.</p>
+        </article>
+        <article class="minor reveal">
+          <h3 class="h4">Funciona com qualquer stack</h3>
+          <p>O appship executa seu comando de build e localiza o <code>.ipa</code> e o <code>.aab</code>. Projetos Flutter, React Native, Cocos Creator e nativos são detectados no <code>init</code>.</p>
+        </article>
+        <article class="minor reveal">
+          <h3 class="h4">Pergunta antes de gravar</h3>
+          <p>Enviar para revisão, publicar em produção e sobrescrever uma página publicada pedem confirmação. No CI, passe <code>--yes</code> explicitamente.</p>
+        </article>
+        <article class="minor reveal">
+          <h3 class="h4">Pronto para CI</h3>
+          <p>Passe a chave <code>.p8</code> em texto simples ou base64 em <code>APPSHIP_ASC_KEY</code>. Um workflow do GitHub Actions pronto está no guia de integração.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing -->
+  <section class="closing">
+    <div class="wrap closing-inner reveal">
+      <h2 class="display display-sm">Pronto para publicar?</h2>
+      <p>O appship é distribuído no npm. Você precisa do Node.js 22+, do <a href="https://docs.fastlane.tools">fastlane</a> e de macOS para builds iOS (o Android também funciona no Linux).</p>
+      <div class="closing-cmds">
+        <div class="install install-light">
+          <code><span class="prompt">$</span> npm i -g appship-ai</code>
+          <button class="copy" type="button" data-copy="npm i -g appship-ai" aria-label="Copiar comando de instalação">Copiar</button>
+        </div>
+        <a class="btn btn-ink" href="docs.html">Guia de integração →</a>
+      </div>
+      <p class="status-note">
+        A v0.1.0 é coberta por testes e dry-runs, mas ainda não foi executada nas lojas reais.
+        Comece com <code>--dry-run</code> e comandos somente leitura, como <code>appship status</code>.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="3.2"/><rect x="1" y="14.4" width="30" height="3.2" fill="currentColor"/></svg>
+      <p>O símbolo é uma linha de Plimsoll, a marca de carga pintada no casco de um navio.<br>Powered by Ketchsoft · MIT License</p>
+    </div>
+    <nav class="footer-links" aria-label="Rodapé">
+      <a href="docs.html">Guia de integração</a>
+      <a href="https://fastlane.tools">fastlane</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../main.js"></script>
+</body>
+</html>

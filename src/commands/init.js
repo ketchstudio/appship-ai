@@ -2,10 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { checkbox, confirm, input, select } from '@inquirer/prompts';
 import { AppshipError, log } from '../log.js';
-import { CONFIG_FILE, KEYS_DIR, QUESTIONNAIRE_FILE, RELEASE_DIR, TEMPLATES_DIR, WORK_DIR } from '../paths.js';
+import { CONFIG_FILE, KEYS_DIR, QUESTIONNAIRE_FILE, RELEASE_DIR, SKILLS_DIR, TEMPLATES_DIR, WORK_DIR } from '../paths.js';
 import { listProfiles } from '../credentials.js';
 import { FRAMEWORKS, detectAndroidPackage, detectAppName, detectFramework, detectIosBundleId } from '../detect.js';
 import { androidTemplates, iosTemplates, writeFiles } from '../metadata.js';
+import { LOCALE_PRESET, parsePresetIds, presetLocales } from '../locales.js';
 
 const GITIGNORE_BLOCK = [
   '# appship — never commit store keys or generated files',
@@ -28,6 +29,11 @@ Typical files:
 - \`play-service-account.json\` — Google Play service account key
 `;
 
+/** Locale folders for a platform: the primary locale plus the chosen preset languages, without duplicates. */
+function platformLocales(a, platform) {
+  return [...new Set([a.locale, ...presetLocales(platform, a.presetIds)])];
+}
+
 function iosBlock(a) {
   if (!a.platforms.includes('ios')) return '# ios: (not configured — run "appship init --force" to add)\n';
   const fw = FRAMEWORKS[a.framework].ios;
@@ -38,6 +44,15 @@ function iosBlock(a) {
   # version: "1.0.0"                        # App Store version to edit/submit; default = the editable one
   artifact: "${fw.artifact}"
   build_command: "${fw.build_command}"
+${
+    a.presetIds.length
+      ? `  locales: [${platformLocales(a, 'ios').join(', ')}]   # store languages = folders in metadata_path (iOS codes)`
+      : `  # locales: [${a.locale}, es-ES, es-MX, pt-BR, de-DE, fr-FR, ja, ko]   # store languages = folders in metadata_path; iOS codes, see docs/configuration.md`
+  }
+  # signing:                               # sign from files the account owner gave you; see docs/signing.md
+  #   style: manual                         # automatic (Xcode signs, default) | manual (files below)
+  #   certificate: release/keys/AppleDistribution.p12
+  #   profiles: [release/keys/AppStore.mobileprovision]
   upload_screenshots: true
   submit:
     automatic_release: false              # release as soon as Apple approves
@@ -56,6 +71,11 @@ function androidBlock(a) {
   track: internal                         # internal | alpha (closed) | beta (open) | production
   release_status: completed               # completed | draft (draft is required while the app is unpublished)
   rollout: 1                              # 0.2 = 20% staged rollout (production)
+${
+    a.presetIds.length
+      ? `  locales: [${platformLocales(a, 'android').join(', ')}]   # Play codes differ from iOS; enable each language in Play Console first`
+      : `  # locales: [${a.locale}, es-ES, es-419, pt-BR, de-DE, fr-FR, ja-JP, ko-KR]   # Play codes differ from iOS (ja-JP vs ja); enable them in Play Console first`
+  }
   upload_screenshots: true
 `;
 }
@@ -80,6 +100,19 @@ function credentialsBlock(a) {
 
 function render(template, vars) {
   return template.replace(/\{\{(\w+)\}\}/g, (_, key) => vars[key] ?? '');
+}
+
+/** Copy the bundled Claude Code skills into <project>/.claude/skills/. Existing skills are left alone. */
+export function installSkills(root) {
+  const installed = [];
+  for (const entry of fs.readdirSync(SKILLS_DIR, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const dest = path.join(root, '.claude', 'skills', entry.name);
+    if (fs.existsSync(dest)) continue;
+    fs.cpSync(path.join(SKILLS_DIR, entry.name), dest, { recursive: true });
+    installed.push(entry.name);
+  }
+  return installed;
 }
 
 export function ensureGitignore(root) {
@@ -111,6 +144,7 @@ async function gather(root, opts) {
     androidPackage: opts.packageName ?? detected.androidPackage,
     locale: opts.locale ?? 'en-US',
     profile: opts.profile ?? null,
+    presetIds: opts.locales ? parsePresetIds(opts.locales) : [],
   };
 
   if (interactive) {
@@ -131,6 +165,12 @@ async function gather(root, opts) {
     if (a.platforms.includes('ios')) a.iosBundleId = await input({ message: 'iOS bundle id:', default: a.iosBundleId ?? undefined, required: true });
     if (a.platforms.includes('android')) a.androidPackage = await input({ message: 'Android package name:', default: a.androidPackage ?? undefined, required: true });
     a.locale = await input({ message: 'Primary store locale:', default: a.locale });
+    if (!opts.locales) {
+      a.presetIds = await checkbox({
+        message: 'Also create store listings for popular markets? (space to select, enter to skip)',
+        choices: LOCALE_PRESET.map((p) => ({ value: p.id, name: `${p.name} (${p.ios.join(', ')})` })),
+      });
+    }
     if (profiles.length) {
       const choice = await select({
         message: 'Credentials:',
@@ -189,21 +229,36 @@ export async function initCommand(opts) {
   if (a.platforms.includes('ios')) {
     const t = iosTemplates(a.name);
     const metaDir = path.join(releaseDir, 'ios', 'metadata');
-    const n = writeFiles(path.join(metaDir, a.locale), t.localized).length + writeFiles(metaDir, t.global).length;
-    fs.mkdirSync(path.join(releaseDir, 'ios', 'screenshots', a.locale), { recursive: true });
-    log.ok(`${RELEASE_DIR}/ios/metadata/${a.locale} (${n} new files), ios/screenshots/${a.locale}/`);
+    const locales = platformLocales(a, 'ios');
+    let n = writeFiles(metaDir, t.global).length;
+    for (const locale of locales) {
+      n += writeFiles(path.join(metaDir, locale), t.localized).length;
+      fs.mkdirSync(path.join(releaseDir, 'ios', 'screenshots', locale), { recursive: true });
+    }
+    log.ok(`${RELEASE_DIR}/ios/metadata/{${locales.join(',')}} (${n} new files), ios/screenshots/<locale>/`);
   }
   if (a.platforms.includes('android')) {
-    const localeDir = path.join(releaseDir, 'android', 'metadata', a.locale);
-    const n = writeFiles(localeDir, androidTemplates(a.name)).length;
-    fs.mkdirSync(path.join(localeDir, 'images', 'phoneScreenshots'), { recursive: true });
-    log.ok(`${RELEASE_DIR}/android/metadata/${a.locale} (${n} new files), images/phoneScreenshots/`);
+    const locales = platformLocales(a, 'android');
+    let n = 0;
+    for (const locale of locales) {
+      const localeDir = path.join(releaseDir, 'android', 'metadata', locale);
+      n += writeFiles(localeDir, androidTemplates(a.name)).length;
+      fs.mkdirSync(path.join(localeDir, 'images', 'phoneScreenshots'), { recursive: true });
+    }
+    log.ok(`${RELEASE_DIR}/android/metadata/{${locales.join(',')}} (${n} new files), images/phoneScreenshots/`);
   }
 
   const keysDir = path.join(releaseDir, KEYS_DIR);
   fs.mkdirSync(keysDir, { recursive: true });
   writeFiles(keysDir, { 'README.md': KEYS_README.trim() });
   if (ensureGitignore(root)) log.ok('.gitignore updated (release/keys/*, release/.appship/)');
+
+  if (a.presetIds.length) {
+    log.info(`  Extra languages: ${a.presetIds.join(', ')}. Replace the TODO text in their metadata folders with real translations, and enable each language in Play Console.`);
+  }
+
+  const skills = installSkills(root);
+  if (skills.length) log.ok(`.claude/skills/${skills.join(', ')} (Claude Code skill: ask it to write your release notes)`);
 
   log.step('Next steps');
   const steps = [

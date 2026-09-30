@@ -90,7 +90,7 @@ export function writeAscApiKeyJson(project, iosCreds) {
   fs.mkdirSync(dir, { recursive: true });
   const file = writePrivateJson(path.join(dir, 'asc_api_key.json'), {
     key_id: iosCreds.key_id,
-    issuer_id: iosCreds.issuer_id,
+    ...(iosCreds.issuer_id ? { issuer_id: iosCreds.issuer_id } : {}), // individual API keys have no issuer
     key_filepath: iosCreds.key_path,
     in_house: false,
   });

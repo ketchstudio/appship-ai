@@ -73,11 +73,14 @@ Mỗi dự án chỉ có thêm thư mục `release/`. **Dự án không có Fast
    - Ruby chỉ nhận một file `context.json` đã resolve sẵn (đường dẫn tuyệt đối, key).
    - Nhờ vậy lane trong Fastfile không phải tự parse config.
 2. **Tool không build app.** Nó chạy `build_command` (hook) rồi lấy artifact theo glob. Vì vậy dùng được cho Flutter, React Native, Cocos, native, và tool cũng không ký app thay người dùng.
+   - Với người không phải chủ tài khoản, tool **kiểm tra** file signing (`doctor`), **cài** chúng lên máy (`signing import`) và **truyền** cách ký cho `build_command` qua `ExportOptions.plist`. Việc archive và export vẫn do công cụ build làm. Chi tiết: [signing.md](signing.md).
+   - Tool không hỗ trợ upload bằng Apple ID (không API key): cách này cần đăng nhập 2FA tương tác, không chạy được trên CI. Ai không có API key thì tải `.ipa` bằng tay (Transporter / Xcode).
 3. **Key được lấy theo thứ tự:** biến môi trường → `release.yml` → profile.
    - Biến môi trường dùng cho CI. Có thể truyền nội dung key dạng base64, tool ghi ra file tạm với quyền 600.
    - Khai báo trong `release.yml` phù hợp khi key nằm trong `release/keys/` của dự án (đã gitignore).
    - Profile (`~/.appship/credentials/<tên>/`) phù hợp khi nhiều dự án dùng chung một tài khoản.
 4. **Ưu tiên App Store Connect API key hơn Apple ID.** Apple ID chỉ dùng cho tạo app và App Privacy, vì phiên đăng nhập hết hạn và cần 2FA.
+   - `issuer_id` là tuỳ chọn: API key **cá nhân** (người không phải owner tự tạo) không có Issuer ID. Nếu để trống, tool coi đó là key cá nhân.
 5. **Quy tắc an toàn:**
    - `init` tự thêm `release/keys/*` và `release/.appship/` vào `.gitignore`.
    - `doctor` báo lỗi nếu có key bị git track.

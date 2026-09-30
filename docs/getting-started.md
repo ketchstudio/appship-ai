@@ -16,7 +16,7 @@ Hướng dẫn này đi từ một dự án chưa từng lên store đến lúc 
 
 Làm theo [credentials.md](credentials.md) để lấy:
 
-- **iOS:** App Store Connect API key (`.p8`, Key ID, Issuer ID)
+- **iOS:** App Store Connect API key (`.p8`, Key ID, Issuer ID). Không phải Account Holder hoặc Admin thì xem [signing.md](signing.md) (nhờ owner đưa key, hoặc dùng key cá nhân)
 - **Android:** Service account JSON đã được cấp quyền trong Play Console
 
 Sau đó:
@@ -44,7 +44,7 @@ Mở `release/release.yml` để kiểm tra lại, đặc biệt là `artifact` 
 ## 3. Điền nội dung
 
 1. **`release/questionnaire.yml`:** thay mọi `TODO`. Xem [questionnaire.md](questionnaire.md).
-2. **Metadata:** `release/ios/metadata/<locale>/*.txt` và `release/android/metadata/<locale>/*.txt`.
+2. **Metadata:** `release/ios/metadata/<locale>/*.txt` và `release/android/metadata/<locale>/*.txt`. Muốn nhiều ngôn ngữ (kể cả release notes riêng từng ngôn ngữ): khai báo `ios.locales` / `android.locales` trong `release.yml` rồi tạo thư mục tương ứng, xem [configuration.md](configuration.md).
 3. **Screenshots:**
    - iOS: `release/ios/screenshots/<locale>/`. Tối thiểu một bộ iPhone 6.9" (1320x2868) hoặc 6.5" (1284x2778).
    - Android: `release/android/metadata/<locale>/images/`
@@ -121,6 +121,7 @@ appship **không build hay ký app thay bạn**. Nó chạy `build_command` rồ
 - **iOS:**
   - Cách đơn giản nhất: Xcode → Signing & Capabilities → Automatic signing, rồi `flutter build ipa` / `fastlane gym`.
   - Với team hoặc CI, dùng [fastlane match](https://docs.fastlane.tools/actions/match/).
+  - **Không phải chủ tài khoản, owner đưa file `.p12` và `.mobileprovision`:** khai báo `ios.signing`, chạy `appship signing import`, và để `doctor` kiểm tra. Hướng dẫn cho từng trường hợp (kể cả không có API key): [signing.md](signing.md).
 - **Android:**
   - Tạo upload keystore và cấu hình `signingConfigs` trong Gradle.
   - Bật **Play App Signing** khi upload bản đầu.

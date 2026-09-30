@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hướng dẫn tích hợp appship</title>
+  <!-- langs:head -->
+  <link rel="alternate" hreflang="en" href="../docs.html">
+  <link rel="alternate" hreflang="vi" href="../vi/docs.html">
+  <link rel="alternate" hreflang="ja" href="../ja/docs.html">
+  <link rel="alternate" hreflang="fr" href="../fr/docs.html">
+  <link rel="alternate" hreflang="es" href="../es/docs.html">
+  <link rel="alternate" hreflang="pt-BR" href="../pt/docs.html">
+  <link rel="alternate" hreflang="de" href="../de/docs.html">
+  <link rel="alternate" hreflang="ko" href="../ko/docs.html">
+  <link rel="alternate" hreflang="x-default" href="../docs.html">
+  <!-- /langs:head -->
+  <meta name="description" content="Thêm appship vào dự án iOS hoặc Android: cài từ npm, kết nối key của store, cấu hình release/ và release từ máy bạn hoặc CI.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%230D1B2A' stroke-width='3.2'/%3E%3Crect x='1' y='14.4' width='30' height='3.2' fill='%230D1B2A'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body class="docs-page">
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html" aria-label="appship trang chủ">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="3.2"/><rect x="1" y="14.4" width="30" height="3.2" fill="currentColor"/></svg>
+      <span>appship</span>
+    </a>
+    <nav class="nav-links" aria-label="Trang web">
+      <a href="index.html">Tổng quan</a>
+      <a href="docs.html" aria-current="page">Hướng dẫn</a>
+      <!-- langs:nav -->
+      <details class="lang-menu">
+        <summary aria-label="Language"><span lang="vi">Tiếng Việt</span></summary>
+        <ul>
+        <li><a href="../docs.html" hreflang="en" lang="en">English</a></li>
+        <li><a href="../vi/docs.html" hreflang="vi" lang="vi" aria-current="true">Tiếng Việt</a></li>
+        <li><a href="../ja/docs.html" hreflang="ja" lang="ja">日本語</a></li>
+        <li><a href="../fr/docs.html" hreflang="fr" lang="fr">Français</a></li>
+        <li><a href="../es/docs.html" hreflang="es" lang="es">Español</a></li>
+        <li><a href="../pt/docs.html" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li>
+        <li><a href="../de/docs.html" hreflang="de" lang="de">Deutsch</a></li>
+        <li><a href="../ko/docs.html" hreflang="ko" lang="ko">한국어</a></li>
+        </ul>
+      </details>
+      <!-- /langs:nav -->
+    </nav>
+  </div>
+</header>
+
+<section class="doc-hero">
+  <div class="wrap">
+    <p class="badge"><span class="badge-dot"></span>Hướng dẫn tích hợp · v0.1.0</p>
+    <h1 class="h1-doc">Thêm appship vào dự án của bạn</h1>
+    <p class="lede">
+      Từ một app chưa từng lên store đến một bản build đang chờ App Review. Lần đầu nên dành khoảng một giờ,
+      phần lớn là thời gian lấy key trong các console của Apple và Google.
+    </p>
+  </div>
+</section>
+
+<div class="wrap doc-layout">
+  <aside class="toc" aria-label="Trong trang này">
+    <p class="eyebrow">Trong trang này</p>
+    <ol>
+      <li><a href="#requirements">Yêu cầu</a></li>
+      <li><a href="#install">Cài đặt</a></li>
+      <li><a href="#keys">Lấy key của store</a></li>
+      <li><a href="#init">Gắn tool vào dự án</a></li>
+      <li><a href="#listing">Điền nội dung store</a></li>
+      <li><a href="#doctor">Kiểm tra bằng doctor</a></li>
+      <li><a href="#first-release">Release lần đầu</a></li>
+      <li><a href="#every-release">Những lần release sau</a></li>
+      <li><a href="#ci">Chạy trong CI</a></li>
+    </ol>
+    <p class="eyebrow toc-ref">Tham khảo</p>
+    <ul>
+      <li><a href="#signing">Ký app</a></li>
+      <li><a href="#not-owner">Ký app iOS khi không phải chủ tài khoản</a></li>
+      <li><a href="#languages">Ngôn ngữ và release notes</a></li>
+      <li><a href="#suggested-languages">Ngôn ngữ gợi ý</a></li>
+      <li><a href="#credentials">Nơi đọc key</a></li>
+      <li><a href="#leaked-key">Nếu lỡ commit key</a></li>
+    </ul>
+  </aside>
+
+  <article class="doc">
+
+    <div class="callout">
+      <strong>Bản phát hành sớm.</strong> v0.1.0 đã có test và dry-run, nhưng chưa được chạy thử trên store thật.
+      Mọi lệnh ghi lên store đều hỗ trợ <code>--dry-run</code>; hãy bắt đầu bằng các lệnh chỉ đọc như <code>appship status</code>.
+    </div>
+
+    <!-- 1 -->
+    <section id="requirements" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">1</span>Yêu cầu</h2>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Bạn cần</th><th scope="col">Ghi chú</th></tr></thead>
+          <tbody>
+            <tr><td>Node.js 22 trở lên</td><td>appship là một package npm.</td></tr>
+            <tr><td><a href="https://docs.fastlane.tools">fastlane</a></td><td>appship chạy fastlane cho mọi lệnh gọi store. Cài theo cách tài liệu fastlane khuyến nghị cho máy của bạn.</td></tr>
+            <tr><td>macOS và Xcode</td><td>Chỉ cần để build và upload iOS. Dự án chỉ có Android cũng chạy được trên Linux.</td></tr>
+            <tr><td>Apple Developer Program</td><td>99 USD/năm.</td></tr>
+            <tr><td>Tài khoản Google Play Console</td><td>25 USD, trả một lần.</td></tr>
+            <tr><td>App build được bản release đã ký</td><td>appship không ký thay bạn. Xem <a href="#signing">Ký app</a>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="install" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">2</span>Cài đặt</h2>
+      <p>Cài appship một lần cho mỗi máy, ở chế độ global. Không có gì được thêm vào <code>package.json</code> của app.</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code>npm i -g appship-ai
+appship --version</code></pre>
+      </div>
+      <p>Package tên là <code>appship-ai</code> và cài lệnh <code>appship</code>. Muốn dùng thử mà không cài, chạy <code>npx appship-ai --help</code>.</p>
+    </section>
+
+    <!-- 3 -->
+    <section id="keys" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">3</span>Lấy key của store</h2>
+      <p>Bạn làm bước này một lần cho mỗi tài khoản developer, không phải mỗi dự án. Cả hai key đều có thể publish build dưới tên bạn, vì vậy đừng bao giờ commit chúng lên git.</p>
+
+      <h3 class="doc-h3">iOS: App Store Connect API key</h3>
+      <ol class="doc-steps">
+        <li>Trong <a href="https://appstoreconnect.apple.com">App Store Connect</a>, mở <b>Users and Access → Integrations → App Store Connect API</b>.</li>
+        <li>Ở mục <b>Team Keys</b>, bấm <b>+</b>. Đặt tên <code>appship</code> và cấp role <b>App Manager</b>.</li>
+        <li>Tải <code>AuthKey_XXXXXXXXXX.p8</code>. Apple chỉ cho tải file này một lần.</li>
+        <li>Ghi lại <b>Key ID</b> (10 ký tự, cũng nằm trong tên file) và <b>Issuer ID</b> (chuỗi UUID phía trên bảng key).</li>
+      </ol>
+      <p class="note">Chỉ Account Holder hoặc Admin mới tạo được Team Key. Nếu bạn không phải, hãy nhờ owner gửi key, hoặc xem <a href="#not-owner">Ký app iOS khi không phải chủ tài khoản</a> để dùng key cá nhân.</p>
+      <p class="note">Apple ID (email) là tùy chọn. Chỉ cần để tạo app record và upload câu trả lời App Privacy, vì API key của Apple không làm được hai việc này. Apple ID cần 2FA nên không bao giờ chạy được trong CI.</p>
+
+      <h3 class="doc-h3">Android: service account của Google Play</h3>
+      <ol class="doc-steps">
+        <li>Trong <a href="https://console.cloud.google.com">Google Cloud Console</a>, chọn một project và bật <b>Google Play Android Developer API</b>.</li>
+        <li>Vào <b>IAM &amp; Admin → Service Accounts → Create service account</b>. Không cần gán role GCP nào.</li>
+        <li>Mở account vừa tạo, rồi vào <b>Keys → Add key → JSON</b> để tải file key.</li>
+        <li>Trong <a href="https://play.google.com/console">Play Console</a>, vào <b>Users and permissions → Invite new users</b> và mời <code>client_email</code> lấy từ file JSON. Cấp các quyền <b>Release apps to testing tracks</b>, <b>Release to production</b> và <b>Manage store presence</b>.</li>
+        <li>Chờ vài phút để quyền có hiệu lực. Với tài khoản mới có thể mất tới 24 giờ.</li>
+      </ol>
+
+      <h3 class="doc-h3">Lưu thành profile</h3>
+      <p>Profile sao chép các key vào <code>~/.appship/credentials/&lt;name&gt;/</code> với mode 600, để mọi dự án trên máy này dùng chung. Chạy không kèm flag để được hỏi từng bước.</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code>appship credentials add my-company \
+  --asc-key ~/Downloads/AuthKey_ABC123DEFG.p8 \
+  --asc-key-id ABC123DEFG \
+  --asc-issuer-id 69a6de7a-0000-0000-0000-000000000000 \
+  --play-json ~/Downloads/play-service-account.json
+
+appship credentials list</code></pre>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section id="init" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">4</span>Gắn tool vào dự án</h2>
+      <p>Chạy <code>init</code> từ thư mục gốc của repo app.</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code>cd ~/Projects/my-app
+appship init --profile my-company</code></pre>
+      </div>
+      <p><code>init</code> nhận diện dự án Flutter, React Native, Cocos Creator hoặc native, đọc bundle id và package name, rồi điền sẵn build command và đường dẫn artifact. Lệnh này tạo thư mục dưới đây và thêm <code>release/keys/*</code> cùng <code>release/.appship/</code> vào <code>.gitignore</code>:</p>
+      <div class="code-card">
+        <div class="code-name">project layout</div>
+<pre><code>my-app/
+└── release/
+    ├── release.yml            <span class="y-c"># id, artifact, build command, track, credentials</span>
+    ├── questionnaire.yml      <span class="y-c"># câu trả lời cho các câu hỏi của store</span>
+    ├── ios/metadata/&lt;locale&gt;/*.txt
+    ├── ios/screenshots/&lt;locale&gt;/*.png
+    ├── android/metadata/&lt;locale&gt;/{*.txt, images/}
+    ├── keys/                  <span class="y-c"># đã gitignore; chỉ dùng nếu bạn không dùng profile</span>
+    └── .appship/              <span class="y-c"># đã gitignore; file tạm cho fastlane</span></code></pre>
+      </div>
+      <p>Mở <code>release/release.yml</code> và kiểm tra <code>artifact</code> cùng <code>build_command</code> của từng nền tảng. Với app Flutter, file trông như sau:</p>
+      <div class="code-card">
+        <div class="code-name">release/release.yml</div>
+<pre><code><span class="y-k">app</span>:
+  <span class="y-k">name</span>: <span class="y-s">"My App"</span>
+  <span class="y-k">primary_locale</span>: en-US
+<span class="y-k">ios</span>:
+  <span class="y-k">bundle_id</span>: com.example.myapp
+  <span class="y-k">artifact</span>: <span class="y-s">"build/ios/ipa/*.ipa"</span>
+  <span class="y-k">build_command</span>: <span class="y-s">"flutter build ipa --release"</span>
+  <span class="y-k">upload_screenshots</span>: true
+  <span class="y-k">submit</span>:
+    <span class="y-k">automatic_release</span>: false   <span class="y-c"># phát hành ngay khi Apple duyệt</span>
+    <span class="y-k">phased_release</span>: false      <span class="y-c"># phát hành dần trong 7 ngày</span>
+<span class="y-k">android</span>:
+  <span class="y-k">package_name</span>: com.example.myapp
+  <span class="y-k">artifact</span>: <span class="y-s">"build/app/outputs/bundle/release/*.aab"</span>
+  <span class="y-k">build_command</span>: <span class="y-s">"flutter build appbundle --release"</span>
+  <span class="y-k">track</span>: internal              <span class="y-c"># internal | alpha | beta | production</span>
+  <span class="y-k">release_status</span>: completed    <span class="y-c"># dùng draft khi app chưa publish</span>
+  <span class="y-k">rollout</span>: 1                   <span class="y-c"># 0.2 = staged rollout 20%</span>
+<span class="y-k">credentials</span>:
+  <span class="y-k">profile</span>: my-company</code></pre>
+      </div>
+      <p>Commit cả thư mục <code>release/</code> trừ <code>keys/</code> và <code>.appship/</code>. Repo của bạn không có Fastfile: logic release nằm trong appship, nên cập nhật appship là cập nhật cho mọi dự án.</p>
+    </section>
+
+    <!-- 5 -->
+    <section id="listing" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">5</span>Điền nội dung store</h2>
+      <p>Nếu app đã có trên store, hãy kéo nội dung hiện tại về thay vì gõ tay:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code>appship metadata pull</code></pre>
+      </div>
+      <p>Nếu không, thay mọi <code>TODO</code> trong các file sau:</p>
+      <ul class="doc-list">
+        <li><b><code>release/questionnaire.yml</code></b>: age rating, export compliance, content rights, thông tin liên hệ cho reviewer, App Privacy và các câu trả lời App content của Android.</li>
+        <li><b>Văn bản</b>: <code>release/ios/metadata/&lt;locale&gt;/*.txt</code> và <code>release/android/metadata/&lt;locale&gt;/*.txt</code>.</li>
+        <li><b>Release notes theo từng ngôn ngữ</b>: mỗi locale một thư mục. Xem <a href="#languages">Ngôn ngữ và release notes</a> bên dưới.</li>
+        <li><b>Screenshot iOS</b> trong <code>release/ios/screenshots/&lt;locale&gt;/</code>: tối thiểu một bộ iPhone 6.9" (1320×2868) hoặc 6.5" (1284×2778).</li>
+        <li><b>Ảnh Android</b> trong <code>release/android/metadata/&lt;locale&gt;/images/</code>: <code>icon.png</code> 512×512, <code>featureGraphic.png</code> 1024×500 và tối thiểu 2 ảnh trong <code>phoneScreenshots/</code>.</li>
+      </ul>
+
+      <h3 class="doc-h3" id="languages">Ngôn ngữ và release notes</h3>
+      <p>Cả hai store đều nhận một đoạn "What's New" riêng cho mỗi ngôn ngữ. Mỗi ngôn ngữ là một thư mục, và mỗi thư mục chứa release notes của riêng nó:</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Store</th><th scope="col">File, mỗi thư mục locale một file</th><th scope="col">Tối đa</th></tr></thead>
+          <tbody>
+            <tr><td>App Store</td><td><code>release/ios/metadata/&lt;locale&gt;/<wbr>release_notes.txt</code></td><td>4000 ký tự</td></tr>
+            <tr><td>Google Play</td><td><code>release/android/metadata/&lt;locale&gt;/<wbr>changelogs/default.txt</code></td><td>500 ký tự</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Để thêm một ngôn ngữ:</p>
+      <ol class="doc-steps">
+        <li>Khai báo nó trong <code>release.yml</code>. Danh sách này là tùy chọn; nếu không có, appship dùng mọi thư mục tìm thấy. iOS và Android dùng mã locale khác nhau, nên mỗi nền tảng có danh sách riêng:
+
+          <div class="code-card">
+            <div class="code-name">release/release.yml<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code><span class="y-k">ios</span>:
+  <span class="y-k">locales</span>: [en-US, vi, ja]
+<span class="y-k">android</span>:
+  <span class="y-k">locales</span>: [en-US, vi, ja-JP]   <span class="y-c"># mã của Play khác iOS, ví dụ zh-CN ở đây, zh-Hans trên iOS</span></code></pre>
+          </div></li>
+        <li>Tạo thư mục, ví dụ <code>release/ios/metadata/vi/</code>, rồi điền các file bắt buộc: <code>name.txt</code>, <code>description.txt</code>, <code>keywords.txt</code>, <code>support_url.txt</code>, <code>privacy_url.txt</code> và <code>release_notes.txt</code> cho iOS; <code>title.txt</code>, <code>short_description.txt</code>, <code>full_description.txt</code> và <code>changelogs/default.txt</code> cho Android.</li>
+        <li>Thêm screenshot iOS vào <code>release/ios/screenshots/&lt;locale&gt;/</code>. Với Android, hãy bật ngôn ngữ đó trong Play Console trước.</li>
+        <li>Chạy <code>appship doctor</code>. Locale có trong danh sách nhưng không có thư mục là lỗi. Thư mục không có trong danh sách chỉ là cảnh báo, vì nó vẫn được đẩy lên store.</li>
+      </ol>
+      <p>Cần lưu ý:</p>
+      <ul class="doc-list">
+        <li>Bạn không cần thêm ngôn ngữ trong App Store Connect trước. Ngôn ngữ được tạo khi metadata được đẩy lên.</li>
+        <li>Để trống <code>release_notes.txt</code> cho phiên bản đầu tiên của app. Apple không nhận release notes ở phiên bản 1.0.</li>
+        <li>Locale không có release notes sẽ hiện "What's New" trống ở ngôn ngữ đó. <code>doctor</code> cảnh báo khi một số locale có notes còn số khác thì không.</li>
+        <li>Tên thư mục iOS phải là một trong các mã của Apple, như <code>en-US</code>, <code>vi</code>, <code>ja</code>, <code>ko</code>, <code>de-DE</code>, <code>fr-FR</code>, <code>es-ES</code>, <code>pt-BR</code>, <code>zh-Hans</code> hoặc <code>zh-Hant</code>. <code>doctor</code> từ chối mọi mã khác, ví dụ <code>zh-CN</code>.</li>
+        <li>Thư mục <code>default</code> dùng chung của fastlane chưa được hỗ trợ.</li>
+      </ul>
+
+      <h3 class="doc-h3" id="suggested-languages">Ngôn ngữ gợi ý</h3>
+      <p>Chưa biết nên thêm ngôn ngữ nào tiếp theo? appship gợi ý sáu ngôn ngữ có lượng người dùng lớn: tiếng Tây Ban Nha (Tây Ban Nha và Mỹ Latin), tiếng Bồ Đào Nha (Brazil), tiếng Đức, tiếng Pháp, tiếng Nhật và tiếng Hàn. Hai store dùng mã khác nhau:</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Ngôn ngữ</th><th scope="col">id cho <code>--locales</code></th><th scope="col">Thư mục iOS</th><th scope="col">Thư mục Android</th></tr></thead>
+          <tbody>
+            <tr><td>Tiếng Tây Ban Nha, Tây Ban Nha</td><td><code>es</code></td><td><code>es-ES</code></td><td><code>es-ES</code></td></tr>
+            <tr><td>Tiếng Tây Ban Nha, Mỹ Latin</td><td><code>es</code></td><td><code>es-MX</code></td><td><code>es-419</code></td></tr>
+            <tr><td>Tiếng Bồ Đào Nha, Brazil</td><td><code>pt-BR</code></td><td><code>pt-BR</code></td><td><code>pt-BR</code></td></tr>
+            <tr><td>Tiếng Đức</td><td><code>de</code></td><td><code>de-DE</code></td><td><code>de-DE</code></td></tr>
+            <tr><td>Tiếng Pháp</td><td><code>fr</code></td><td><code>fr-FR</code></td><td><code>fr-FR</code></td></tr>
+            <tr><td>Tiếng Nhật</td><td><code>ja</code></td><td><code>ja</code></td><td><code>ja-JP</code></td></tr>
+            <tr><td>Tiếng Hàn</td><td><code>ko</code></td><td><code>ko</code></td><td><code>ko-KR</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="doc-list">
+        <li>Tạo các thư mục ngay khi thiết lập dự án: <code>appship init --locales preset</code> cho cả sáu ngôn ngữ, hoặc <code>--locales es,ja</code> cho một số ngôn ngữ. Lệnh ghi <code>locales</code> cho từng nền tảng với đúng mã và tạo các file listing điền sẵn <code>TODO</code> để bạn dịch. <code>doctor</code> báo lỗi cho đến khi mọi <code>TODO</code> được thay.</li>
+        <li>Với dự án đã có sẵn, hãy thêm thư mục bằng tay theo các mã ở trên (<code>init --force</code> sẽ ghi đè <code>release.yml</code>).</li>
+        <li>Chỉ giữ biến thể tiếng Tây Ban Nha mà bạn thực sự sẽ viết. <code>es-MX</code> trên iOS và <code>es-419</code> trên Play đều bao phủ toàn bộ Mỹ Latin.</li>
+        <li>Giới hạn của store tính theo ký tự, không phải byte hay từ. Văn bản tiếng Nhật và tiếng Hàn thường ngắn hơn tiếng Anh; tiếng Đức và tiếng Pháp dài hơn và hay chạm giới hạn 30 ký tự của tiêu đề.</li>
+        <li>Bật từng ngôn ngữ trong Play Console trước khi upload. <code>doctor</code> cảnh báo thư mục Android không phải mã ngôn ngữ của Play và gợi ý cách sửa, ví dụ <code>ja</code> phải là <code>ja-JP</code>.</li>
+        <li>Skill <code>release-notes</code> nắm quy ước của từng ngôn ngữ: xưng hô trang trọng hay thân mật, biến thể theo vùng, dấu câu full-width của tiếng Nhật và khoảng trắng trước <code>? ! : ;</code> trong tiếng Pháp.</li>
+      </ul>
+
+      <h3 class="doc-h3" id="release-notes-skill">Viết release notes bằng Claude Code</h3>
+      <p><code>appship init</code> cài một skill Claude Code tên <code>release-notes</code> vào <code>.claude/skills/</code> của dự án. Trước khi release, hãy nhờ Claude "write the release notes for this version" (hoặc chạy <code>/release-notes</code>). Skill sẽ:</p>
+      <ol class="doc-steps">
+        <li>Đọc <code>release.yml</code> và các thư mục locale.</li>
+        <li>Đọc <code>git log</code> từ tag gần nhất, và <code>CHANGELOG.md</code> nếu bạn có.</li>
+        <li>Viết release notes ngắn, hướng tới người dùng bằng ngôn ngữ chính của bạn, rồi dịch sang mọi locale còn lại.</li>
+        <li>Điều chỉnh cho vừa giới hạn của store, ghi file, rồi chạy <code>appship doctor</code>.</li>
+      </ol>
+      <p>Release notes vẫn là file thường, nên bạn có thể xem lại và sửa. Skill hỏi trước khi ghi đè nội dung đã có, và không bao giờ đẩy gì lên store. Với dự án được thiết lập trước khi có tính năng này, hãy chép skill vào bằng tay:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code>mkdir -p .claude/skills
+cp -r "$(npm root -g)/appship-ai/skills/release-notes" .claude/skills/</code></pre>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section id="doctor" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">6</span>Kiểm tra bằng doctor</h2>
+      <p><code>doctor</code> kiểm tra tool, config, key, artifact, giới hạn ký tự, kích thước ảnh và văn bản placeholder, và báo lỗi nếu có file key đang được git theo dõi. Lặp lại cho đến khi không còn <span class="mono-fail">✗</span>. Dấu <span class="mono-warn">!</span> là cảnh báo và không chặn release.</p>
+      <div class="code-card code-card-term">
+        <div class="code-name">appship doctor</div>
+<pre><code><span class="t-step">▸ Security</span>
+  <span class="t-ok">✓</span> No key files tracked by git
+  <span class="t-ok">✓</span> .gitignore protects release/keys/
+<span class="t-step">▸ iOS · store listing</span>
+  <span class="t-fail">✗</span> ios/metadata/en-US/subtitle.txt is 34 characters (max 30)
+<span class="t-step">▸ Android · store listing</span>
+  <span class="t-ok">✓</span> Metadata OK for en-US
+
+  <span class="t-fail">✗</span> 1 error(s), 0 warning(s)</code></pre>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section id="first-release" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">7</span>Release lần đầu</h2>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code>appship build
+appship first-release --create-app</code></pre>
+      </div>
+      <ul class="doc-list">
+        <li><b>iOS:</b> tạo app trên App Store Connect (cần Apple ID và có thể hỏi mã 2FA), rồi đẩy listing, screenshot, age rating, review info và App Privacy.</li>
+        <li><b>Android:</b> Google Play không có API để tạo app, nên appship in ra các bước cần làm.</li>
+        <li>Cả hai đều ghi <code>release/CHECKLIST.md</code>: các bước trên console phải làm tay, kèm câu trả lời lấy từ <code>questionnaire.yml</code> để bạn chép sang.</li>
+      </ul>
+      <p>Trên Google Play, làm theo checklist để:</p>
+      <ol class="doc-steps">
+        <li>Tạo app trong Play Console.</li>
+        <li>Mời service account vào app.</li>
+        <li>Upload bản <code>.aab</code> đầu tiên bằng tay lên Internal testing.</li>
+        <li>Điền mục App content.</li>
+      </ol>
+      <p class="note">Khi app Android chưa từng được publish, đặt <code>release_status: draft</code> trong <code>release.yml</code>. Tài khoản developer cá nhân mới còn phải chạy closed test với 12 tester trong 14 ngày trước khi lên production.</p>
+      <p>Sau đó hoàn tất release lần đầu:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code>appship metadata --android
+appship upload
+appship submit</code></pre>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section id="every-release" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">8</span>Những lần release sau</h2>
+      <p>Tăng version và build number trong dự án, rồi:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code><span class="y-c"># nhờ Claude Code viết release notes (xem Ngôn ngữ và release notes)</span>
+appship upload --build   <span class="y-c"># build, rồi TestFlight + track Google Play (mặc định internal)</span>
+<span class="y-c"># test trên TestFlight / internal track</span>
+appship submit           <span class="y-c"># iOS: App Review · Android: promote lên production</span>
+appship status           <span class="y-c"># trạng thái review và các phiên bản trên cả hai store</span></code></pre>
+      </div>
+      <p>Để staged rollout trên Android:</p>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code>appship submit --android --rollout 10%
+appship promote --from production --to production --rollout 50%
+appship promote --from production --to production --rollout 100%</code></pre>
+      </div>
+      <p>Mọi lệnh ghi lên store đều hỏi xác nhận trước. Thêm <code>--dry-run</code> để xem chính xác những gì sẽ được gửi đi.</p>
+    </section>
+
+    <!-- 9 -->
+    <section id="ci" class="doc-section">
+      <h2 class="doc-h2"><span class="step-no">9</span>Chạy trong CI</h2>
+      <p>Trong CI, key lấy từ secret qua các biến môi trường <code>APPSHIP_*</code>, và mọi lệnh ghi đều cần <code>--yes</code>. Thêm các secret sau vào repository (trên GitHub: <b>Settings → Secrets and variables → Actions</b>):</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Secret</th><th scope="col">Giá trị</th></tr></thead>
+          <tbody>
+            <tr><td><code>APPSHIP_ASC_KEY_ID</code></td><td>Key ID</td></tr>
+            <tr><td><code>APPSHIP_ASC_ISSUER_ID</code></td><td>Issuer ID</td></tr>
+            <tr><td><code>APPSHIP_ASC_KEY</code></td><td>Kết quả của <code>base64 -i AuthKey_XXX.p8</code></td></tr>
+            <tr><td><code>APPSHIP_PLAY_JSON</code></td><td>Kết quả của <code>base64 -i play-service-account.json</code></td></tr>
+            <tr><td>Secret dùng để ký</td><td>Tùy cách bạn ký, ví dụ <code>MATCH_PASSWORD</code> cho fastlane match, hoặc keystore Android dạng base64</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Các bước release của một workflow GitHub Actions:</p>
+      <div class="code-card">
+        <div class="code-name">.github/workflows/release.yml<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code><span class="y-k">env</span>:
+  <span class="y-k">APPSHIP_ASC_KEY_ID</span>: ${{ secrets.APPSHIP_ASC_KEY_ID }}
+  <span class="y-k">APPSHIP_ASC_ISSUER_ID</span>: ${{ secrets.APPSHIP_ASC_ISSUER_ID }}
+  <span class="y-k">APPSHIP_ASC_KEY</span>: ${{ secrets.APPSHIP_ASC_KEY }}
+  <span class="y-k">APPSHIP_PLAY_JSON</span>: ${{ secrets.APPSHIP_PLAY_JSON }}
+
+<span class="y-k">jobs</span>:
+  <span class="y-k">release</span>:
+    <span class="y-k">runs-on</span>: macos-latest     <span class="y-c"># build iOS cần macOS</span>
+    <span class="y-k">steps</span>:
+      - <span class="y-k">uses</span>: actions/checkout@v4
+      - <span class="y-k">uses</span>: actions/setup-node@v4
+        <span class="y-k">with</span>: { <span class="y-k">node-version</span>: 22 }
+      <span class="y-c"># ...toolchain, fastlane và bước thiết lập ký của bạn...</span>
+      - <span class="y-k">run</span>: npm i -g appship-ai
+      - <span class="y-k">run</span>: appship doctor --skip-artifacts
+      - <span class="y-k">run</span>: appship upload --build --yes
+      - <span class="y-k">if</span>: ${{ inputs.submit }}
+        <span class="y-k">run</span>: appship submit --yes</code></pre>
+      </div>
+      <p>Hãy thêm phần thiết lập Flutter, bước ký của bạn và, nếu muốn kích hoạt <code>submit</code> bằng tay, một input <code>workflow_dispatch</code> như ở trên.</p>
+      <ul class="doc-list">
+        <li>Tạo app iOS và upload App Privacy cần Apple ID với 2FA. Hãy làm các việc này một lần trên máy của bạn, không làm trong CI.</li>
+        <li>Để ghim phiên bản fastlane, dùng Gemfile và đặt <code>APPSHIP_FASTLANE="bundle exec fastlane"</code>.</li>
+        <li>Chạy thử toàn bộ pipeline với <code>--dry-run</code> trước khi cho nó đẩy bất cứ thứ gì.</li>
+      </ul>
+    </section>
+
+    <!-- Reference -->
+    <section id="signing" class="doc-section doc-ref">
+      <p class="eyebrow">Tham khảo</p>
+      <h2 class="doc-h2">Ký app</h2>
+      <p>appship không build hay ký app của bạn. Nó chạy <code>build_command</code> của bạn và lấy artifact đã ký.</p>
+      <ul class="doc-list">
+        <li><b>iOS:</b> cách đơn giản nhất là để Xcode tự ký (Automatic signing, trong Signing &amp; Capabilities). Với team và CI, dùng <a href="https://docs.fastlane.tools/actions/match/">fastlane match</a>.</li>
+        <li><b>Android:</b> tạo upload keystore, cấu hình <code>signingConfigs</code> trong Gradle, và bật Play App Signing ở lần upload đầu tiên. Giữ keystore ngoài git, ví dụ trong thư mục <code>release/keys/</code> đã gitignore.</li>
+      </ul>
+    </section>
+
+    <section id="not-owner" class="doc-section doc-ref">
+      <h2 class="doc-h2">Ký app iOS khi không phải chủ tài khoản</h2>
+      <p>Trên iOS, <em>ký</em> app và <em>upload</em> app cần những thứ khác nhau, và cả hai thường do Account Holder hoặc Admin nắm. appship vẫn không build hay ký thay bạn. Nó kiểm tra các file bạn được đưa, cài chúng, và truyền cách ký cho build command của bạn.</p>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Tình huống của bạn</th><th scope="col">Ký bằng</th><th scope="col">Upload bằng</th></tr></thead>
+          <tbody>
+            <tr><td>Account Holder hoặc Admin</td><td>Automatic signing, hoặc fastlane match</td><td>Team API key</td></tr>
+            <tr><td>Owner gửi file signing và team API key</td><td>File <code>ios.signing</code></td><td>Team API key</td></tr>
+            <tr><td>Owner gửi file signing, không có API key</td><td>File <code>ios.signing</code></td><td>API key cá nhân của bạn</td></tr>
+            <tr><td>Không có API key nào</td><td>File <code>ios.signing</code></td><td>Transporter hoặc Xcode Organizer, làm tay</td></tr>
+            <tr><td>Owner chỉ gửi API key</td><td>Xin certificate và profile, hoặc dùng Xcode automatic signing nếu role của bạn cho phép</td><td>API key</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="doc-h3">Nhờ owner gửi</h3>
+      <ul class="doc-list">
+        <li>Certificate <b>Apple Distribution</b> dạng <code>.p12</code>, export từ Keychain Access kèm mật khẩu. File phải có private key.</li>
+        <li>Provisioning profile loại <b>App Store</b> (<code>.mobileprovision</code>) cho từng bundle id, kể cả app extension.</li>
+        <li>Tùy chọn: team API key gồm <code>.p8</code>, Key ID và Issuer ID.</li>
+      </ul>
+      <p class="note">Để tránh phải chuyển private key qua lại, hãy tự tạo certificate signing request trên Mac của bạn và nhờ owner cấp certificate từ đó. Khi đó private key không bao giờ rời máy bạn, và bạn không cần <code>.p12</code>.</p>
+
+      <h3 class="doc-h3">Khai báo và cài đặt</h3>
+      <div class="code-card">
+        <div class="code-name">release/release.yml<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code><span class="y-k">ios</span>:
+  <span class="y-k">bundle_id</span>: com.example.app
+  <span class="y-k">team_id</span>: ABCDE12345
+  <span class="y-k">build_command</span>: 'flutter build ipa --release --export-options-plist="$APPSHIP_EXPORT_OPTIONS"'
+  <span class="y-k">signing</span>:
+    <span class="y-k">style</span>: manual
+    <span class="y-k">certificate</span>: release/keys/AppleDistribution.p12
+    <span class="y-k">profiles</span>: [release/keys/AppStore.mobileprovision]</code></pre>
+      </div>
+      <div class="code-card">
+        <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code>APPSHIP_P12_PASSWORD=... appship signing import   <span class="y-c"># cài profile, import .p12</span>
+appship build --ios
+appship doctor                                    <span class="y-c"># kiểm tra profile, keychain và file .ipa đã build</span>
+appship upload --ios</code></pre>
+      </div>
+      <p>Mật khẩu <code>.p12</code> không bao giờ được lưu trong <code>release.yml</code>; hãy truyền qua <code>APPSHIP_P12_PASSWORD</code>. Build command nhận <code>$APPSHIP_EXPORT_OPTIONS</code> (một file <code>ExportOptions.plist</code> được tạo tự động), <code>$APPSHIP_IOS_BUNDLE_ID</code> và <code>$APPSHIP_IOS_TEAM_ID</code>. Với fastlane gym, dùng <code>--export_options "$APPSHIP_EXPORT_OPTIONS"</code>. File plist chỉ điều khiển bước export; với manual signing, hãy tắt automatic signing trong project Xcode để bước archive dùng cùng profile.</p>
+
+      <h3 class="doc-h3">Những gì doctor kiểm tra</h3>
+      <ul class="doc-list">
+        <li>Mỗi profile là profile iOS loại <b>App Store</b>, chưa hết hạn (cảnh báo khi còn dưới 30 ngày), thuộc team trong <code>ios.team_id</code> và áp dụng cho <code>ios.bundle_id</code>.</li>
+        <li>File <code>.p12</code> tồn tại và không cho mọi người đọc, và keychain có certificate khớp kèm private key (chỉ trên macOS).</li>
+        <li>File <code>.ipa</code> đã build được ký đúng bundle id, bằng profile hợp lệ trong <code>ios.signing.profiles</code>.</li>
+        <li><code>build_command</code> thực sự dùng <code>$APPSHIP_EXPORT_OPTIONS</code>.</li>
+      </ul>
+
+      <h3 class="doc-h3">Không có team API key</h3>
+      <ul class="doc-list">
+        <li><b>Key cá nhân:</b> trong App Store Connect, Integrations → <b>Individual Keys</b>. Loại key này không có Issuer ID, nên để trống <code>issuer_id</code>: <code>appship credentials add my-key --asc-key AuthKey_XXX.p8 --asc-key-id XXXXXXXXXX</code>. Key mang quyền của role của chính bạn, và Admin có thể tắt tính năng này. Chưa được kiểm chứng trên tài khoản thật.</li>
+        <li><b>Không có key nào:</b> ký và build theo cách tương tự, rồi upload file <code>.ipa</code> bằng Transporter hoặc Xcode → Organizer → Distribute App. <code>doctor</code> vẫn kiểm tra file trước. appship không upload bằng Apple ID, vì cách đó cần 2FA tương tác.</li>
+      </ul>
+
+      <h3 class="doc-h3">Trong CI</h3>
+      <div class="code-card">
+        <div class="code-name">GitHub Actions steps<button class="copy copy-sm" type="button">Sao chép</button></div>
+<pre><code>- <span class="y-k">run</span>: |
+    mkdir -p release/keys
+    echo "$P12_B64"     | base64 --decode > release/keys/AppleDistribution.p12
+    echo "$PROFILE_B64" | base64 --decode > release/keys/AppStore.mobileprovision
+  <span class="y-k">env</span>: { <span class="y-k">P12_B64</span>: ${{ secrets.IOS_DIST_P12_BASE64 }}, <span class="y-k">PROFILE_B64</span>: ${{ secrets.IOS_PROFILE_BASE64 }} }
+- <span class="y-k">run</span>: appship signing import --yes --keychain "$RUNNER_TEMP/appship.keychain-db"
+  <span class="y-k">env</span>:
+    <span class="y-k">APPSHIP_P12_PASSWORD</span>: ${{ secrets.IOS_DIST_P12_PASSWORD }}
+    <span class="y-k">APPSHIP_KEYCHAIN_PASSWORD</span>: ${{ secrets.KEYCHAIN_PASSWORD }}</code></pre>
+      </div>
+      <p>Lệnh này tạo một keychain riêng, nên login keychain của runner không bị đụng tới. Profile và certificate hết hạn sau khoảng một năm; <code>doctor</code> cảnh báo trước 30 ngày.</p>
+      <p>Mỗi role được phép làm những việc khác nhau; hãy xem bảng role trong App Store Connect Help. Giao diện của Apple thay đổi, nên hãy coi các bước này đúng tại thời điểm 09/2026.</p>
+    </section>
+
+    <section id="credentials" class="doc-section doc-ref">
+      <h2 class="doc-h2">Nơi đọc key</h2>
+      <p>Với mỗi giá trị, nguồn đầu tiên tìm thấy sẽ được dùng. Bạn có thể kết hợp các nguồn, ví dụ dùng profile trên máy và biến môi trường trong CI.</p>
+      <ol class="doc-steps">
+        <li><b>Biến môi trường</b>: <code>APPSHIP_ASC_KEY_ID</code>, <code>APPSHIP_ASC_ISSUER_ID</code>, <code>APPSHIP_ASC_KEY_PATH</code> hoặc <code>APPSHIP_ASC_KEY</code> (nội dung, dạng thường hoặc base64), <code>APPSHIP_APPLE_ID</code>, <code>APPSHIP_PLAY_JSON_PATH</code> hoặc <code>APPSHIP_PLAY_JSON</code>, và <code>APPSHIP_PROFILE</code>.</li>
+        <li><b><code>release/release.yml</code></b>: đường dẫn tới các file trong <code>release/keys/</code> đã gitignore. Key ID và Issuer ID không phải bí mật và có thể commit.</li>
+        <li><b>Một profile</b>: <code>credentials.profile: my-company</code>, trỏ tới <code>~/.appship/credentials/my-company/</code>.</li>
+      </ol>
+      <div class="code-card">
+        <div class="code-name">release/release.yml, không dùng profile</div>
+<pre><code><span class="y-k">credentials</span>:
+  <span class="y-k">ios</span>:
+    <span class="y-k">key_id</span>: ABC123DEFG
+    <span class="y-k">issuer_id</span>: 69a6de7a-0000-0000-0000-000000000000
+    <span class="y-k">key_path</span>: release/keys/AuthKey_ABC123DEFG.p8
+    <span class="y-k">apple_id</span>: you@example.com   <span class="y-c"># tùy chọn</span>
+  <span class="y-k">android</span>:
+    <span class="y-k">json_key_path</span>: release/keys/play-service-account.json</code></pre>
+      </div>
+    </section>
+
+    <section id="leaked-key" class="doc-section doc-ref">
+      <h2 class="doc-h2">Nếu lỡ commit key</h2>
+      <ol class="doc-steps">
+        <li><b>Thu hồi key ngay.</b> iOS: App Store Connect → Integrations → Revoke. Android: Cloud Console → service account → Keys → Delete.</li>
+        <li>Tạo key mới và cập nhật profile hoặc secret trong CI.</li>
+        <li>Chạy <code>git rm --cached &lt;file&gt;</code>. Key vẫn còn trong lịch sử git, vì vậy thu hồi key mới là bước quan trọng.</li>
+      </ol>
+    </section>
+
+    <nav class="doc-next" aria-label="Xem thêm">
+      <a href="index.html">← Quay lại tổng quan</a>
+    </nav>
+  </article>
+</div>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="3.2"/><rect x="1" y="14.4" width="30" height="3.2" fill="currentColor"/></svg>
+      <p>Biểu tượng là đường Plimsoll, vạch mớn nước được vẽ trên thân tàu.<br>Powered by Ketchsoft · MIT License</p>
+    </div>
+    <nav class="footer-links" aria-label="Chân trang">
+      <a href="index.html">Tổng quan</a>
+      <a href="https://fastlane.tools">fastlane</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../main.js"></script>
+</body>
+</html>

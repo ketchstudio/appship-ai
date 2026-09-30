@@ -12,6 +12,7 @@
     "src",
     "fastlane",
     "templates",
+    "skills",
     "docs"
   ],
   "scripts": {

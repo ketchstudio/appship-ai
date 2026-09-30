@@ -95,6 +95,13 @@ export function removeProfile(name) {
   fs.rmSync(dir, { recursive: true, force: true });
 }
 
+// The template's TODO values and key paths that do not exist yet must not hide a profile that has the field.
+function isShadowingPlaceholder(project, value, field, profileValue) {
+  if (!profileValue) return false;
+  if (String(value).includes('TODO')) return true;
+  return PATH_FIELDS.has(field) && !fs.existsSync(project.resolve(value));
+}
+
 /** Resolve credentials for a loaded project. Returns values plus where each came from. */
 export function resolveCredentials(project, env = process.env) {
   const projectCreds = project.config.credentials ?? {};
@@ -114,7 +121,7 @@ export function resolveCredentials(project, env = process.env) {
       } else if (content && env[content.env]) {
         values[field] = materialize(env[content.env], content.file);
         sources[field] = `env ${content.env}`;
-      } else if (projectCreds[platform]?.[field]) {
+      } else if (projectCreds[platform]?.[field] && !isShadowingPlaceholder(project, projectCreds[platform][field], field, profile[platform]?.[field])) {
         const v = projectCreds[platform][field];
         values[field] = PATH_FIELDS.has(field) ? project.resolve(v) : String(v);
         sources[field] = 'release.yml';
@@ -139,7 +146,6 @@ export function checkCredentialFiles(creds, platform) {
   if (platform === 'ios') {
     const c = creds.ios;
     if (!c.key_id) problems.push('App Store Connect key_id is missing');
-    if (!c.issuer_id) problems.push('App Store Connect issuer_id is missing');
     if (!c.key_path) problems.push('App Store Connect .p8 key_path is missing');
     else if (!fs.existsSync(c.key_path)) problems.push(`.p8 key not found at ${c.key_path}`);
     else if (!fs.readFileSync(c.key_path, 'utf8').includes('BEGIN PRIVATE KEY')) problems.push(`${c.key_path} does not look like a .p8 private key`);
