@@ -19,7 +19,9 @@ test('init → credentials → doctor → dry-run release on a Flutter project',
   assert.match(fs.readFileSync(path.join(root, '.gitignore'), 'utf8'), /release\/keys\/\*/);
   assert.ok(fs.existsSync(path.join(root, 'release/ios/metadata/en-US/description.txt')));
   assert.ok(fs.existsSync(path.join(root, 'release/android/metadata/en-US/title.txt')));
-  assert.match(fs.readFileSync(path.join(root, '.claude/skills/release-notes/SKILL.md'), 'utf8'), /^---\nname: release-notes\n/);
+  for (const skill of ['release-notes', 'store-screenshots', 'app-content']) {
+    assert.match(fs.readFileSync(path.join(root, `.claude/skills/${skill}/SKILL.md`), 'utf8'), new RegExp(`^---\\nname: ${skill}\\n`));
+  }
 
   // second init refuses without --force
   assert.notEqual(appship(['init', '--yes'], { cwd: root, env }).code, 0);
@@ -176,4 +178,62 @@ test('init --locales rejects unknown languages; default init suggests the preset
   assert.match(yml, /# locales: \[en-US, es-ES, es-419, pt-BR, de-DE, fr-FR, ja-JP, ko-KR\]/);
   const d = appship(['doctor', '--skip-artifacts', '--skip-screenshots'], { cwd: root, env });
   assert.match(d.out, /Only one store language\. Popular markets to add: es-ES, es-MX, pt-BR/);
+});
+
+test('skills add installs missing skills into an existing project and keeps local edits', () => {
+  const { root } = fakeFlutterProject();
+  const env = { APPSHIP_HOME: tmpDir() };
+  assert.equal(appship(['init', '--yes', '--name', 'Demo'], { cwd: root, env }).code, 0);
+  // a project set up before the new skills existed
+  fs.rmSync(path.join(root, '.claude/skills/app-content'), { recursive: true });
+  const notes = path.join(root, '.claude/skills/release-notes/SKILL.md');
+  fs.appendFileSync(notes, '\nLocal rule: always mention the team.\n');
+
+  let r = appship(['skills', '--agent', 'claude'], { cwd: path.join(root, 'release'), env });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /Claude Code: \.claude\/skills\//);
+  assert.match(r.out, /app-content {2}not installed/);
+  assert.match(r.out, /release-notes {2}installed, differs/);
+  assert.match(r.out, /store-screenshots {2}installed\n/);
+  assert.match(r.out, /Run: \/store-screenshots \(Claude Code\)/);
+
+  // default: only the agent folders that already exist (here .claude/skills)
+  r = appship(['skills', 'add'], { cwd: root, env });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /\.claude\/skills\/app-content/);
+  assert.match(r.out, /release-notes differs .*kept/);
+  assert.match(fs.readFileSync(notes, 'utf8'), /Local rule/);
+  assert.ok(fs.existsSync(path.join(root, '.claude/skills/app-content/SKILL.md')));
+  assert.ok(!fs.existsSync(path.join(root, '.agents')));
+
+  r = appship(['skills', 'add', 'release-notes', '--force'], { cwd: root, env });
+  assert.match(r.out, /release-notes {2}updated/);
+  assert.doesNotMatch(fs.readFileSync(notes, 'utf8'), /Local rule/);
+
+  // Codex and Antigravity share .agents/skills: one copy
+  r = appship(['skills', 'add', '--agent', 'codex,antigravity'], { cwd: root, env });
+  assert.equal(r.code, 0, r.out);
+  assert.equal(r.out.match(/\.agents\/skills\/app-content/g).length, 1);
+  assert.match(fs.readFileSync(path.join(root, '.agents/skills/store-screenshots/SKILL.md'), 'utf8'), /^---\nname: store-screenshots\n/);
+  r = appship(['skills'], { cwd: root, env });
+  assert.match(r.out, /Codex \+ Antigravity: \.agents\/skills\//);
+  assert.match(r.out, /\$app-content \(Codex\)/);
+
+  r = appship(['skills', 'add', 'nope'], { cwd: root, env });
+  assert.notEqual(r.code, 0);
+  assert.match(r.out, /Unknown skill: nope/);
+  assert.match(appship(['skills', 'add', '--agent', 'cursor'], { cwd: root, env }).out, /Unknown agent: cursor/);
+});
+
+test('init --agents picks the skill folders', () => {
+  const env = { APPSHIP_HOME: tmpDir() };
+  let { root } = fakeFlutterProject();
+  assert.equal(appship(['init', '--yes', '--name', 'Demo', '--agents', 'all'], { cwd: root, env }).code, 0);
+  assert.ok(fs.existsSync(path.join(root, '.claude/skills/app-content/SKILL.md')));
+  assert.ok(fs.existsSync(path.join(root, '.agents/skills/app-content/SKILL.md')));
+
+  ({ root } = fakeFlutterProject());
+  assert.equal(appship(['init', '--yes', '--name', 'Demo', '--agents', 'none'], { cwd: root, env }).code, 0);
+  assert.ok(!fs.existsSync(path.join(root, '.claude')));
+  assert.ok(!fs.existsSync(path.join(root, '.agents')));
 });

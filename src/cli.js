@@ -5,6 +5,7 @@ import { PACKAGE_ROOT } from './paths.js';
 import { initCommand } from './commands/init.js';
 import { doctorCommand } from './commands/doctor.js';
 import { signingExportOptionsCommand, signingImportCommand } from './commands/signing.js';
+import { skillsAddCommand, skillsListCommand } from './commands/skills.js';
 import { credentialsAddCommand, credentialsListCommand, credentialsRemoveCommand } from './commands/credentials.js';
 import {
   buildCommand,
@@ -41,6 +42,7 @@ export function buildProgram() {
     .option('--locale <code>', 'primary store locale', undefined)
     .option('--profile <name>', 'credential profile to use')
     .option('--locales <list>', 'also create store listings for popular markets: "preset" or a list of es,pt-BR,de,fr,ja,ko')
+    .option('--agents <list>', 'install the bundled skills for: claude, codex, antigravity, all, or none (default: claude)')
     .option('--dir <path>', 'project directory (default: current)')
     .option('-f, --force', 'regenerate release.yml and questionnaire.yml')
     .option('-y, --yes', 'no prompts; use detected values and flags')
@@ -76,6 +78,23 @@ export function buildProgram() {
     .option('--dry-run', 'print what would run')
     .action(signingImportCommand);
   signing.command('export-options').description('write release/.appship/ExportOptions.plist from ios.signing').action(signingExportOptionsCommand);
+
+  const skills = program
+    .command('skills')
+    .description('AI agent skills (Claude Code, Codex, Antigravity): release-notes, store-screenshots, app-content');
+  skills
+    .command('list', { isDefault: true })
+    .description('show the bundled skills and whether this project has them, per agent')
+    .option('--agent <list>', 'claude, codex, antigravity or all (default: all)')
+    .option('--dir <path>', 'project directory (default: the one containing release/)')
+    .action(skillsListCommand);
+  skills
+    .command('add [names...]')
+    .description('copy skills into the agent skill folders (all skills when no name is given); existing ones are kept')
+    .option('--agent <list>', 'claude (.claude/skills), codex and antigravity (.agents/skills), or all; default: folders that already exist, else claude')
+    .option('-f, --force', 'replace skills that differ from this appship version (overwrites local edits)')
+    .option('--dir <path>', 'project directory (default: the one containing release/)')
+    .action(skillsAddCommand);
 
   withPlatforms(program.command('build').description('run the build_command from release.yml')).action(buildCommand);
 

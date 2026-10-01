@@ -309,6 +309,23 @@
         </div>
       </article>
 
+      <article class="feature feature-flip reveal">
+        <div class="feature-text">
+          <h3 class="h3">AI エージェントがストア向けの内容を下書きします</h3>
+          <p>Claude Code、Codex、Antigravity 向けの同梱スキルが、すべての言語でリリースノートを書き、ストアの規定どおりのサイズでスクリーンショットを作成し、コードをもとにストアの質問への回答を埋めます。スキルがファイルを書き込むのは <code>release/</code> の中だけです。内容を確認してから、プッシュしてください。appship 自体が AI を呼び出すことはありません。</p>
+        </div>
+        <div class="code-card code-card-term">
+          <div class="code-name">appship skills</div>
+<pre><code><span class="t-step">▸ Claude Code: .claude/skills/</span>
+  <span class="t-ok">✓</span> app-content  installed
+  <span class="t-ok">✓</span> release-notes  installed
+  <span class="t-ok">✓</span> store-screenshots  installed
+<span class="t-step">▸ Codex + Antigravity: .agents/skills/</span>
+  <span class="t-ok">✓</span> store-screenshots  installed
+    Run: $store-screenshots (Codex)</code></pre>
+        </div>
+      </article>
+
       <div class="minor-grid">
         <article class="minor reveal">
           <h3 class="h4">キーを git に残さない</h3>

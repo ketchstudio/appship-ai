@@ -116,7 +116,7 @@ Both stores accept per-language release notes. Each locale is a folder:
 - **iOS** ("What's New", max 4000 characters): `release/ios/metadata/<locale>/release_notes.txt`, e.g. `en-US`, `vi`, `ja`, `zh-Hans`. Missing locales are created on App Store Connect automatically. Leave it empty for the very first version, which Apple does not accept notes for.
 - **Android** (max 500 characters): `release/android/metadata/<locale>/changelogs/default.txt`. The language must be enabled in Play Console first.
 
-`appship init` also installs a Claude Code skill, `release-notes`, into `.claude/skills/`. Ask Claude to "write the release notes": it reads `git log` since the last tag, writes the primary-locale text, translates it into every locale folder, fits the store limits, and runs `appship doctor`. It only edits the files above; you review them and push. Release notes stay plain files, so you can always edit them by hand.
+`appship init` also installs a `release-notes` skill for your AI coding agent (see [AI agent skills](#ai-agent-skills-claude-code-codex-antigravity)). Ask the agent to "write the release notes": it reads `git log` since the last tag, writes the primary-locale text, translates it into every locale folder, fits the store limits, and runs `appship doctor`. It only edits the files above; you review them and push. Release notes stay plain files, so you can always edit them by hand.
 
 Declare the languages per platform in `release.yml` (optional; without it every folder is used):
 
@@ -192,8 +192,29 @@ appship doctor                                    # profile type/expiry/team/bun
 | `status` | Review state and versions on both stores |
 | `first-release` | Create the iOS app, push the listing and App Privacy, write the checklist |
 | `checklist` | Regenerate `release/CHECKLIST.md` |
+| `skills [list\|add]` | Install or update the bundled AI agent skills (`.claude/skills/` for Claude Code, `.agents/skills/` for Codex and Antigravity) |
 
 Run `appship <command> --help` for all options.
+
+## AI agent skills (Claude Code, Codex, Antigravity)
+
+appship ships three skills, plain `SKILL.md` instruction files that an AI coding agent follows. appship never calls an AI itself: open your agent at the project root, signed in with your own account, and ask. Each skill only writes files under `release/`, runs `appship doctor`, and hands back to you; none of them pushes to a store.
+
+| Skill | Ask the agent | What it does |
+|---|---|---|
+| `release-notes` | "write the release notes" | Notes from `git log` in every locale, within the store limits |
+| `store-screenshots` | "make the store screenshots" | Captures screens from the iOS Simulator or an Android emulator, adds a translated headline per language, renders exact store sizes (iPhone 6.9", iPad 13", Play 1080x1920), plus the Play icon and feature graphic |
+| `app-content` | "fill in the store questionnaire" | Fills `questionnaire.yml` (age rating, App Privacy, export compliance, Data safety, content rating, target audience, ads) from your dependencies, permissions and code, asks what code cannot show, keeps both stores consistent |
+
+The same files work in each agent; only the folder and the way to call them differ:
+
+| Agent | Skill folder | Run a skill |
+|---|---|---|
+| [Claude Code](https://claude.com/claude-code) | `.claude/skills/` | `/store-screenshots` |
+| [Codex](https://developers.openai.com/codex) (CLI or IDE) | `.agents/skills/` | `$store-screenshots`, or `/skills` |
+| [Antigravity](https://antigravity.google) | `.agents/skills/` | "use the store-screenshots skill" |
+
+`appship init` asks which agents you use (`--agents claude,codex,antigravity`, `all` or `none`; default Claude Code). Later, `appship skills` shows what each agent has and `appship skills add --agent codex` installs more (missing ones only; `--force` replaces edited copies). Setup per agent is in [docs/skills.md](docs/skills.md) (Vietnamese).
 
 ## Documentation
 
@@ -205,6 +226,7 @@ The detailed guides are currently in Vietnamese:
 - [Configuration reference](docs/configuration.md)
 - [Questionnaire reference](docs/questionnaire.md)
 - [Commands](docs/commands.md)
+- [AI agent skills](docs/skills.md)
 - [CI](docs/ci.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Design decisions](docs/design.md)

@@ -11,12 +11,13 @@ src/locales.js          gói ngôn ngữ gợi ý (mã iOS và Play), danh sách
 src/metadata.js         template và validate metadata, kích thước ảnh
 src/signing.js          ký iOS từ file: đọc .mobileprovision, kiểm tra profile/certificate, ExportOptions.plist, import vào keychain
 src/questionnaire.js    questionnaire → JSON cho fastlane, checklist cho phần làm tay
+src/skills.js           liệt kê skill đi kèm, so sánh với bản trong dự án, copy vào .claude/skills/
 src/context.js          gom config và key thành JSON context cho lane
 src/fastlane.js         chạy fastlane trong release/.appship/fastlane-run
-src/commands/*.js       từng lệnh (signing.js: `appship signing import|export-options`)
+src/commands/*.js       từng lệnh (signing.js: `appship signing import|export-options`; skills.js: `appship skills list|add`)
 fastlane/Fastfile       lane dùng chung; chỉ đọc context JSON, không tự parse YAML
 templates/              release.yml, questionnaire.yml cho init
-skills/                 Claude Code skill đi kèm (release-notes); init copy vào .claude/skills/ của dự án
+skills/                 skill đi kèm cho AI agent (release-notes, store-screenshots, app-content); init và `appship skills add` copy vào .claude/skills/ (Claude Code) hoặc .agents/skills/ (Codex, Antigravity) của dự án (xem skills.md)
 website/                trang giới thiệu tĩnh (HTML/CSS/JS, không cần build, không nằm trong gói npm)
 scripts/deploy-website.sh   đẩy website/ lên server
 deploy/nginx/           server block nginx của trang giới thiệu

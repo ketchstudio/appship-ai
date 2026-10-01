@@ -315,19 +315,40 @@ appship init --profile my-company</code></pre>
         <li>El skill <code>release-notes</code> conoce las convenciones de cada idioma: trato formal o informal, variantes regionales, la puntuación de ancho completo del japonés y el espaciado del francés antes de <code>? ! : ;</code>.</li>
       </ul>
 
-      <h3 class="doc-h3" id="release-notes-skill">Escribe las notas de versión con Claude Code</h3>
-      <p><code>appship init</code> instala un skill de Claude Code, <code>release-notes</code>, en <code>.claude/skills/</code> de tu proyecto. Antes de publicar, pídele a Claude que "escriba las notas de versión de esta versión" (o ejecuta <code>/release-notes</code>). Hará lo siguiente:</p>
+      <h3 class="doc-h3" id="release-notes-skill">Escribe las notas de versión con un agente de programación con IA</h3>
+      <p><code>appship init</code> instala un skill, <code>release-notes</code>, para tu agente de programación con IA (Claude Code, Codex o Antigravity): en <code>.claude/skills/</code> para Claude Code y en <code>.agents/skills/</code> para Codex y Antigravity. Antes de publicar, pídele al agente que "escriba las notas de versión de esta versión" (o ejecuta <code>/release-notes</code> en Claude Code o <code>$release-notes</code> en Codex). Hará lo siguiente:</p>
       <ol class="doc-steps">
         <li>Leerá <code>release.yml</code> y las carpetas de locale.</li>
         <li>Leerá <code>git log</code> desde la última etiqueta, y <code>CHANGELOG.md</code> si tienes uno.</li>
         <li>Escribirá notas breves, pensadas para el usuario, en tu idioma principal y las traducirá a todos los demás locales.</li>
         <li>Ajustará los límites de las tiendas, escribirá los archivos y luego ejecutará <code>appship doctor</code>.</li>
       </ol>
-      <p>Las notas siguen siendo archivos normales, así que puedes revisarlas y editarlas. El skill pregunta antes de sobrescribir texto que ya exista y nunca envía nada a una tienda. En un proyecto configurado antes de esta función, copia el skill a mano:</p>
+      <p>Las notas siguen siendo archivos normales, así que puedes revisarlas y editarlas. El skill pregunta antes de sobrescribir texto que ya exista y nunca envía nada a una tienda.</p>
+
+      <h3 class="doc-h3" id="more-skills">Capturas de pantalla y declaraciones de las tiendas con un agente de IA</h3>
+      <p><code>init</code> instala otros dos skills junto a él. Igual que <code>release-notes</code>, solo escriben archivos en <code>release/</code>, ejecutan <code>appship doctor</code> y te dejan a ti el envío a las tiendas.</p>
+      <ul class="doc-list">
+        <li><code>store-screenshots</code>: planifica las capturas contigo, las toma desde el simulador de iOS o un emulador de Android, añade un titular traducido para cada idioma y genera cada imagen en un tamaño que acepta cada tienda (iPhone 6.9" 1320×2868, iPad 13" si la app funciona en iPad, Play 1080×1920), además del icono y el gráfico destacado de Play.</li>
+        <li><code>app-content</code>: rellena <code>release/questionnaire.yml</code> (clasificación por edades, App Privacy, cumplimiento de exportación, Data safety, clasificación de contenido, público objetivo, anuncios, acceso a la app) a partir de tus dependencias, permisos y código, te pregunta lo que el código no puede mostrar y mantiene las respuestas coherentes entre las dos tiendas.</li>
+      </ul>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Agente</th><th scope="col">Carpeta de skills</th><th scope="col">Cómo ejecutarlo</th></tr></thead>
+          <tbody>
+            <tr><td>Claude Code</td><td><code>.claude/skills/</code></td><td><code>/store-screenshots</code></td></tr>
+            <tr><td>Codex</td><td><code>.agents/skills/</code></td><td><code>$store-screenshots</code> o <code>/skills</code></td></tr>
+            <tr><td>Antigravity</td><td><code>.agents/skills/</code></td><td>pídele "use the store-screenshots skill"</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>appship nunca llama a una IA por sí mismo. Abre el agente en la raíz del proyecto, con la sesión iniciada en tu propia cuenta, y aprueba los comandos que te pida ejecutar.</p>
+      <p>Elige los agentes al ejecutar <code>init</code>, o instala y actualiza los skills más tarde, por ejemplo después de actualizar appship:</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">Copiar</button></div>
-<pre><code>mkdir -p .claude/skills
-cp -r "$(npm root -g)/appship-ai/skills/release-notes" .claude/skills/</code></pre>
+<pre><code>appship init --agents all             # skills para Claude Code, Codex y Antigravity
+appship skills                        # qué skills tiene cada agente
+appship skills add --agent codex      # instala para Codex / Antigravity (.agents/skills/)
+appship skills add --force            # los reemplaza por los de esta versión</code></pre>
       </div>
     </section>
 
@@ -385,7 +406,7 @@ appship submit</code></pre>
       <p>Sube la versión y el número de build en tu proyecto y luego:</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">Copiar</button></div>
-<pre><code><span class="y-c"># pide a Claude Code que escriba las notas de versión (consulta Idiomas y notas de versión)</span>
+<pre><code><span class="y-c"># pide a tu agente de IA que escriba las notas de versión (consulta Idiomas y notas de versión)</span>
 appship upload --build   <span class="y-c"># compila, luego TestFlight + track de Google Play (internal por defecto)</span>
 <span class="y-c"># prueba en TestFlight / el track internal</span>
 appship submit           <span class="y-c"># iOS: App Review · Android: promover a producción</span>

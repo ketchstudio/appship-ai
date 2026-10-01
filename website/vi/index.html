@@ -309,6 +309,23 @@
         </div>
       </article>
 
+      <article class="feature feature-flip reveal">
+        <div class="feature-text">
+          <h3 class="h3">AI agent của bạn soạn sẵn nội dung cho store</h3>
+          <p>Các skill đi kèm cho Claude Code, Codex và Antigravity viết release notes cho mọi ngôn ngữ, tạo ảnh chụp màn hình đúng kích thước store yêu cầu, và trả lời các câu hỏi của store dựa trên code của bạn. Chúng chỉ ghi file trong <code>release/</code>; bạn xem lại rồi mới push. Bản thân appship không bao giờ gọi AI.</p>
+        </div>
+        <div class="code-card code-card-term">
+          <div class="code-name">appship skills</div>
+<pre><code><span class="t-step">▸ Claude Code: .claude/skills/</span>
+  <span class="t-ok">✓</span> app-content  installed
+  <span class="t-ok">✓</span> release-notes  installed
+  <span class="t-ok">✓</span> store-screenshots  installed
+<span class="t-step">▸ Codex + Antigravity: .agents/skills/</span>
+  <span class="t-ok">✓</span> store-screenshots  installed
+    Run: $store-screenshots (Codex)</code></pre>
+        </div>
+      </article>
+
       <div class="minor-grid">
         <article class="minor reveal">
           <h3 class="h4">Key không vào git</h3>

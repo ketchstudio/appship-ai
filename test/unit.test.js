@@ -105,7 +105,34 @@ test('metadata: Android limits, placeholders and image sizes', () => {
   assert.match(msgs, /featureGraphic.png is 1000x500, expected 1024x500/);
   assert.match(msgs, /at least 2 phone screenshots/);
   assert.doesNotMatch(msgs, /icon/);
-  assert.deepEqual(pngSize(path.join(loc, 'images', 'icon.png')), { width: 512, height: 512 });
+  assert.deepEqual(pngSize(path.join(loc, 'images', 'icon.png')), { width: 512, height: 512, alpha: false });
+});
+
+test('metadata: screenshot ratio, count, alpha and framed files', () => {
+  const dir = tmpDir();
+  const images = path.join(dir, 'en-US', 'images');
+  fs.mkdirSync(path.join(images, 'phoneScreenshots'), { recursive: true });
+  fs.writeFileSync(path.join(images, 'icon.png'), pngBuffer(512, 512, { alpha: true }));
+  fs.writeFileSync(path.join(images, 'featureGraphic.png'), pngBuffer(1024, 500, { alpha: true }));
+  fs.writeFileSync(path.join(images, 'phoneScreenshots', '01.png'), pngBuffer(1080, 1920));
+  fs.writeFileSync(path.join(images, 'phoneScreenshots', '02.png'), pngBuffer(1080, 2400));
+  let msgs = validateAndroidMetadata(dir, { primaryLocale: 'en-US' }).issues.map((i) => i.msg).join('\n');
+  assert.match(msgs, /phoneScreenshots\/02.png is 1080x2400/);
+  assert.doesNotMatch(msgs, /01.png/);
+  assert.match(msgs, /featureGraphic.png has an alpha channel/);
+  assert.doesNotMatch(msgs, /icon/); // Play allows a 32-bit icon
+  for (let i = 3; i <= 9; i++) fs.writeFileSync(path.join(images, 'phoneScreenshots', `0${i}.png`), pngBuffer(1080, 1920));
+  msgs = validateAndroidMetadata(dir, { primaryLocale: 'en-US' }).issues.map((i) => i.msg).join('\n');
+  assert.match(msgs, /has 9 screenshots \(Play allows at most 8\)/);
+
+  const shots = path.join(tmpDir(), 'en-US');
+  fs.mkdirSync(shots, { recursive: true });
+  fs.writeFileSync(path.join(shots, '01_home.png'), pngBuffer(1320, 2868, { alpha: true }));
+  fs.writeFileSync(path.join(shots, '02_quiz_framed.png'), pngBuffer(1320, 2868));
+  const iosMsgs = validateIosMetadata(path.dirname(shots), path.dirname(shots), { primaryLocale: 'en-US' }).issues.map((i) => i.msg).join('\n');
+  assert.match(iosMsgs, /1 PNG\(s\) have an alpha channel \(01_home.png\)/);
+  assert.match(iosMsgs, /mixes \*_framed and plain files/);
+  assert.doesNotMatch(iosMsgs, /no 6.9"/);
 });
 
 test('credentials: env beats release.yml beats profile', () => {

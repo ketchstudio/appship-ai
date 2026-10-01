@@ -129,14 +129,15 @@ function checkDeclaredLocales(locales, declared, { platform, dir, hint }, issues
   }
 }
 
-/** Read width/height from a PNG header; null for other formats. */
+/** Read width/height (and whether the color type has an alpha channel) from a PNG header; null for other formats. */
 export function pngSize(file) {
   const fd = fs.openSync(file, 'r');
   try {
-    const buf = Buffer.alloc(24);
-    fs.readSync(fd, buf, 0, 24, 0);
+    const buf = Buffer.alloc(26);
+    fs.readSync(fd, buf, 0, 26, 0);
     if (buf.readUInt32BE(0) !== 0x89504e47) return null;
-    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+    // IHDR color type 4 = grayscale + alpha, 6 = RGBA.
+    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20), alpha: buf[25] === 4 || buf[25] === 6 };
   } finally {
     fs.closeSync(fd);
   }
@@ -198,6 +199,23 @@ export function validateIosMetadata(metadataPath, screenshotsPath, { primaryLoca
           hint: 'App Store Connect requires one of: 1320x2868, 1290x2796, 1284x2778, 1242x2688 (PNG/JPG).',
         });
       }
+      const withAlpha = shots.filter((f) => pngSize(path.join(dir, f))?.alpha);
+      if (withAlpha.length) {
+        issues.push({
+          level: 'warn',
+          msg: `ios/screenshots/${locale}: ${withAlpha.length} PNG(s) have an alpha channel (${withAlpha.slice(0, 3).join(', ')})`,
+          hint: 'Apple asks for flattened RGB images without transparency. Flatten them or save as JPG.',
+        });
+      }
+      // deliver uploads only the *_framed files once any exist in a folder (Deliver::Loader).
+      const framed = shots.filter((f) => /_framed\./i.test(f));
+      if (framed.length && framed.length < shots.length) {
+        issues.push({
+          level: 'warn',
+          msg: `ios/screenshots/${locale} mixes *_framed and plain files; deliver uploads only the ${framed.length} framed one(s)`,
+          hint: 'Remove the plain files or rename the framed ones.',
+        });
+      }
     }
   }
   return { issues, locales };
@@ -236,12 +254,31 @@ export function validateAndroidMetadata(metadataPath, { primaryLocale, checkScre
       if (!file) return issues.push({ level: 'error', msg: `Missing images/${base}.png (${w}x${h})`, hint: `Place it in ${images}` });
       const size = pngSize(file);
       if (size && (size.width !== w || size.height !== h)) issues.push({ level: 'error', msg: `images/${path.basename(file)} is ${size.width}x${size.height}, expected ${w}x${h}` });
+      return size;
     };
     expect('icon', 512, 512);
-    expect('featureGraphic', 1024, 500);
+    if (expect('featureGraphic', 1024, 500)?.alpha) {
+      issues.push({ level: 'warn', msg: 'images/featureGraphic.png has an alpha channel', hint: 'Play asks for JPEG or 24-bit PNG (no alpha).' });
+    }
     const phoneDir = path.join(images, 'phoneScreenshots');
     const phones = fs.existsSync(phoneDir) ? fs.readdirSync(phoneDir).filter(isImage) : [];
-    if (phones.length < 2) issues.push({ level: 'error', msg: `Need at least 2 phone screenshots in ${path.relative(path.dirname(metadataPath), phoneDir)} (found ${phones.length})` });
+    const phoneLabel = path.relative(path.dirname(metadataPath), phoneDir);
+    if (phones.length < 2) issues.push({ level: 'error', msg: `Need at least 2 phone screenshots in ${phoneLabel} (found ${phones.length})` });
+    if (phones.length > 8) issues.push({ level: 'error', msg: `${phoneLabel} has ${phones.length} screenshots (Play allows at most 8)` });
+    for (const f of phones) {
+      const size = pngSize(path.join(phoneDir, f));
+      if (!size) continue;
+      const long = Math.max(size.width, size.height);
+      const short = Math.min(size.width, size.height);
+      if (short < 320 || long > 3840 || long > 2 * short) {
+        issues.push({
+          level: 'error',
+          msg: `phoneScreenshots/${f} is ${size.width}x${size.height}`,
+          hint: 'Play needs each side between 320 and 3840 px and the long side at most 2x the short side (e.g. 1080x1920). Raw 20:9 phone captures like 1080x2400 are rejected.',
+        });
+      }
+      if (size.alpha) issues.push({ level: 'warn', msg: `phoneScreenshots/${f} has an alpha channel`, hint: 'Play asks for JPEG or 24-bit PNG (no alpha).' });
+    }
   }
   return { issues, locales };
 }

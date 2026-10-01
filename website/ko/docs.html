@@ -315,19 +315,40 @@ appship init --profile my-company</code></pre>
         <li><code>release-notes</code> 스킬은 각 언어의 관례를 알고 있습니다. 존댓말과 반말, 지역별 변형, 일본어 전각 문장부호, <code>? ! : ;</code> 앞의 프랑스어 띄어쓰기 등입니다.</li>
       </ul>
 
-      <h3 class="doc-h3" id="release-notes-skill">Claude Code로 릴리스 노트 작성하기</h3>
-      <p><code>appship init</code>은 Claude Code 스킬인 <code>release-notes</code>를 프로젝트의 <code>.claude/skills/</code>에 설치합니다. 릴리스하기 전에 Claude에게 "이번 버전의 릴리스 노트를 작성해 줘"라고 요청하거나 <code>/release-notes</code>를 실행하세요. 그러면 다음을 수행합니다.</p>
+      <h3 class="doc-h3" id="release-notes-skill">AI 코딩 에이전트로 릴리스 노트 작성하기</h3>
+      <p><code>appship init</code>은 AI 코딩 에이전트(Claude Code, Codex, Antigravity)용 스킬인 <code>release-notes</code>를 설치합니다. Claude Code용은 <code>.claude/skills/</code>에, Codex와 Antigravity용은 <code>.agents/skills/</code>에 설치됩니다. 릴리스하기 전에 에이전트에게 "이번 버전의 릴리스 노트를 작성해 줘"라고 요청하세요. Claude Code에서는 <code>/release-notes</code>, Codex에서는 <code>$release-notes</code>를 실행해도 됩니다. 그러면 다음을 수행합니다.</p>
       <ol class="doc-steps">
         <li><code>release.yml</code>과 로캘 폴더를 읽습니다.</li>
         <li>마지막 태그 이후의 <code>git log</code>와, 있다면 <code>CHANGELOG.md</code>를 읽습니다.</li>
         <li>기본 언어로 사용자 관점의 짧은 노트를 작성하고 나머지 모든 로캘로 번역합니다.</li>
         <li>스토어 제한에 맞추고, 파일을 쓴 뒤 <code>appship doctor</code>를 실행합니다.</li>
       </ol>
-      <p>노트는 일반 파일로 남으므로 검토하고 수정할 수 있습니다. 스킬은 이미 있는 텍스트를 덮어쓰기 전에 먼저 묻고, 스토어에는 아무것도 푸시하지 않습니다. 이 기능이 추가되기 전에 설정한 프로젝트라면 스킬을 직접 복사해 넣으세요.</p>
+      <p>노트는 일반 파일로 남으므로 검토하고 수정할 수 있습니다. 스킬은 이미 있는 텍스트를 덮어쓰기 전에 먼저 묻고, 스토어에는 아무것도 푸시하지 않습니다.</p>
+
+      <h3 class="doc-h3" id="more-skills">AI 에이전트로 스크린샷과 스토어 신고 항목 작성하기</h3>
+      <p><code>init</code>은 그 옆에 스킬 두 개를 더 설치합니다. <code>release-notes</code>와 마찬가지로 이 스킬들은 <code>release/</code>에 파일을 쓰고 <code>appship doctor</code>를 실행할 뿐이며, 푸시는 사용자에게 맡깁니다.</p>
+      <ul class="doc-list">
+        <li><code>store-screenshots</code>: 촬영할 화면을 사용자와 함께 계획하고, iOS 시뮬레이터나 Android 에뮬레이터에서 캡처한 뒤, 언어마다 번역된 헤드라인을 넣고, 모든 이미지를 각 스토어가 허용하는 크기로 렌더링합니다(iPhone 6.9" 1320×2868, 앱이 iPad에서 실행되면 iPad 13", Play 1080×1920). Play 아이콘과 그래픽 이미지도 함께 만듭니다.</li>
+        <li><code>app-content</code>: 의존성, 권한, 코드를 바탕으로 <code>release/questionnaire.yml</code>(연령 등급, App Privacy, 수출 규정 준수, 데이터 보안, 콘텐츠 등급, 타겟층, 광고, 앱 액세스 권한)을 채우고, 코드로는 알 수 없는 내용은 사용자에게 묻고, 두 스토어 간 답변을 일관되게 유지합니다.</li>
+      </ul>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">에이전트</th><th scope="col">스킬 폴더</th><th scope="col">실행 방법</th></tr></thead>
+          <tbody>
+            <tr><td>Claude Code</td><td><code>.claude/skills/</code></td><td><code>/store-screenshots</code></td></tr>
+            <tr><td>Codex</td><td><code>.agents/skills/</code></td><td><code>$store-screenshots</code> 또는 <code>/skills</code></td></tr>
+            <tr><td>Antigravity</td><td><code>.agents/skills/</code></td><td>"use the store-screenshots skill"이라고 요청</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>appship은 직접 AI를 호출하지 않습니다. 프로젝트 루트에서 에이전트를 열고, 본인 계정으로 로그인한 뒤, 에이전트가 실행하려는 명령을 승인하세요.</p>
+      <p>에이전트는 <code>init</code>을 실행할 때 고를 수 있습니다. 나중에 스킬을 설치하거나 appship을 업그레이드한 뒤 스킬을 업데이트하려면 다음을 실행하세요.</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">복사</button></div>
-<pre><code>mkdir -p .claude/skills
-cp -r "$(npm root -g)/appship-ai/skills/release-notes" .claude/skills/</code></pre>
+<pre><code>appship init --agents all             # Claude Code, Codex, Antigravity용 스킬
+appship skills                        # 에이전트별로 있는 스킬 확인
+appship skills add --agent codex      # Codex / Antigravity용으로 설치 (.agents/skills/)
+appship skills add --force            # 이 버전의 스킬로 교체</code></pre>
       </div>
     </section>
 
@@ -385,7 +406,7 @@ appship submit</code></pre>
       <p>프로젝트의 버전과 빌드 번호를 올린 다음 아래를 실행합니다.</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">복사</button></div>
-<pre><code><span class="y-c"># Claude Code에 릴리스 노트 작성을 요청합니다 (언어와 릴리스 노트 참고)</span>
+<pre><code><span class="y-c"># AI 에이전트에 릴리스 노트 작성을 요청합니다 (언어와 릴리스 노트 참고)</span>
 appship upload --build   <span class="y-c"># 빌드 후 TestFlight + Google Play 트랙에 업로드 (기본은 internal)</span>
 <span class="y-c"># TestFlight / internal 트랙에서 테스트합니다</span>
 appship submit           <span class="y-c"># iOS: 앱 심사 제출 · Android: 프로덕션으로 승격</span>

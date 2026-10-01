@@ -162,14 +162,14 @@ Nếu chưa biết nên thêm ngôn ngữ nào, appship gợi ý 6 ngôn ngữ c
 - Giới hạn 4000 ký tự cho mỗi locale (Android chỉ 500).
 - Thư mục `default` của fastlane (dùng chung một nội dung cho mọi locale) chưa được appship hỗ trợ. `doctor` sẽ coi nó như một locale thật.
 
-**Soạn release notes bằng skill.** `appship init` copy skill `release-notes` vào `.claude/skills/release-notes/` của dự án (bỏ qua nếu đã có, nên bản bạn sửa không bị ghi đè). Trong Claude Code, gõ ví dụ "viết release notes cho bản này" hoặc `/release-notes`. Skill sẽ:
+**Soạn release notes bằng skill.** `appship init` copy skill `release-notes` vào thư mục skill của agent bạn chọn (`.claude/skills/` cho Claude Code, `.agents/skills/` cho Codex và Antigravity; bỏ qua nếu đã có, nên bản bạn sửa không bị ghi đè). Trong Claude Code, gõ ví dụ "viết release notes cho bản này" hoặc `/release-notes`. Skill sẽ:
 
 1. Đọc `release.yml` (`ios.locales`, `android.locales`) và các thư mục locale hiện có.
 2. Lấy thay đổi từ `git log` kể từ tag gần nhất (và `CHANGELOG.md` nếu có).
 3. Viết bản cho locale chính, dịch sang các locale còn lại, cắt cho vừa giới hạn (iOS 4000, Android 500 ký tự).
 4. Ghi vào `release_notes.txt` (iOS) và `changelogs/default.txt` (Android), hỏi trước khi ghi đè file đã có nội dung, rồi chạy `appship doctor`.
 
-Skill **không** đẩy gì lên store. Bạn đọc và sửa các file, rồi tự chạy `appship metadata` hoặc `appship submit`. Dự án đã `init` từ trước: copy thư mục `skills/release-notes/` trong package vào `.claude/skills/`, ví dụ `cp -r "$(npm root -g)/appship-ai/skills/release-notes" .claude/skills/`.
+Skill **không** đẩy gì lên store. Bạn đọc và sửa các file, rồi tự chạy `appship metadata` hoặc `appship submit`. Dự án đã `init` từ trước khi có skill: chạy `appship skills add` (xem [skills.md](skills.md)).
 
 **Tên locale iOS hợp lệ** (theo `deliver`, fastlane 2.232.2). Tên khác sẽ bị từ chối với lỗi `Unsupported directory name(s)`:
 
@@ -186,6 +186,10 @@ Game có subcategory, ví dụ `GAMES_PUZZLE` hoặc `GAMES_CASUAL`. Đặt vào
 - Tối thiểu cần một bộ iPhone 6.9" (1320x2868 hoặc 1290x2796) hoặc 6.5" (1284x2778 hoặc 1242x2688).
 - Nếu app hỗ trợ iPad, cần thêm iPad 13" (2064x2752 hoặc 2048x2732).
 - Tối đa 10 ảnh cho mỗi loại thiết bị.
+- Thứ tự trên store theo tên file, nên đặt `01_home.png`, `02_…`.
+- Không đặt `_framed` trong tên file: khi thư mục có file `*_framed.png`, deliver chỉ upload các file đó và bỏ qua phần còn lại. `doctor` cảnh báo trường hợp này.
+- Ảnh phải là RGB phẳng, không trong suốt. `doctor` cảnh báo PNG có kênh alpha.
+- Muốn AI agent chụp và dàn ảnh đúng kích thước: skill `store-screenshots` (xem [skills.md](skills.md)).
 
 ## Metadata Android: `release/android/metadata/`
 
@@ -202,11 +206,13 @@ android/metadata/en-US/
 │   └── 42.txt                 # riêng cho versionCode 42 (ưu tiên hơn default)
 └── images/
     ├── icon.png               # 512x512
-    ├── featureGraphic.png     # 1024x500
+    ├── featureGraphic.png     # 1024x500, không alpha
     ├── phoneScreenshots/      # 2–8 ảnh
     ├── sevenInchScreenshots/
     └── tenInchScreenshots/
 ```
+
+Ảnh chụp màn hình của Play: mỗi cạnh từ 320 đến 3840 px, cạnh dài không quá 2 lần cạnh ngắn, JPEG hoặc PNG 24-bit (không alpha). Nên dùng 1080x1920. Ảnh chụp thô từ máy Android đời mới (ví dụ 1080x2400, tỉ lệ 20:9) **bị Play từ chối**, phải đặt vào khung 1080x1920. `doctor` báo lỗi khi sai tỉ lệ hoặc quá 8 ảnh, và cảnh báo khi có alpha. Chỉ thư mục `images/` của locale chính được kiểm tra; ngôn ngữ không có ảnh riêng thì Play dùng ảnh của ngôn ngữ mặc định.
 
 Locale của Play dùng mã như `en-US`, `vi`, `ja-JP`, `ko-KR`, `es-419`, `pt-BR`, `zh-CN`. Tên thư mục phải trùng với ngôn ngữ đã bật trên Play Console.
 

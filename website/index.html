@@ -309,6 +309,23 @@
         </div>
       </article>
 
+      <article class="feature feature-flip reveal">
+        <div class="feature-text">
+          <h3 class="h3">Your AI agent drafts the store content</h3>
+          <p>Bundled skills for Claude Code, Codex and Antigravity write release notes in every language, make screenshots at the exact store sizes, and fill in the store questionnaires from your code. They only write files in <code>release/</code>; you review, then push. appship itself never calls an AI.</p>
+        </div>
+        <div class="code-card code-card-term">
+          <div class="code-name">appship skills</div>
+<pre><code><span class="t-step">▸ Claude Code: .claude/skills/</span>
+  <span class="t-ok">✓</span> app-content  installed
+  <span class="t-ok">✓</span> release-notes  installed
+  <span class="t-ok">✓</span> store-screenshots  installed
+<span class="t-step">▸ Codex + Antigravity: .agents/skills/</span>
+  <span class="t-ok">✓</span> store-screenshots  installed
+    Run: $store-screenshots (Codex)</code></pre>
+        </div>
+      </article>
+
       <div class="minor-grid">
         <article class="minor reveal">
           <h3 class="h4">Keys stay out of git</h3>

@@ -37,14 +37,16 @@ export function appship(args, { cwd, env = {} } = {}) {
   return { code: res.status, out: res.stdout + res.stderr };
 }
 
-export function pngBuffer(width, height) {
-  const buf = Buffer.alloc(24);
+export function pngBuffer(width, height, { alpha = false } = {}) {
+  const buf = Buffer.alloc(26);
   buf.writeUInt32BE(0x89504e47, 0);
   buf.writeUInt32BE(0x0d0a1a0a, 4);
   buf.writeUInt32BE(13, 8);
   buf.write('IHDR', 12);
   buf.writeUInt32BE(width, 16);
   buf.writeUInt32BE(height, 20);
+  buf[24] = 8; // bit depth
+  buf[25] = alpha ? 6 : 2; // RGBA : RGB
   return buf;
 }
 

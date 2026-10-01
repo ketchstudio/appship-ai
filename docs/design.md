@@ -88,7 +88,11 @@ Mỗi dự án chỉ có thêm thư mục `release/`. **Dự án không có Fast
    - `--dry-run` che mọi trường mật khẩu.
 6. **Hỏi xác nhận trước mọi thao tác ghi lên store** (submit, đẩy lên production, ghi đè metadata). Ở chế độ không tương tác, phải thêm `--yes` rõ ràng.
 7. **`doctor` là bắt buộc.** Nó phát hiện lỗi trước khi gọi store: giới hạn ký tự, URL, `TODO`, kích thước ảnh, key, artifact cũ.
-8. **Tên tham số fastlane được đối chiếu với mã nguồn fastlane 2.232.2**, không viết theo trí nhớ. Khóa age rating dùng tên của App Store Connect API (bộ câu hỏi mới năm 2025: `ageAssurance`, `lootBox`, `messagingAndChat`…).
+8. **Phần soạn nội dung bằng AI là skill, không phải tính năng của CLI.** appship không gọi API AI nào và không cần key AI. Nó đi kèm các file `SKILL.md` (release notes, screenshots, questionnaire) để AI coding agent của người dùng làm theo: Claude Code (`.claude/skills/`), Codex và Antigravity (cùng đọc `.agents/skills/`). Lý do:
+   - Người dùng tự chọn agent và tự trả phí theo gói của họ; tool không giữ key AI.
+   - Một định dạng `SKILL.md` chạy được ở cả ba, nên nội dung skill phải trung lập, không nhắc riêng agent nào.
+   - Skill chỉ ghi file trong `release/` và chạy `appship doctor`; việc ghi lên store vẫn qua lệnh có xác nhận (quyết định 6).
+9. **Tên tham số fastlane được đối chiếu với mã nguồn fastlane 2.232.2**, không viết theo trí nhớ. Khóa age rating dùng tên của App Store Connect API (bộ câu hỏi mới năm 2025: `ageAssurance`, `lootBox`, `messagingAndChat`…).
 
 ## 6. Đặt tên và phát hành
 

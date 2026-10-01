@@ -17,7 +17,10 @@ Cập nhật lần cuối: 2026-10-01
 - [x] Skill `release-notes` (Claude Code) sinh release notes đa ngôn ngữ, cài bởi `init`
 - [x] Gói ngôn ngữ gợi ý (es, pt-BR, de, fr, ja, ko): `init --locales`, mã riêng cho iOS và Play, `doctor` cảnh báo mã Android sai, skill `release-notes` có hướng dẫn từng ngôn ngữ
 - [x] Ký iOS khi không phải chủ tài khoản: `ios.signing`, `appship signing import|export-options`, `$APPSHIP_EXPORT_OPTIONS` cho `build_command`, `doctor` kiểm tra profile/certificate/`.ipa`; `issuer_id` tuỳ chọn cho API key cá nhân; hướng dẫn cho 5 trường hợp ở `docs/signing.md`
-- [x] 29 test (`npm test`): unit (kể cả đọc `.mobileprovision` giả và certificate tạo bằng openssl) và luồng CLI end-to-end ở chế độ dry-run
+- [x] Skill `store-screenshots` (chụp từ Simulator/emulator, tiêu đề theo ngôn ngữ, render đúng kích thước iPhone 6.9", iPad 13", Play 1080x1920, icon và feature graphic) và skill `app-content` (điền `questionnaire.yml` từ dependency, quyền và code, giữ hai store khớp nhau). Lệnh `appship skills list|add [--agent] [--force]` để cài/cập nhật skill cho dự án đã `init` từ trước. Chi tiết: `docs/skills.md`
+- [x] Skill dùng được với Claude Code (`.claude/skills/`), Codex và Antigravity (`.agents/skills/`): `init --agents` (hỏi khi chạy tương tác), `skills add --agent`, `skills list` theo từng agent; hướng dẫn cài và chạy từng agent trong `docs/skills.md`
+- [x] `doctor` kiểm tra thêm ảnh: Play tối đa 8 ảnh, tỉ lệ ≤ 2:1 và cạnh 320–3840 px (lỗi); PNG có alpha ở screenshot iOS, `phoneScreenshots`, `featureGraphic` (cảnh báo); thư mục iOS trộn file `*_framed` với file thường (cảnh báo)
+- [x] 33 test (`npm test`): unit (kể cả đọc `.mobileprovision` giả và certificate tạo bằng openssl) và luồng CLI end-to-end ở chế độ dry-run
 - [x] Tài liệu tiếng Việt và mẫu GitHub Actions
 - [x] License MIT; `package.json` có `author`, `repository`, `homepage`, `bugs`
 - [x] README tiếng Anh cho npm/GitHub (bản tiếng Việt ở `docs/README.vi.md`)
@@ -34,6 +37,10 @@ Cập nhật lần cuối: 2026-10-01
 - [ ] API key cá nhân (không Issuer ID) với `deliver`/`pilot` thật, cùng các role Developer / App Manager
 - [ ] `signing import --keychain` trên runner CI macOS
 - [ ] Skill `release-notes` chạy thật trong Claude Code (mới kiểm tra file được copy đúng chỗ, chưa thử sinh nội dung)
+- [ ] Cả 3 skill chạy thật trong Codex và Antigravity: skill có được nhận từ `.agents/skills/` không, gọi `$tên-skill` trong Codex, sandbox của Codex có chặn `xcrun simctl`/`adb`/`npx playwright` không. Đường dẫn và cách gọi lấy từ tài liệu ngày 2026-10-01, chưa thử
+- [ ] Skill `store-screenshots` chạy thật: chụp bằng `simctl`/`adb` trên Word Bank, render bằng Playwright và Chrome headless (kiểm tra `--window-size` của Chrome cho ra đúng kích thước), ảnh được App Store Connect và Play chấp nhận khi `metadata` push
+- [ ] Skill `app-content` chạy thật trên Word Bank; bảng ánh xạ SDK → loại dữ liệu (Firebase, AdMob…) cần đối chiếu lại với tài liệu hiện hành của từng SDK; tên loại dữ liệu và mục đích của Play Data safety lấy theo Play Console, chưa có nguồn từ fastlane để đối chiếu
+- [ ] Cảnh báo alpha cho screenshot iOS: Apple ghi "no transparency" trong spec, nhưng chưa thử xem App Store Connect có từ chối PNG RGBA không
 - [ ] Gói ngôn ngữ gợi ý với store thật: push metadata `es-419`, `ja-JP`, `ko-KR` lên Play và `es-MX`, `ja`, `ko` lên App Store Connect; chất lượng bản dịch của skill `release-notes` do người bản ngữ kiểm tra
 - [ ] Đường dẫn artifact mặc định cho Cocos và React Native
 - [ ] Danh sách category App Privacy trong `docs/questionnaire.md` có còn khớp tên hiện hành của Apple không

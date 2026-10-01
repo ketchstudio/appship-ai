@@ -315,19 +315,40 @@ appship init --profile my-company</code></pre>
         <li>The <code>release-notes</code> skill knows each language's conventions: formal or informal address, regional variants, Japanese full-width punctuation and French spacing before <code>? ! : ;</code>.</li>
       </ul>
 
-      <h3 class="doc-h3" id="release-notes-skill">Write release notes with Claude Code</h3>
-      <p><code>appship init</code> installs a Claude Code skill, <code>release-notes</code>, into <code>.claude/skills/</code> of your project. Before a release, ask Claude to "write the release notes for this version" (or run <code>/release-notes</code>). It will:</p>
+      <h3 class="doc-h3" id="release-notes-skill">Write release notes with an AI coding agent</h3>
+      <p><code>appship init</code> installs a skill, <code>release-notes</code>, for your AI coding agent (Claude Code, Codex or Antigravity): into <code>.claude/skills/</code> for Claude Code, <code>.agents/skills/</code> for Codex and Antigravity. Before a release, ask the agent to "write the release notes for this version" (or run <code>/release-notes</code> in Claude Code, <code>$release-notes</code> in Codex). It will:</p>
       <ol class="doc-steps">
         <li>Read <code>release.yml</code> and the locale folders.</li>
         <li>Read <code>git log</code> since the last tag, and <code>CHANGELOG.md</code> if you have one.</li>
         <li>Write short, user-facing notes in your primary language and translate them into every other locale.</li>
         <li>Fit the store limits, write the files, then run <code>appship doctor</code>.</li>
       </ol>
-      <p>The notes stay plain files, so you can review and edit them. The skill asks before overwriting text that is already there, and it never pushes anything to a store. For a project that was set up before this feature, copy the skill in by hand:</p>
+      <p>The notes stay plain files, so you can review and edit them. The skill asks before overwriting text that is already there, and it never pushes anything to a store.</p>
+
+      <h3 class="doc-h3" id="more-skills">Screenshots and store declarations with an AI agent</h3>
+      <p><code>init</code> installs two more skills next to it. Like <code>release-notes</code>, they only write files in <code>release/</code>, run <code>appship doctor</code>, and leave pushing to you.</p>
+      <ul class="doc-list">
+        <li><code>store-screenshots</code>: plans the shots with you, captures them from the iOS Simulator or an Android emulator, adds a translated headline per language, and renders every image at a size each store accepts (iPhone 6.9" 1320×2868, iPad 13" when the app runs on iPad, Play 1080×1920), plus the Play icon and feature graphic.</li>
+        <li><code>app-content</code>: fills <code>release/questionnaire.yml</code> (age rating, App Privacy, export compliance, Data safety, content rating, target audience, ads, app access) from your dependencies, permissions and code, asks you what the code cannot show, and keeps the answers consistent between the two stores.</li>
+      </ul>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Agent</th><th scope="col">Skill folder</th><th scope="col">How to run</th></tr></thead>
+          <tbody>
+            <tr><td>Claude Code</td><td><code>.claude/skills/</code></td><td><code>/store-screenshots</code></td></tr>
+            <tr><td>Codex</td><td><code>.agents/skills/</code></td><td><code>$store-screenshots</code> or <code>/skills</code></td></tr>
+            <tr><td>Antigravity</td><td><code>.agents/skills/</code></td><td>ask "use the store-screenshots skill"</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>appship never calls an AI itself. Open the agent at the project root, signed in with your own account, and approve the commands it asks to run.</p>
+      <p>Choose the agents when you run <code>init</code>, or install and update the skills later, for example after upgrading appship:</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">Copy</button></div>
-<pre><code>mkdir -p .claude/skills
-cp -r "$(npm root -g)/appship-ai/skills/release-notes" .claude/skills/</code></pre>
+<pre><code>appship init --agents all             # skills for Claude Code, Codex and Antigravity
+appship skills                        # which skills each agent has
+appship skills add --agent codex      # install for Codex / Antigravity (.agents/skills/)
+appship skills add --force            # replace them with this version</code></pre>
       </div>
     </section>
 
@@ -385,7 +406,7 @@ appship submit</code></pre>
       <p>Bump the version and build number in your project, then:</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">Copy</button></div>
-<pre><code><span class="y-c"># ask Claude Code to write the release notes (see Languages and release notes)</span>
+<pre><code><span class="y-c"># ask your AI agent to write the release notes (see Languages and release notes)</span>
 appship upload --build   <span class="y-c"># build, then TestFlight + Google Play track (internal by default)</span>
 <span class="y-c"># test on TestFlight / the internal track</span>
 appship submit           <span class="y-c"># iOS: App Review · Android: promote to production</span>

@@ -92,7 +92,7 @@ Cả hai store đều nhận release notes riêng cho từng ngôn ngữ. Mỗi 
 - **iOS** ("What's New", tối đa 4000 ký tự): `release/ios/metadata/<locale>/release_notes.txt`, ví dụ `en-US`, `vi`, `ja`, `zh-Hans`. Locale chưa có trên App Store Connect sẽ được tạo tự động. Version đầu tiên của app thì để trống, vì Apple không nhận release notes ở version này.
 - **Android** (tối đa 500 ký tự): `release/android/metadata/<locale>/changelogs/default.txt`. Ngôn ngữ phải được bật trên Play Console trước.
 
-`appship init` cũng cài sẵn skill `release-notes` của Claude Code vào `.claude/skills/`. Nhờ Claude "viết release notes" thì nó đọc `git log` từ tag gần nhất, viết bản cho locale chính, dịch sang mọi thư mục locale, cắt cho vừa giới hạn của store rồi chạy `appship doctor`. Skill chỉ sửa các file ở trên; bạn đọc lại rồi tự đẩy lên store. Release notes vẫn là file thường nên bạn luôn sửa tay được.
+`appship init` cũng cài sẵn skill `release-notes` cho AI agent của bạn (xem [Skill cho AI agent](#skill-cho-ai-agent-claude-code-codex-antigravity)). Nhờ agent "viết release notes" thì nó đọc `git log` từ tag gần nhất, viết bản cho locale chính, dịch sang mọi thư mục locale, cắt cho vừa giới hạn của store rồi chạy `appship doctor`. Skill chỉ sửa các file ở trên; bạn đọc lại rồi tự đẩy lên store. Release notes vẫn là file thường nên bạn luôn sửa tay được.
 
 Khai báo ngôn ngữ theo từng platform trong `release.yml` (tuỳ chọn; không khai báo thì dùng mọi thư mục có sẵn):
 
@@ -142,6 +142,26 @@ appship doctor                                    # loại/hạn/team/bundle id 
 - Không có API key nào: ký và build như trên, rồi tải `.ipa` bằng Transporter hoặc Xcode.
 - Cả 5 trường hợp, CI, và danh sách `doctor` kiểm tra: [signing.md](signing.md).
 
+## Skill cho AI agent (Claude Code, Codex, Antigravity)
+
+appship đi kèm 3 skill: các file hướng dẫn `SKILL.md` để một AI coding agent làm theo. appship không tự gọi AI nào: bạn mở agent ở thư mục gốc dự án, đăng nhập bằng tài khoản của bạn, rồi nhờ nó. Skill chỉ ghi file trong `release/`, chạy `appship doctor` rồi trả lại cho bạn; không skill nào đẩy lên store.
+
+| Skill | Nhờ agent | Việc nó làm |
+|---|---|---|
+| `release-notes` | "viết release notes" | Release notes từ `git log` cho mọi locale, vừa giới hạn của store |
+| `store-screenshots` | "làm screenshots cho store" | Chụp màn hình từ iOS Simulator hoặc Android emulator, thêm tiêu đề dịch theo từng ngôn ngữ, xuất đúng kích thước store (iPhone 6.9", iPad 13", Play 1080x1920), kèm icon và feature graphic của Play |
+| `app-content` | "điền questionnaire cho store" | Điền `questionnaire.yml` (age rating, App Privacy, export compliance, Data safety, content rating, target audience, quảng cáo) từ dependency, quyền và code của app, hỏi phần code không cho biết, giữ hai store trả lời khớp nhau |
+
+Cùng một file chạy được ở cả ba agent, chỉ khác thư mục và cách gọi:
+
+| Agent | Thư mục skill | Gọi skill |
+|---|---|---|
+| [Claude Code](https://claude.com/claude-code) | `.claude/skills/` | `/store-screenshots` |
+| [Codex](https://developers.openai.com/codex) (CLI hoặc IDE) | `.agents/skills/` | `$store-screenshots`, hoặc `/skills` |
+| [Antigravity](https://antigravity.google) | `.agents/skills/` | "dùng skill store-screenshots" |
+
+`appship init` hỏi bạn dùng agent nào (`--agents claude,codex,antigravity`, `all` hoặc `none`; mặc định Claude Code). Về sau, `appship skills` cho biết mỗi agent đã có skill nào, `appship skills add --agent codex` cài thêm (chỉ cài skill còn thiếu; `--force` ghi đè bản đã sửa). Cách cài và chạy với từng agent ở [skills.md](skills.md).
+
 ## Tài liệu
 
 - [Thiết kế và các quyết định](design.md): vì sao tool được làm như vậy, phần nào store cho tự động
@@ -153,6 +173,7 @@ appship doctor                                    # loại/hạn/team/bundle id 
 - [Cấu hình release.yml và metadata](configuration.md)
 - [questionnaire.yml](questionnaire.md): câu hỏi của store, phần nào tự động, phần nào làm tay
 - [Các lệnh](commands.md)
+- [Skill cho AI agent](skills.md): Claude Code, Codex, Antigravity; release notes, screenshots, questionnaire; `appship skills`
 - [Chạy trên CI](ci.md)
 - [Xử lý lỗi thường gặp](troubleshooting.md)
 - [Phát triển và phát hành tool](development.md)

@@ -23,6 +23,7 @@ appship init --yes --platforms android --package-name com.x.y --framework none
 appship init --yes --locales preset            # thêm es, pt-BR, de, fr, ja, ko (xem configuration.md)
 appship init --yes --locales es,ja             # chỉ một số ngôn ngữ
 appship init --force                           # tạo lại release.yml và questionnaire.yml (giữ metadata)
+appship init --yes --agents codex,antigravity  # cài skill cho Codex/Antigravity thay vì Claude Code (all | none)
 ```
 
 ## `appship doctor`
@@ -43,6 +44,22 @@ Thoát với mã 1 nếu có lỗi, nên dùng được làm bước đầu tiê
 ```bash
 appship doctor --skip-artifacts --skip-screenshots
 ```
+
+`doctor` cũng kiểm tra ảnh: Play cần 2–8 ảnh `phoneScreenshots`, mỗi ảnh cạnh dài không quá 2 lần cạnh ngắn (lỗi); PNG có kênh alpha ở screenshot iOS, `phoneScreenshots` và `featureGraphic` (cảnh báo); thư mục iOS trộn file `*_framed` với file thường (cảnh báo, vì deliver chỉ upload file framed).
+
+## `appship skills`
+
+Cài và cập nhật các skill đi kèm (`release-notes`, `store-screenshots`, `app-content`) cho AI agent: `.claude/skills/` (Claude Code) hoặc `.agents/skills/` (Codex, Antigravity). Chi tiết và cách chạy với từng agent: [skills.md](skills.md).
+
+```bash
+appship skills                       # = skills list: theo từng agent, skill nào đã có, khác bản đi kèm, hay còn thiếu
+appship skills add                   # cài skill còn thiếu vào thư mục agent đã có (chưa có: .claude/skills/), giữ skill đã có
+appship skills add app-content       # chỉ một skill
+appship skills add --force           # ghi đè bằng bản của appship đang cài (mất phần đã sửa)
+appship skills add --agent codex     # cài cho Codex/Antigravity (.agents/skills/); claude | codex | antigravity | all
+```
+
+Lệnh chỉ ghi vào `.claude/skills/` hoặc `.agents/skills/` trên máy, không gọi store và không gọi AI.
 
 ## `appship credentials`
 

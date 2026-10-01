@@ -315,19 +315,40 @@ appship init --profile my-company</code></pre>
         <li><code>release-notes</code> スキルは、各言語の慣習を把握しています。敬体・常体などの文体、地域ごとのバリエーション、日本語の全角句読点、<code>? ! : ;</code> の前に入れるフランス語のスペースなどです。</li>
       </ul>
 
-      <h3 class="doc-h3" id="release-notes-skill">Claude Code でリリースノートを書く</h3>
-      <p><code>appship init</code> は、Claude Code のスキル <code>release-notes</code> をプロジェクトの <code>.claude/skills/</code> にインストールします。リリースの前に、Claude に「このバージョンのリリースノートを書いて」と頼みます（または <code>/release-notes</code> を実行します）。Claude は次の処理を行います。</p>
+      <h3 class="doc-h3" id="release-notes-skill">AI コーディングエージェントでリリースノートを書く</h3>
+      <p><code>appship init</code> は、AI コーディングエージェント（Claude Code、Codex、Antigravity）向けのスキル <code>release-notes</code> をインストールします。Claude Code 用は <code>.claude/skills/</code>、Codex と Antigravity 用は <code>.agents/skills/</code> に置かれます。リリースの前に、エージェントに「このバージョンのリリースノートを書いて」と頼みます（Claude Code では <code>/release-notes</code>、Codex では <code>$release-notes</code> を実行することもできます）。エージェントは次の処理を行います。</p>
       <ol class="doc-steps">
         <li><code>release.yml</code> とロケールのフォルダを読み込みます。</li>
         <li>前回のタグ以降の <code>git log</code> を読み込みます。<code>CHANGELOG.md</code> がある場合はそれも読みます。</li>
         <li>ユーザー向けの短いノートをプライマリ言語で書き、他のすべてのロケールに翻訳します。</li>
         <li>ストアの上限に収め、ファイルを書き込んでから <code>appship doctor</code> を実行します。</li>
       </ol>
-      <p>ノートは通常のファイルのままなので、確認や編集ができます。スキルは、すでにあるテキストを上書きする前に確認し、ストアには何もプッシュしません。この機能の追加前にセットアップしたプロジェクトでは、スキルを手作業でコピーしてください。</p>
+      <p>ノートは通常のファイルのままなので、確認や編集ができます。スキルは、すでにあるテキストを上書きする前に確認し、ストアには何もプッシュしません。</p>
+
+      <h3 class="doc-h3" id="more-skills">AI エージェントでスクリーンショットとストアの申告を作成する</h3>
+      <p><code>init</code> は、その隣にさらに 2 つのスキルをインストールします。<code>release-notes</code> と同様に、これらは <code>release/</code> 内のファイルを書き込み、<code>appship doctor</code> を実行するだけで、プッシュはあなたに任せます。</p>
+      <ul class="doc-list">
+        <li><code>store-screenshots</code>：撮影する画面をあなたと一緒に計画し、iOS シミュレータまたは Android エミュレータから撮影して、言語ごとに翻訳した見出しを追加し、すべての画像を各ストアが受け付けるサイズで書き出します（iPhone 6.9" 1320×2868、アプリが iPad で動作する場合は iPad 13"、Play 1080×1920）。Play のアイコンとフィーチャーグラフィックも作成します。</li>
+        <li><code>app-content</code>：依存関係、権限、コードをもとに <code>release/questionnaire.yml</code>（年齢レーティング、App Privacy、輸出コンプライアンス、データセーフティ、コンテンツのレーティング、ターゲットユーザー、広告、アプリへのアクセス）を埋め、コードからはわからない点はあなたに質問し、2 つのストア間で回答の整合性を保ちます。</li>
+      </ul>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">エージェント</th><th scope="col">スキルのフォルダ</th><th scope="col">実行方法</th></tr></thead>
+          <tbody>
+            <tr><td>Claude Code</td><td><code>.claude/skills/</code></td><td><code>/store-screenshots</code></td></tr>
+            <tr><td>Codex</td><td><code>.agents/skills/</code></td><td><code>$store-screenshots</code> または <code>/skills</code></td></tr>
+            <tr><td>Antigravity</td><td><code>.agents/skills/</code></td><td>「use the store-screenshots skill」と頼みます</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>appship 自体が AI を呼び出すことはありません。プロジェクトのルートでエージェントを開き、ご自身のアカウントでサインインして、エージェントが実行を求めるコマンドを承認してください。</p>
+      <p>エージェントは <code>init</code> の実行時に選べます。あとからスキルをインストールする場合や、appship のアップグレード後にスキルを更新する場合は、次のコマンドを使います。</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">コピー</button></div>
-<pre><code>mkdir -p .claude/skills
-cp -r "$(npm root -g)/appship-ai/skills/release-notes" .claude/skills/</code></pre>
+<pre><code>appship init --agents all             # Claude Code、Codex、Antigravity 用のスキル
+appship skills                        # 各エージェントにあるスキル
+appship skills add --agent codex      # Codex / Antigravity 用にインストール（.agents/skills/）
+appship skills add --force            # このバージョンのもので置き換え</code></pre>
       </div>
     </section>
 
@@ -385,7 +406,7 @@ appship submit</code></pre>
       <p>プロジェクトのバージョンとビルド番号を上げてから、次を実行します。</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">コピー</button></div>
-<pre><code><span class="y-c"># Claude Code にリリースノートを書いてもらう（「言語とリリースノート」を参照）</span>
+<pre><code><span class="y-c"># AI エージェントにリリースノートを書いてもらう（「言語とリリースノート」を参照）</span>
 appship upload --build   <span class="y-c"># ビルドしてから TestFlight と Google Play のトラックへ（デフォルトは internal）</span>
 <span class="y-c"># TestFlight / internal トラックでテストする</span>
 appship submit           <span class="y-c"># iOS: App Review へ提出 · Android: production へ昇格</span>

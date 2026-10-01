@@ -7,6 +7,8 @@ Mọi câu trả lời cho các câu hỏi bắt buộc của store được kha
 
 `appship doctor` báo lỗi khi còn `TODO` hoặc thiếu câu trả lời.
 
+Muốn AI agent điền giúp: gọi skill `app-content` (Claude Code: `/app-content`; Codex: `$app-content`; Antigravity: "dùng skill app-content"). Skill đọc dependency, quyền và code của app để đề xuất câu trả lời kèm bằng chứng, hỏi bạn phần code không cho biết, và giữ câu trả lời của hai store khớp nhau. Xem [skills.md](skills.md).
+
 ## Phần nào tự động?
 
 | Câu hỏi | iOS | Android |
@@ -107,7 +109,9 @@ privacy:
 - Định danh: `USER_ID`, `DEVICE_ID`
 - Hành vi sử dụng: `PURCHASE_HISTORY`, `PRODUCT_INTERACTION`, `ADVERTISING_DATA`, `OTHER_USAGE_DATA`
 - Chẩn đoán: `CRASH_DATA`, `PERFORMANCE_DATA`, `OTHER_DIAGNOSTIC_DATA`
-- Khác: `OTHER_DATA_TYPES`
+- Khác: `OTHER_DATA`
+
+Danh sách trên đối chiếu với `Spaceship::ConnectAPI::AppDataUsageCategory::ID` của fastlane 2.232.2.
 
 Nếu không chắc tên category, chạy `fastlane run upload_app_privacy_details_to_app_store` một lần ở chế độ tương tác để xem danh sách hiện hành.
 

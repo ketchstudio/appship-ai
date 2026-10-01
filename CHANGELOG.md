@@ -1,5 +1,18 @@
 # Changelog
 
+## Chưa phát hành
+
+- Skill mới, được `init` cài cùng `release-notes`:
+  - `store-screenshots`: lên kế hoạch ảnh, chụp từ iOS Simulator (`simctl`) hoặc Android emulator (`adb`, demo mode), dịch tiêu đề cho từng locale, dàn ảnh bằng template HTML và render đúng kích thước bằng headless browser (iPhone 1320x2868, iPad 2064x2752 khi app chạy trên iPad, Play 1080x1920, feature graphic 1024x500, icon 512x512). Kích thước và luật đặt tên đối chiếu với `Deliver::AppScreenshot`, `Deliver::Loader` và `Supply` của fastlane 2.232.2.
+  - `app-content`: điền `release/questionnaire.yml` (age rating, App Privacy, export compliance, content rights, reviewer, Data safety, content rating, target audience, ads, app access) từ dependency, `Info.plist`, `AndroidManifest.xml` và code; hỏi người dùng phần code không cho biết; giữ câu trả lời iOS và Android khớp nhau; chạy `doctor` và `checklist`.
+- Skill dùng được với 3 AI agent: Claude Code (`.claude/skills/`), Codex và Antigravity (cùng đọc `.agents/skills/`). Nội dung skill trung lập, không nhắc riêng agent nào. appship không gọi AI và không cần key AI.
+- `appship init --agents claude|codex|antigravity|all|none` (khi chạy tương tác thì hỏi bằng checkbox; mặc định Claude Code như trước).
+- Lệnh `appship skills` (`list`, mặc định, trạng thái theo từng agent) và `appship skills add [name…] [--agent …] [--force] [--dir]`: cài skill cho dự án đã `init` trước khi có skill hoặc khi đổi agent; không có `--agent` thì cài vào các thư mục agent đã có (chưa có thì `.claude/skills/`); không ghi đè bản đã sửa trừ khi có `--force`. Thay cho hướng dẫn `cp -r` bằng tay.
+- Tài liệu `docs/skills.md`: cách cài và chạy skill với Claude Code, Codex, Antigravity. `design.md` thêm quyết định "soạn nội dung bằng AI là skill, không phải tính năng của CLI".
+- `doctor` kiểm tra thêm ảnh: Play `phoneScreenshots` tối đa 8 ảnh, mỗi cạnh 320–3840 px và cạnh dài ≤ 2 lần cạnh ngắn (ảnh chụp thô 1080x2400 giờ bị báo lỗi thay vì bị Play từ chối lúc push); cảnh báo PNG có kênh alpha (screenshot iOS, `phoneScreenshots`, `featureGraphic`) và thư mục iOS trộn file `*_framed` với file thường.
+- Sửa tài liệu: category App Privacy "Khác" là `OTHER_DATA` (không phải `OTHER_DATA_TYPES`), theo `Spaceship::ConnectAPI::AppDataUsageCategory`.
+- Tài liệu mới `docs/skills.md`; cập nhật `commands.md`, `configuration.md`, `getting-started.md`, `questionnaire.md`, `development.md`, README (EN, VI) và trang docs của website (8 ngôn ngữ). Trang chủ website (8 ngôn ngữ) có thêm mục tính năng "Your AI agent drafts the store content".
+
 ## 0.1.0 — 2026-10-01
 
 Bản đầu tiên.

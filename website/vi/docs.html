@@ -315,19 +315,40 @@ appship init --profile my-company</code></pre>
         <li>Skill <code>release-notes</code> nắm quy ước của từng ngôn ngữ: xưng hô trang trọng hay thân mật, biến thể theo vùng, dấu câu full-width của tiếng Nhật và khoảng trắng trước <code>? ! : ;</code> trong tiếng Pháp.</li>
       </ul>
 
-      <h3 class="doc-h3" id="release-notes-skill">Viết release notes bằng Claude Code</h3>
-      <p><code>appship init</code> cài một skill Claude Code tên <code>release-notes</code> vào <code>.claude/skills/</code> của dự án. Trước khi release, hãy nhờ Claude "write the release notes for this version" (hoặc chạy <code>/release-notes</code>). Skill sẽ:</p>
+      <h3 class="doc-h3" id="release-notes-skill">Viết release notes bằng AI coding agent</h3>
+      <p><code>appship init</code> cài một skill tên <code>release-notes</code> cho AI coding agent của bạn (Claude Code, Codex hoặc Antigravity): vào <code>.claude/skills/</code> với Claude Code, <code>.agents/skills/</code> với Codex và Antigravity. Trước khi release, hãy nhờ agent "write the release notes for this version" (hoặc chạy <code>/release-notes</code> trong Claude Code, <code>$release-notes</code> trong Codex). Skill sẽ:</p>
       <ol class="doc-steps">
         <li>Đọc <code>release.yml</code> và các thư mục locale.</li>
         <li>Đọc <code>git log</code> từ tag gần nhất, và <code>CHANGELOG.md</code> nếu bạn có.</li>
         <li>Viết release notes ngắn, hướng tới người dùng bằng ngôn ngữ chính của bạn, rồi dịch sang mọi locale còn lại.</li>
         <li>Điều chỉnh cho vừa giới hạn của store, ghi file, rồi chạy <code>appship doctor</code>.</li>
       </ol>
-      <p>Release notes vẫn là file thường, nên bạn có thể xem lại và sửa. Skill hỏi trước khi ghi đè nội dung đã có, và không bao giờ đẩy gì lên store. Với dự án được thiết lập trước khi có tính năng này, hãy chép skill vào bằng tay:</p>
+      <p>Release notes vẫn là file thường, nên bạn có thể xem lại và sửa. Skill hỏi trước khi ghi đè nội dung đã có, và không bao giờ đẩy gì lên store.</p>
+
+      <h3 class="doc-h3" id="more-skills">Ảnh chụp màn hình và khai báo store bằng AI agent</h3>
+      <p><code>init</code> cài thêm hai skill nữa bên cạnh. Giống <code>release-notes</code>, chúng chỉ ghi file trong <code>release/</code>, chạy <code>appship doctor</code>, và để việc đẩy lên store cho bạn.</p>
+      <ul class="doc-list">
+        <li><code>store-screenshots</code>: cùng bạn lên kế hoạch các ảnh, chụp từ iOS Simulator hoặc Android emulator, thêm một dòng tiêu đề đã dịch cho từng ngôn ngữ, và xuất mọi ảnh ở kích thước mà từng store chấp nhận (iPhone 6.9" 1320×2868, iPad 13" khi app chạy trên iPad, Play 1080×1920), kèm icon và feature graphic cho Play.</li>
+        <li><code>app-content</code>: điền <code>release/questionnaire.yml</code> (age rating, App Privacy, export compliance, Data safety, content rating, đối tượng mục tiêu, quảng cáo, quyền truy cập app) dựa trên dependency, quyền và code của bạn, hỏi bạn những gì code không thể hiện được, và giữ câu trả lời nhất quán giữa hai store.</li>
+      </ul>
+      <div class="table-scroll">
+        <table class="doc-table">
+          <thead><tr><th scope="col">Agent</th><th scope="col">Thư mục skill</th><th scope="col">Cách chạy</th></tr></thead>
+          <tbody>
+            <tr><td>Claude Code</td><td><code>.claude/skills/</code></td><td><code>/store-screenshots</code></td></tr>
+            <tr><td>Codex</td><td><code>.agents/skills/</code></td><td><code>$store-screenshots</code> hoặc <code>/skills</code></td></tr>
+            <tr><td>Antigravity</td><td><code>.agents/skills/</code></td><td>nhờ "use the store-screenshots skill"</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>appship không tự gọi AI nào. Bạn mở agent ở thư mục gốc của dự án, đăng nhập bằng tài khoản của chính bạn, và duyệt các lệnh mà agent xin chạy.</p>
+      <p>Chọn agent khi chạy <code>init</code>, hoặc cài và cập nhật skill sau, chẳng hạn sau khi nâng cấp appship:</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
-<pre><code>mkdir -p .claude/skills
-cp -r "$(npm root -g)/appship-ai/skills/release-notes" .claude/skills/</code></pre>
+<pre><code>appship init --agents all             # skill cho Claude Code, Codex và Antigravity
+appship skills                        # mỗi agent đang có những skill nào
+appship skills add --agent codex      # cài cho Codex / Antigravity (.agents/skills/)
+appship skills add --force            # thay bằng bản của phiên bản này</code></pre>
       </div>
     </section>
 
@@ -385,7 +406,7 @@ appship submit</code></pre>
       <p>Tăng version và build number trong dự án, rồi:</p>
       <div class="code-card">
         <div class="code-name">terminal<button class="copy copy-sm" type="button">Sao chép</button></div>
-<pre><code><span class="y-c"># nhờ Claude Code viết release notes (xem Ngôn ngữ và release notes)</span>
+<pre><code><span class="y-c"># nhờ AI agent viết release notes (xem Ngôn ngữ và release notes)</span>
 appship upload --build   <span class="y-c"># build, rồi TestFlight + track Google Play (mặc định internal)</span>
 <span class="y-c"># test trên TestFlight / internal track</span>
 appship submit           <span class="y-c"># iOS: App Review · Android: promote lên production</span>

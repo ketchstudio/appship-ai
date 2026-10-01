@@ -43,14 +43,15 @@ Mở `release/release.yml` để kiểm tra lại, đặc biệt là `artifact` 
 
 ## 3. Điền nội dung
 
-1. **`release/questionnaire.yml`:** thay mọi `TODO`. Xem [questionnaire.md](questionnaire.md).
+1. **`release/questionnaire.yml`:** thay mọi `TODO`. Xem [questionnaire.md](questionnaire.md). Có thể nhờ AI agent (Claude Code, Codex, Antigravity) điền bằng skill `app-content` ([skills.md](skills.md)).
 2. **Metadata:** `release/ios/metadata/<locale>/*.txt` và `release/android/metadata/<locale>/*.txt`. Muốn nhiều ngôn ngữ (kể cả release notes riêng từng ngôn ngữ): khai báo `ios.locales` / `android.locales` trong `release.yml` rồi tạo thư mục tương ứng, xem [configuration.md](configuration.md).
 3. **Screenshots:**
    - iOS: `release/ios/screenshots/<locale>/`. Tối thiểu một bộ iPhone 6.9" (1320x2868) hoặc 6.5" (1284x2778).
    - Android: `release/android/metadata/<locale>/images/`
      - `icon.png` 512x512
      - `featureGraphic.png` 1024x500
-     - `phoneScreenshots/`: tối thiểu 2 ảnh
+     - `phoneScreenshots/`: 2–8 ảnh, nên dùng 1080x1920 (cạnh dài không quá 2 lần cạnh ngắn)
+   - Skill `store-screenshots` (dùng với Claude Code, Codex hoặc Antigravity) chụp từ Simulator/emulator, thêm tiêu đề theo từng ngôn ngữ và xuất đúng kích thước ([skills.md](skills.md)).
 
 Nếu app **đã có trên store**, bạn có thể kéo nội dung hiện tại về thay vì điền tay:
 

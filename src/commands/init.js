@@ -2,7 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { checkbox, confirm, input, select } from '@inquirer/prompts';
 import { AppshipError, log } from '../log.js';
-import { CONFIG_FILE, KEYS_DIR, QUESTIONNAIRE_FILE, RELEASE_DIR, SKILLS_DIR, TEMPLATES_DIR, WORK_DIR } from '../paths.js';
+import { CONFIG_FILE, KEYS_DIR, QUESTIONNAIRE_FILE, RELEASE_DIR, TEMPLATES_DIR, WORK_DIR } from '../paths.js';
+import { AGENTS, agentDirs, installSkills, parseAgents } from '../skills.js';
+import { printHowToRun } from './skills.js';
 import { listProfiles } from '../credentials.js';
 import { FRAMEWORKS, detectAndroidPackage, detectAppName, detectFramework, detectIosBundleId } from '../detect.js';
 import { androidTemplates, iosTemplates, writeFiles } from '../metadata.js';
@@ -102,19 +104,6 @@ function render(template, vars) {
   return template.replace(/\{\{(\w+)\}\}/g, (_, key) => vars[key] ?? '');
 }
 
-/** Copy the bundled Claude Code skills into <project>/.claude/skills/. Existing skills are left alone. */
-export function installSkills(root) {
-  const installed = [];
-  for (const entry of fs.readdirSync(SKILLS_DIR, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    const dest = path.join(root, '.claude', 'skills', entry.name);
-    if (fs.existsSync(dest)) continue;
-    fs.cpSync(path.join(SKILLS_DIR, entry.name), dest, { recursive: true });
-    installed.push(entry.name);
-  }
-  return installed;
-}
-
 export function ensureGitignore(root) {
   const file = path.join(root, '.gitignore');
   const current = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
@@ -145,6 +134,7 @@ async function gather(root, opts) {
     locale: opts.locale ?? 'en-US',
     profile: opts.profile ?? null,
     presetIds: opts.locales ? parsePresetIds(opts.locales) : [],
+    agents: opts.agents === 'none' ? [] : opts.agents ? parseAgents(opts.agents) : ['claude'],
   };
 
   if (interactive) {
@@ -169,6 +159,12 @@ async function gather(root, opts) {
       a.presetIds = await checkbox({
         message: 'Also create store listings for popular markets? (space to select, enter to skip)',
         choices: LOCALE_PRESET.map((p) => ({ value: p.id, name: `${p.name} (${p.ios.join(', ')})` })),
+      });
+    }
+    if (!opts.agents) {
+      a.agents = await checkbox({
+        message: 'AI agents to install the appship skills for (release notes, screenshots, store questionnaire):',
+        choices: Object.entries(AGENTS).map(([value, ag]) => ({ value, name: `${ag.label} (${ag.dir}/)`, checked: a.agents.includes(value) })),
       });
     }
     if (profiles.length) {
@@ -257,8 +253,14 @@ export async function initCommand(opts) {
     log.info(`  Extra languages: ${a.presetIds.join(', ')}. Replace the TODO text in their metadata folders with real translations, and enable each language in Play Console.`);
   }
 
-  const skills = installSkills(root);
-  if (skills.length) log.ok(`.claude/skills/${skills.join(', ')} (Claude Code skill: ask it to write your release notes)`);
+  if (a.agents.length) {
+    const { installed } = installSkills(root, { agents: a.agents });
+    for (const dir of agentDirs(a.agents)) {
+      const names = installed.filter((rel) => rel.startsWith(`${dir}/`)).map((rel) => rel.slice(dir.length + 1));
+      if (names.length) log.ok(`${dir}/{${names.join(',')}} (agent skills; see appship skills list)`);
+    }
+    if (installed.length) printHowToRun(a.agents);
+  }
 
   log.step('Next steps');
   const steps = [
