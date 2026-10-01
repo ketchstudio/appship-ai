@@ -7,6 +7,9 @@ Release **Android (Google Play)** and **iOS (App Store)** apps from a single con
 Each project only gets a `release/` folder with its config, store listing and questionnaire answers. All release logic lives in the tool, so updating appship updates every project that uses it.
 
 ```bash
+# install (Node 22+ and fastlane required, see Install below)
+npm i -g git+https://github.com/ketchstudio/appship-ai.git
+
 appship init            # once per project
 appship doctor          # check everything before releasing
 appship first-release   # first time on the stores
@@ -49,13 +52,18 @@ appship wraps fastlane in a small CLI:
 ## Install
 
 ```bash
-npm i -g appship-ai          # installs the `appship` command (alias: `appship-ai`)
-npx appship-ai --help        # or run without installing
+brew install fastlane
+
+# from GitHub: installs the `appship` command (alias: `appship-ai`)
+npm i -g git+https://github.com/ketchstudio/appship-ai.git
+appship --help
 
 # from source
 git clone https://github.com/ketchstudio/appship-ai.git
 cd appship-ai && npm install && npm link
 ```
+
+The package is not on npm yet. Once it is published, `npm i -g appship-ai` and `npx appship-ai --help` will also work.
 
 ## Quick start
 
