@@ -1,6 +1,6 @@
 {
   "name": "appship-ai",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Release Android & iOS apps to Google Play and the App Store from a single config, powered by fastlane.",
   "type": "module",
   "bin": {
