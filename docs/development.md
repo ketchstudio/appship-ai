@@ -61,7 +61,7 @@ Thông tin package:
 **Cài từ git** (một phiên bản cụ thể theo tag):
 
 ```bash
-npm i -g git+https://github.com/ketchstudio/appship-ai.git#v0.1.0
+npm i -g git+https://github.com/ketchstudio/appship-ai.git#v0.2.0
 ```
 
 **Đã publish:** `appship-ai@0.1.0` lên npm ngày 2026-10-01, tài khoản npm `jackty` (tài khoản cá nhân), tag git `v0.1.0`. Publish chưa kèm bước "chạy thật với store" (xem `roadmap.md`).

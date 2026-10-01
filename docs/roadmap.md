@@ -2,7 +2,7 @@
 
 Cập nhật lần cuối: 2026-10-01
 
-## Trạng thái hiện tại (v0.1.0)
+## Trạng thái hiện tại (v0.2.0)
 
 **Đã xong**
 
@@ -75,7 +75,7 @@ Cập nhật lần cuối: 2026-10-01
 - [x] Trang giấy phép mã nguồn mở `license.html` (8 ngôn ngữ): tóm tắt MIT, toàn văn, giấy phép của fastlane và 4 dependency npm (đối chiếu `node_modules` và fastlane 2.232.2), nhãn hiệu Apple/Google. Link ở footer. Bản dịch chưa có người bản ngữ rà soát, và phần tóm tắt "In plain words" chưa qua luật sư.
 - [x] SEO cho website: `canonical`, `hreflang` tuyệt đối, Open Graph, Twitter Card, JSON-LD, `robots`, `sitemap.xml`, `robots.txt`, ảnh `og.png`; title trang chủ có mô tả thay vì chỉ "appship". Chưa làm: đăng ký sitemap trong Google Search Console / Bing Webmaster, kiểm tra bằng công cụ Rich Results sau khi deploy.
 - [x] Trang giới thiệu tĩnh trong `website/` (tiếng Anh), gồm trang chủ và hướng dẫn tích hợp (`docs.html`). Đã deploy tại https://appship.ketchsoft.com (cách cập nhật: `docs/development.md`). Khi sửa `docs/getting-started.md`, `credentials.md` hoặc `ci.md`, nhớ sửa cả `website/docs.html`.
-- [ ] Repo công khai và liên kết với website: code và tài liệu đã sửa (URL `ketchstudio/appship-ai`, `homepage` = website, footer có link GitHub, README có link website). **Còn lại, cần quyền admin của repo:** đổi tên repo, chuyển sang Public, đặt ô Website trong Settings, rồi deploy website (chỉ sau khi repo đã public, nếu không link 404) và đổi `git remote`. Lịch sử git đã quét, không có key.
+- [ ] Repo công khai và liên kết với website: code và tài liệu đã sửa (URL `ketchstudio/appship-ai`, `homepage` = website, footer có link GitHub, README có link website). Đã xong (kiểm tra 2026-10-01): repo `ketchstudio/appship-ai` đã Public, `git remote` trỏ đúng, website đã deploy. **Còn lại:** kiểm tra ô Website trong Settings của repo. Push cần tài khoản GitHub `ketchsoft` (tài khoản `leoHN` bị 403): `gh auth switch -u ketchsoft`. Lịch sử git đã quét, không có key.
 - Site tài liệu (VitePress) nếu có người dùng bên ngoài.
 - Sinh tự động phần tham chiếu lệnh và config từ code.
 - Ký iOS: tích hợp `fastlane match` (hiện chỉ hướng dẫn chạy trước `build_command`); tự sinh CSR cho người không phải owner.

@@ -17,7 +17,7 @@ appship upload --build  # build, then push to TestFlight / a Google Play track
 appship submit          # iOS: send for App Review · Android: promote to production
 ```
 
-> **Status: v0.1.0, early.** The code is covered by tests and dry-runs, but it has not yet been run against the live stores. Try `--dry-run` and read-only commands such as `appship status` first. See the [roadmap](docs/roadmap.md) (Vietnamese).
+> **Status: v0.2.0, early.** The code is covered by tests and dry-runs, but it has not yet been run against the live stores. Try `--dry-run` and read-only commands such as `appship status` first. See the [roadmap](docs/roadmap.md) (Vietnamese).
 
 ## Why
 

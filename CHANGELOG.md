@@ -1,6 +1,6 @@
 # Changelog
 
-## Chưa phát hành
+## 0.2.0 — 2026-10-01
 
 - Skill mới, được `init` cài cùng `release-notes`:
   - `store-screenshots`: lên kế hoạch ảnh, chụp từ iOS Simulator (`simctl`) hoặc Android emulator (`adb`, demo mode), dịch tiêu đề cho từng locale, dàn ảnh bằng template HTML và render đúng kích thước bằng headless browser (iPhone 1320x2868, iPad 2064x2752 khi app chạy trên iPad, Play 1080x1920, feature graphic 1024x500, icon 512x512). Kích thước và luật đặt tên đối chiếu với `Deliver::AppScreenshot`, `Deliver::Loader` và `Supply` của fastlane 2.232.2.
