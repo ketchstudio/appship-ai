@@ -69,7 +69,7 @@ Cập nhật lần cuối: 2026-10-01
 
 - [x] Đã publish `appship-ai@0.2.0` lên npm (2026-10-01, tag `latest`, tag git `v0.2.0`): skill `store-screenshots`, `app-content`, lệnh `appship skills`, hỗ trợ Codex/Antigravity; website đã deploy `v0.2.0`.
 - [x] Đã publish `appship-ai@0.1.0` lên npm (2026-10-01, tài khoản `jackty`) và gắn tag `v0.1.0`; các bước và lưu ý về 2FA/token ở `docs/development.md`. Publish diễn ra trước khi chạy thật với store, nên gói còn ở trạng thái thử nghiệm; cân nhắc `npm deprecate` hoặc dist-tag `beta` nếu phát hiện lỗi lớn khi chạy thật.
-- [ ] Chuyển tài khoản/org npm sang tên Ketchsoft (hiện đứng tên cá nhân `jackty`), thu hồi các access token đã dùng để publish (kể cả token publish `0.2.0`, đã bị dán vào chat).
+- [ ] Chuyển tài khoản/org npm sang tên Ketchsoft (hiện đứng tên cá nhân `jackty`), thu hồi các access token đã dùng để publish (token publish `0.2.0` đã revoke).
 - Dịch các tài liệu chính (`getting-started`, `credentials`) sang tiếng Anh nếu có người dùng nước ngoài.
 - Homebrew tap (tuỳ chọn).
 - [x] Website 8 ngôn ngữ (en, vi, ja, fr, es, pt-BR, de, ko) với menu dropdown chọn ngôn ngữ; cách thêm ngôn ngữ ở `docs/development.md`. Bản dịch do máy dịch, chưa có người bản ngữ rà soát.
