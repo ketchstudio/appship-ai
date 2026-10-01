@@ -36,7 +36,7 @@ jobs:
       - name: Install appship and fastlane
         run: |
           brew install fastlane
-          npm i -g appship-ai   # or: npm i -g git+https://github.com/ketchstudio/auto-app-store-upload-plugin.git
+          npm i -g appship-ai   # or: npm i -g git+https://github.com/ketchstudio/appship-ai.git
 
       # Android signing: restore the upload keystore referenced by android/key.properties.
       - name: Android keystore

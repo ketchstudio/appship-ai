@@ -33,11 +33,11 @@
   "author": "Ketchsoft",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ketchstudio/auto-app-store-upload-plugin.git"
+    "url": "git+https://github.com/ketchstudio/appship-ai.git"
   },
-  "homepage": "https://github.com/ketchstudio/auto-app-store-upload-plugin#readme",
+  "homepage": "https://appship.ketchsoft.com",
   "bugs": {
-    "url": "https://github.com/ketchstudio/auto-app-store-upload-plugin/issues"
+    "url": "https://github.com/ketchstudio/appship-ai/issues"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.7.2",

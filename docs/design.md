@@ -95,7 +95,7 @@ Mỗi dự án chỉ có thêm thư mục `release/`. **Dự án không có Fast
 - Tên npm package: **`appship-ai`**. Tên `appship` đã có người dùng.
 - Lệnh chính: **`appship`**. Có thêm alias `appship-ai` để `npx appship-ai` chạy được.
 - **Mã nguồn mở, license MIT.** Lý do: publish lên npm thì code vốn đã public, và người dùng phải đưa key store cho tool nên họ cần đọc được code để tin tưởng. Nếu sau này có tính năng AI trả phí, tính năng đó sẽ là dịch vụ riêng (open-core); phần CLI vẫn mở.
-- Repo: `ketchstudio/auto-app-store-upload-plugin`.
+- Repo: `ketchstudio/appship-ai`, công khai, trùng tên package npm. Website https://appship.ketchsoft.com và repo trỏ lẫn nhau.
 - **Sản phẩm của Ketchsoft.** Bản quyền trong `LICENSE` và trường `author` trong `package.json` đứng tên Ketchsoft. README, website và tài liệu ghi "powered by Ketchsoft", không ghi tên hay email cá nhân.
 - README ở gốc repo viết **tiếng Anh** vì đó là trang hiển thị trên npm và GitHub. Bản tiếng Việt ở `docs/README.vi.md`. Tài liệu chi tiết trong `docs/` vẫn viết tiếng Việt.
 - Thứ tự phát hành:

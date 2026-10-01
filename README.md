@@ -1,6 +1,6 @@
 # appship-ai
 
-**English** · [Tiếng Việt](docs/README.vi.md)
+**English** · [Tiếng Việt](docs/README.vi.md) · [Website](https://appship.ketchsoft.com)
 
 Release **Android (Google Play)** and **iOS (App Store)** apps from a single config file, powered by [fastlane](https://fastlane.tools).
 
@@ -53,8 +53,8 @@ npm i -g appship-ai          # installs the `appship` command (alias: `appship-a
 npx appship-ai --help        # or run without installing
 
 # from source
-git clone https://github.com/ketchstudio/auto-app-store-upload-plugin.git
-cd auto-app-store-upload-plugin && npm install && npm link
+git clone https://github.com/ketchstudio/appship-ai.git
+cd appship-ai && npm install && npm link
 ```
 
 ## Quick start
@@ -203,7 +203,7 @@ The detailed guides are currently in Vietnamese:
 
 ## Contributing
 
-Issues and pull requests are welcome at [ketchstudio/auto-app-store-upload-plugin](https://github.com/ketchstudio/auto-app-store-upload-plugin/issues).
+Issues and pull requests are welcome at [ketchstudio/appship-ai](https://github.com/ketchstudio/appship-ai/issues).
 
 ```bash
 npm install

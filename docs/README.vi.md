@@ -1,6 +1,6 @@
 # appship-ai (tiếng Việt)
 
-[English](../README.md) · **Tiếng Việt**
+[English](../README.md) · **Tiếng Việt** · [Website](https://appship.ketchsoft.com/vi/)
 
 Tự động release app **Android (Google Play)** và **iOS (App Store)** từ một file config, chạy trên nền [fastlane](https://fastlane.tools).
 
@@ -26,11 +26,11 @@ npm i -g appship-ai            # cung cấp lệnh appship (và alias appship-ai
 npx appship-ai doctor          # chạy không cần cài
 
 # Cài từ git
-npm i -g git+https://github.com/ketchstudio/auto-app-store-upload-plugin.git
+npm i -g git+https://github.com/ketchstudio/appship-ai.git
 
 # Khi đang phát triển tool
-git clone https://github.com/ketchstudio/auto-app-store-upload-plugin.git
-cd auto-app-store-upload-plugin && npm install && npm link
+git clone https://github.com/ketchstudio/appship-ai.git
+cd appship-ai && npm install && npm link
 ```
 
 ## Bắt đầu nhanh

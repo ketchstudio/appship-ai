@@ -54,13 +54,13 @@ Thông tin package:
 
 - Tên: `appship-ai` (tên `appship` đã có người dùng). Cài ra lệnh `appship`, kèm alias `appship-ai` để `npx appship-ai …` chạy được.
 - License: MIT (`LICENSE`), bản quyền Ketchsoft.
-- Repo: https://github.com/ketchstudio/auto-app-store-upload-plugin. `repository`, `homepage` và `bugs` trong `package.json` đều trỏ về đây.
+- Repo (public): https://github.com/ketchstudio/appship-ai. `repository` và `bugs` trong `package.json` trỏ về repo; `homepage` trỏ về website https://appship.ketchsoft.com. Trong Settings của repo, ô Website cũng đặt là URL này, và footer của website có link GitHub nên hai bên trỏ lẫn nhau.
 - README tiếng Anh ở gốc repo (hiển thị trên npm và GitHub); bản tiếng Việt ở `docs/README.vi.md`.
 
 **Cài từ git** (trước khi lên npm):
 
 ```bash
-npm i -g git+https://github.com/ketchstudio/auto-app-store-upload-plugin.git#v0.1.0
+npm i -g git+https://github.com/ketchstudio/appship-ai.git#v0.1.0
 ```
 
 **Publish lên npm (lần đầu):**
@@ -102,11 +102,15 @@ scripts/deploy-website.sh
 
 Script chỉ đồng bộ thư mục `/var/www/html/appship`, không đụng vào nginx. Có thể đổi host, key hoặc thư mục qua `APPSHIP_WEB_HOST`, `APPSHIP_WEB_KEY`, `APPSHIP_WEB_DIR`. CSS/JS được cache 1 giờ, nên trình duyệt có thể cần tải lại cứng để thấy thay đổi ngay.
 
-**Nhiều ngôn ngữ:** bản tiếng Anh nằm ở gốc `website/`, mỗi ngôn ngữ khác là một thư mục con có đủ `index.html` và `docs.html` (`vi`, `ja`, `fr`, `es`, `pt` = pt-BR, `de`, `ko`), dùng chung `style.css` và `main.js`. Menu chọn ngôn ngữ là `<details class="lang-menu">` (chạy được khi tắt JS), hiện ngôn ngữ đang xem, cùng các thẻ `hreflang` trong `<head>`. Cả hai nằm giữa cặp comment `langs:head` / `langs:nav` và được sinh bởi `scripts/website-langs.mjs`. Đừng sửa tay hai khối này.
+**Nhiều ngôn ngữ:** bản tiếng Anh nằm ở gốc `website/`, mỗi ngôn ngữ khác là một thư mục con có đủ `index.html`, `docs.html` và `license.html` (`vi`, `ja`, `fr`, `es`, `pt` = pt-BR, `de`, `ko`), dùng chung `style.css` và `main.js`. Menu chọn ngôn ngữ là `<details class="lang-menu">` (chạy được khi tắt JS), hiện ngôn ngữ đang xem, cùng các thẻ `hreflang` trong `<head>`. Cả hai nằm giữa cặp comment `langs:head` / `langs:nav` và được sinh bởi `scripts/website-langs.mjs`. Đừng sửa tay hai khối này.
+
+**Trang giấy phép** (`license.html`): tóm tắt MIT, toàn văn giấy phép, giấy phép của phần mềm bên thứ ba và lưu ý nhãn hiệu; link ở footer mọi trang. Toàn văn MIT luôn giữ tiếng Anh ở mọi ngôn ngữ và phải khớp với file `LICENSE` ở gốc repo. Khi đổi `LICENSE` hoặc thêm/bớt dependency trong `package.json`, sửa bảng "Third-party software" và văn bản ở cả 8 bản.
+
+**SEO:** khối `langs:head` còn chứa `canonical`, `hreflang` tuyệt đối (kèm `x-default`), `robots`, `theme-color`, Open Graph (kèm `og:locale` và `og:locale:alternate`), Twitter Card và JSON-LD (`SoftwareApplication` cho trang chủ, `TechArticle` cho docs). Cùng script đó sinh `website/sitemap.xml` (có `xhtml:link` các ngôn ngữ) và `website/robots.txt`. Dữ liệu lấy từ: `<meta name="description">` và `<title>` của từng trang (trang docs); `<title>` trang chủ lấy từ trường `title` trong `LANGS`. Muốn đổi title hay mô tả thì sửa ở đó (hoặc trong trang), rồi chạy lại script. Ảnh chia sẻ `website/og.png` (1200×630) là ảnh tĩnh, sinh bằng cách chụp một trang HTML; đổi thương hiệu thì chụp lại. Domain nằm ở hằng `BASE` trong script.
 
 - Sửa nội dung: sửa bản tiếng Anh trước, rồi sửa các bản dịch tương ứng. Các bản dịch phải giữ nguyên class, id, anchor `#...` và SVG; chỉ đổi chữ. Nhãn nút Copy của từng ngôn ngữ nằm trong `LABELS` ở `website/main.js`.
-- Thêm ngôn ngữ: thêm dòng vào `LANGS` trong `scripts/website-langs.mjs` (thư mục, mã `lang` HTML, tên hiển thị), thêm nhãn vào `LABELS` trong `main.js`, tạo `index.html` và `docs.html` trong thư mục mới (trong bản dịch: `../style.css`, `../main.js`, chép nguyên hai khối marker), rồi chạy `node scripts/website-langs.mjs` để cập nhật menu và `hreflang` của mọi trang.
-- Không có link tới GitHub trên website (chủ định); kiểm tra bằng `grep -ri github.com website/`.
+- Thêm ngôn ngữ: thêm dòng vào `LANGS` trong `scripts/website-langs.mjs` (thư mục, mã `lang` HTML, mã `og:locale`, tên hiển thị, title trang chủ), thêm nhãn vào `LABELS` trong `main.js`, tạo `index.html`, `docs.html` và `license.html` trong thư mục mới (trong bản dịch: `../style.css`, `../main.js`, chép nguyên hai khối marker), rồi chạy `node scripts/website-langs.mjs` để cập nhật menu, `hreflang`, thẻ SEO và sitemap của mọi trang.
+- Footer của mọi trang có link GitHub (`https://github.com/ketchstudio/appship-ai`, mỗi trang đúng một link). Nếu đổi tên repo thì sửa ở 24 trang; kiểm tra bằng `grep -rc 'ketchstudio/appship-ai' website/`. Chỉ deploy website sau khi repo đã public, nếu không link sẽ 404.
 
 **Khi sửa config nginx:** server đang chạy nhiều site khác. Chỉ sửa file của appship, luôn chạy `nginx -t` trước và chỉ `systemctl reload nginx` khi test đạt.
 

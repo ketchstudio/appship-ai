@@ -855,9 +855,26 @@ pre code { background: none; padding: 0; font-size: inherit; }
   .step-no { width: 28px; height: 28px; line-height: 28px; font-size: 0.8rem; }
 }
 
+.doc-table-pkg td:first-child { white-space: nowrap; overflow-wrap: normal; }
+.doc-table-pkg th:nth-child(2), .doc-table-pkg td:nth-child(2) { white-space: nowrap; }
+
 .mono-fail, .mono-warn { font-family: var(--font-mono); font-weight: 600; }
 .mono-fail { color: #d0463a; }
 .mono-warn { color: var(--login); }
+
+.license-text {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+.license-text p { overflow-wrap: anywhere; }
+.license-title { font: 500 0.8rem var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 
 .doc-ref .doc-h2 { font-size: 1.35rem; }
 .doc-ref .eyebrow { margin-bottom: -6px; }
