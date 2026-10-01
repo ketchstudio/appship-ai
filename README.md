@@ -8,7 +8,7 @@ Each project only gets a `release/` folder with its config, store listing and qu
 
 ```bash
 # install (Node 22+ and fastlane required, see Install below)
-npm i -g git+https://github.com/ketchstudio/appship-ai.git
+npm i -g appship-ai
 
 appship init            # once per project
 appship doctor          # check everything before releasing
@@ -54,16 +54,18 @@ appship wraps fastlane in a small CLI:
 ```bash
 brew install fastlane
 
-# from GitHub: installs the `appship` command (alias: `appship-ai`)
-npm i -g git+https://github.com/ketchstudio/appship-ai.git
+# from npm: installs the `appship` command (alias: `appship-ai`)
+npm i -g appship-ai
 appship --help
+npx appship-ai --help        # or run without installing
+
+# from GitHub
+npm i -g git+https://github.com/ketchstudio/appship-ai.git
 
 # from source
 git clone https://github.com/ketchstudio/appship-ai.git
 cd appship-ai && npm install && npm link
 ```
-
-The package is not on npm yet. Once it is published, `npm i -g appship-ai` and `npx appship-ai --help` will also work.
 
 ## Quick start
 

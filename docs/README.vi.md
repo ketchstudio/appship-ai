@@ -21,13 +21,13 @@ Yêu cầu: macOS (để build/upload iOS), Node 22+, fastlane.
 ```bash
 brew install fastlane
 
-# Cài từ GitHub: cung cấp lệnh appship (và alias appship-ai)
-npm i -g git+https://github.com/ketchstudio/appship-ai.git
+# Từ npm: cung cấp lệnh appship (và alias appship-ai)
+npm i -g appship-ai
 appship doctor
+npx appship-ai doctor          # hoặc chạy không cần cài
 
-# Từ npm (sau khi đã publish; hiện chưa có trên npm)
-# npm i -g appship-ai
-# npx appship-ai doctor          # chạy không cần cài
+# Từ GitHub
+npm i -g git+https://github.com/ketchstudio/appship-ai.git
 
 # Khi đang phát triển tool
 git clone https://github.com/ketchstudio/appship-ai.git

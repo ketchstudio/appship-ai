@@ -57,20 +57,22 @@ Thông tin package:
 - Repo (public): https://github.com/ketchstudio/appship-ai. `repository` và `bugs` trong `package.json` trỏ về repo; `homepage` trỏ về website https://appship.ketchsoft.com. Trong Settings của repo, ô Website cũng đặt là URL này, và footer của website có link GitHub nên hai bên trỏ lẫn nhau.
 - README tiếng Anh ở gốc repo (hiển thị trên npm và GitHub); bản tiếng Việt ở `docs/README.vi.md`.
 
-**Cài từ git** (trước khi lên npm):
+**Cài từ git** (một phiên bản cụ thể theo tag):
 
 ```bash
 npm i -g git+https://github.com/ketchstudio/appship-ai.git#v0.1.0
 ```
 
-**Publish lên npm (lần đầu):**
+**Đã publish:** `appship-ai@0.1.0` lên npm ngày 2026-10-01, tài khoản npm `jackty` (tài khoản cá nhân), tag git `v0.1.0`. Publish chưa kèm bước "chạy thật với store" (xem `roadmap.md`).
 
-1. Chạy thật với store ít nhất một lần (xem mục "Chưa kiểm chứng" trong `roadmap.md`).
-2. Tạo tài khoản trên npmjs.com và **bật 2FA** (Account → Two-Factor Authentication).
-3. `npm login`
-4. Kiểm tra tên còn trống: `npm view appship-ai` (lỗi 404 nghĩa là còn trống).
-5. Xem trước nội dung package: `npm pack --dry-run`. Không được có key hay file `.env`.
-6. `npm test && npm publish`
+**Publish lên npm (các bước đã dùng):**
+
+1. Tài khoản npmjs.com có **bật 2FA** (Account → Two-Factor Authentication).
+2. `npm login`, rồi `npm whoami` để kiểm tra.
+3. Xem trước nội dung package: `npm pack --dry-run`. Không được có key hay file `.env`.
+4. `npm test && npm publish --access public`.
+
+Khi 2FA chỉ dùng passkey (không có authenticator app), CLI không lấy được OTP: `npm publish` báo `EOTP` và không đưa link xác nhận qua trình duyệt. Hai cách: thêm authenticator app làm 2FA rồi `npm publish --otp=<mã>`, hoặc dùng Granular Access Token (Read and write, **All packages** vì gói mới chưa tồn tại, **bật Bypass two-factor authentication**), đặt bằng `npm config set //registry.npmjs.org/:_authToken <token>`. Thiếu Read and write/All packages thì npm trả 403; thiếu Bypass 2FA thì vẫn trả `EOTP`. Token không được dán vào chat hay commit; publish xong thì thu hồi token và `npm config delete //registry.npmjs.org/:_authToken`. Sau lần publish đầu, `npm view` có thể trả 404 vài phút vì registry cache kết quả "không tìm thấy"; thêm `--prefer-online` để kiểm tra.
 
 **Ra phiên bản mới:**
 
