@@ -20,6 +20,7 @@ Cập nhật lần cuối: 2026-10-01
 - [x] Skill `store-screenshots` (chụp từ Simulator/emulator, tiêu đề theo ngôn ngữ, render đúng kích thước iPhone 6.9", iPad 13", Play 1080x1920, icon và feature graphic) và skill `app-content` (điền `questionnaire.yml` từ dependency, quyền và code, giữ hai store khớp nhau). Lệnh `appship skills list|add [--agent] [--force]` để cài/cập nhật skill cho dự án đã `init` từ trước. Chi tiết: `docs/skills.md`
 - [x] Skill dùng được với Claude Code (`.claude/skills/`), Codex và Antigravity (`.agents/skills/`): `init --agents` (hỏi khi chạy tương tác), `skills add --agent`, `skills list` theo từng agent; hướng dẫn cài và chạy từng agent trong `docs/skills.md`
 - [x] `doctor` kiểm tra thêm ảnh: Play tối đa 8 ảnh, tỉ lệ ≤ 2:1 và cạnh 320–3840 px (lỗi); PNG có alpha ở screenshot iOS, `phoneScreenshots`, `featureGraphic` (cảnh báo); thư mục iOS trộn file `*_framed` với file thường (cảnh báo)
+- [x] Prompt dựng sẵn cho AI agent (`docs/prompts.md`, README, website 8 ngôn ngữ): setup dự án, CI, mỗi lần release, ký iOS
 - [x] 33 test (`npm test`): unit (kể cả đọc `.mobileprovision` giả và certificate tạo bằng openssl) và luồng CLI end-to-end ở chế độ dry-run
 - [x] Tài liệu tiếng Việt và mẫu GitHub Actions
 - [x] License MIT; `package.json` có `author`, `repository`, `homepage`, `bugs`
@@ -42,6 +43,7 @@ Cập nhật lần cuối: 2026-10-01
 - [ ] Skill `app-content` chạy thật trên Word Bank; bảng ánh xạ SDK → loại dữ liệu (Firebase, AdMob…) cần đối chiếu lại với tài liệu hiện hành của từng SDK; tên loại dữ liệu và mục đích của Play Data safety lấy theo Play Console, chưa có nguồn từ fastlane để đối chiếu
 - [ ] Cảnh báo alpha cho screenshot iOS: Apple ghi "no transparency" trong spec, nhưng chưa thử xem App Store Connect có từ chối PNG RGBA không
 - [ ] Gói ngôn ngữ gợi ý với store thật: push metadata `es-419`, `ja-JP`, `ko-KR` lên Play và `es-MX`, `ja`, `ko` lên App Store Connect; chất lượng bản dịch của skill `release-notes` do người bản ngữ kiểm tra
+- [ ] Prompt dựng sẵn chạy thật trong Claude Code, Codex, Antigravity và Cursor: agent có làm đúng thứ tự, có dừng trước lệnh ghi lên store, có tránh đụng file key, `init --yes --agents <agent>` có nhận đúng agent không; agent có chạy được lệnh cài global (`brew`, `npm i -g`) trong sandbox không. Bản dịch phần chữ quanh prompt trên website chưa có người bản ngữ rà soát
 - [ ] Đường dẫn artifact mặc định cho Cocos và React Native
 - [ ] Danh sách category App Privacy trong `docs/questionnaire.md` có còn khớp tên hiện hành của Apple không
 

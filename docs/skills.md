@@ -10,6 +10,8 @@ appship đi kèm 3 skill. Mỗi skill là một file hướng dẫn (`SKILL.md`)
 
 Cả ba dùng chung định dạng `SKILL.md` (front matter `name` và `description`), nên cùng một file chạy được ở cả ba. Codex và Antigravity đọc chung thư mục `.agents/skills/`, nên chỉ cần một bản cho hai agent này. (Đối chiếu tài liệu của OpenAI và Google Codelab ngày 2026-10-01. Phần này dễ lỗi thời vì các agent hay đổi.)
 
+Dự án chưa `init`, hoặc máy chưa cài appship? Dùng prompt dựng sẵn trong [prompts.md](prompts.md): agent cài appship, chạy `init` (cài luôn skill), rồi dùng các skill dưới đây để điền nội dung.
+
 Skill **chỉ ghi file** trong `release/`, chạy `appship doctor` để tự kiểm tra, rồi trả lại cho bạn. Skill không bao giờ đẩy gì lên store: bạn đọc lại, rồi tự chạy `appship metadata`, `first-release` hoặc `submit`.
 
 | Skill | Nhờ agent | Ghi vào |

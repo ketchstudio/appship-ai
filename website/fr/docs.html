@@ -92,6 +92,7 @@
 <div class="wrap doc-layout">
   <aside class="toc" aria-label="Sur cette page">
     <p class="eyebrow">Sur cette page</p>
+    <ul class="toc-ai"><li><a href="#ai-prompts">Configurer avec un agent IA</a></li></ul>
     <ol>
       <li><a href="#requirements">Prérequis</a></li>
       <li><a href="#install">Installation</a></li>
@@ -120,6 +121,87 @@
       <strong>Version préliminaire.</strong> La v0.2.0 est couverte par des tests et des dry-runs, mais n’a pas encore été exécutée sur les vrais stores.
       Chaque commande qui écrit sur un store accepte <code>--dry-run</code> ; commencez par des commandes en lecture seule comme <code>appship status</code>.
     </div>
+
+    <!-- AI agent prompts (source: docs/prompts.md) -->
+    <section id="ai-prompts" class="doc-section">
+      <h2 class="doc-h2">Configurer avec un agent IA</h2>
+      <p>Collez l’un de ces prompts dans Claude Code, Codex, Antigravity, Cursor ou tout autre agent de code IA ouvert à la racine de votre projet. L’agent installe et configure appship, puis s’arrête pour vous demander chaque fois qu’une décision vous revient. appship n’appelle jamais d’IA lui-même : les prompts sont du simple texte, et l’agent tourne sur votre propre compte.</p>
+      <ul class="doc-list">
+        <li>L’agent n’écrit jamais sur un store sans que vous le demandiez, et lance d’abord <code>--dry-run</code>. Il n’ajoute <code>--yes</code> qu’après votre validation du dry run, car le terminal d’un agent ne peut pas répondre aux demandes de confirmation d’appship.</li>
+        <li>Il n’ouvre, n’affiche et ne commite jamais de fichier de clé. Vous ajoutez les clés vous-même avec <code>appship credentials add</code>.</li>
+        <li>Il ne fait ni commit ni push. Lisez quand même chaque commande avant de l’autoriser.</li>
+      </ul>
+      <p class="note">Les prompts sont en anglais pour que tous les agents les lisent de la même façon. L’agent vous répond dans la langue que vous utilisez.</p>
+
+      <h3 class="doc-h3" id="prompt-setup">Configurer un projet</h3>
+      <p>Une fois par projet, même sur une machine sans fastlane ni appship. Il couvre les étapes 2 à 6 de ce guide ; la création des clés des stores reste à votre charge.</p>
+      <div class="code-card prompt-card">
+        <div class="code-name">prompt<button class="copy copy-sm" type="button">Copier</button></div>
+<pre><code>Set up appship-ai in this project so I can release it to the App Store and Google Play.
+appship is a CLI that wraps fastlane. Guide: https://appship.ketchsoft.com/docs.html
+
+1. Check node (22+), fastlane and appship (`appship --version`). Tell me what is missing and ask before installing anything globally (`brew install fastlane`, `npm i -g appship-ai`).
+2. Run `appship init --yes --agents &lt;you&gt;` at the project root, where &lt;you&gt; is claude, codex or antigravity (the agent you are; use claude if none fits). Compare release/release.yml with the project (build_command, artifact paths, bundle id, package name), fix what is wrong and tell me what you changed.
+3. Store keys: tell me what I need (App Store Connect API key, Google Play service account JSON) and how to create them, following "Get store keys" in the guide. I will run `appship credentials add &lt;profile&gt;` in my own terminal. Then set credentials.profile in release.yml.
+4. Fill the store content with the skills that init installed: app-content for release/questionnaire.yml, the listing text in release/*/metadata, then store-screenshots. If the skills are not loaded in this session, read their SKILL.md files in .claude/skills/ or .agents/skills/ and follow them. If the app is already live, ask me whether to run `appship metadata pull` first. Ask me for anything the code cannot tell you; leave contacts, demo accounts and passwords as TODO until I give them.
+5. Run `appship doctor` and fix until there is no ✗. List the remaining warnings (!).
+6. Finish with a short summary: what is done, what I still have to do by hand, and the next command to run.
+
+Rules:
+- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
+- Never open, print, copy or commit key files (*.p8, *.p12, *.jks, *.keystore, service account JSON) or anything in release/keys/.
+- Do not commit or push.
+- Reply in the language I write in.</code></pre>
+      </div>
+
+      <h3 class="doc-h3" id="prompt-ci">Configurer la CI (GitHub Actions)</h3>
+      <p>Une fois que le projet a un <code>release/release.yml</code>. Il adapte le workflow de « <a href="#ci">L’exécuter en CI</a> » et liste les secrets à ajouter.</p>
+      <div class="code-card prompt-card">
+        <div class="code-name">prompt<button class="copy copy-sm" type="button">Copier</button></div>
+<pre><code>Set up GitHub Actions to release this project with appship-ai. The project already has release/release.yml.
+Guide: https://appship.ketchsoft.com/docs.html#ci
+
+1. Start from https://raw.githubusercontent.com/ketchstudio/appship-ai/main/examples/github-actions.yml. Save it as .github/workflows/release.yml and adapt it to this project: platforms, toolchain setup, build steps, Android keystore, and the iOS signing method in use (fastlane match, files from the account owner with `appship signing import --keychain`, or automatic signing).
+2. Keep `appship doctor` as the first appship step. Store-writing steps need --yes in CI; keep submit behind the manual `submit` input.
+3. List every secret I must add in Settings → Secrets and variables → Actions, with the command that produces each value (for example `base64 -i AuthKey_XXXX.p8 | pbcopy`). I add the secrets myself. Never read or print key files and never write a key value into a file.
+4. Creating the iOS app and uploading App Privacy need an Apple ID with 2FA and cannot run in CI. If this project still needs them, tell me to run them locally once.
+5. Show me the final workflow and the list of secrets. Do not commit or push until I say so.
+
+Reply in the language I write in.</code></pre>
+      </div>
+
+      <h3 class="doc-h3" id="prompt-release">À chaque version</h3>
+      <p>Augmente la version, rédige les notes de version dans toutes les langues, lance l’envoi en dry run, puis attend votre accord.</p>
+      <div class="code-card prompt-card">
+        <div class="code-name">prompt<button class="copy copy-sm" type="button">Copier</button></div>
+<pre><code>Prepare a new release of this project with appship-ai (already set up in release/).
+
+1. Find the current version and build number (pubspec.yaml, build.gradle, the Xcode project or Info.plist, package.json: whatever this project uses) and read the git log since the last tag. Propose the next version and build number, and change them once I agree.
+2. Write the release notes for every locale with the release-notes skill (read its SKILL.md in .claude/skills/ or .agents/skills/ if it is not loaded).
+3. Run `appship doctor` and fix the errors.
+4. Run `appship upload --build --dry-run`, show me what would be sent, and stop.
+
+When I approve, run `appship upload --build`. When I later ask to submit, run `appship submit --dry-run` first and wait for my OK again. Add --yes only after I approved the dry run in this chat. Never open or print key files. Do not commit or push unless I ask.
+
+Reply in the language I write in.</code></pre>
+      </div>
+
+      <h3 class="doc-h3" id="prompt-signing">Signature iOS sans accès propriétaire</h3>
+      <p>Quand le propriétaire du compte vous a donné un <code>.p12</code> et des profils de provisionnement. Détails : <a href="#not-owner">Signature iOS sans accès propriétaire</a>.</p>
+      <div class="code-card prompt-card">
+        <div class="code-name">prompt<button class="copy copy-sm" type="button">Copier</button></div>
+<pre><code>Set up iOS code signing for this project with appship-ai. I am not the account owner; the owner gave me a .p12 (Apple Distribution certificate) and App Store .mobileprovision files.
+Guide: https://appship.ketchsoft.com/docs.html#not-owner
+
+1. Ask me where the files are. They must be inside release/keys/ (gitignored); tell me to move them there if they are not. Do not open, print or copy them yourself.
+2. Add an ios.signing block to release/release.yml (style: manual, certificate, profiles: one per bundle id, including extensions).
+3. Change ios.build_command so the build uses "$APPSHIP_EXPORT_OPTIONS" (for Flutter: --export-options-plist="$APPSHIP_EXPORT_OPTIONS"; for xcodebuild/gym: the matching export options flag).
+4. Run `appship signing import --dry-run` and show me the result. I will run the real import in my own terminal, because it asks for the .p12 password.
+5. Run `appship doctor` and explain every signing error or warning (profile type, expiry, team, bundle id, certificate in the keychain).
+
+Never commit anything in release/keys/. Do not commit or push unless I ask. Reply in the language I write in.</code></pre>
+      </div>
+    </section>
 
     <!-- 1 -->
     <section id="requirements" class="doc-section">

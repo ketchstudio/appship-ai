@@ -347,6 +347,38 @@
     </div>
   </section>
 
+  <!-- AI agent setup (source: docs/prompts.md, prompt 1) -->
+  <section class="section section-alt" id="ai-setup">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="eyebrow">AI エージェント</p>
+        <h2 class="h2">AI エージェントに任せることもできます。</h2>
+        <p class="section-lede">プロジェクトのルートで Claude Code、Codex、Antigravity、Cursor にこのプロンプトを貼り付けるだけ。エージェントが appship をインストールし、付属のスキルでストア掲載情報を埋め、<code>doctor</code> が通るまで修正します。キーには触れず、あなたが頼まない限りストアにも書き込みません。</p>
+      </header>
+      <div class="reveal">
+        <div class="code-card prompt-card">
+          <div class="code-name">prompt<button class="copy copy-sm" type="button">コピー</button></div>
+<pre><code>Set up appship-ai in this project so I can release it to the App Store and Google Play.
+appship is a CLI that wraps fastlane. Guide: https://appship.ketchsoft.com/docs.html
+
+1. Check node (22+), fastlane and appship (`appship --version`). Tell me what is missing and ask before installing anything globally (`brew install fastlane`, `npm i -g appship-ai`).
+2. Run `appship init --yes --agents &lt;you&gt;` at the project root, where &lt;you&gt; is claude, codex or antigravity (the agent you are; use claude if none fits). Compare release/release.yml with the project (build_command, artifact paths, bundle id, package name), fix what is wrong and tell me what you changed.
+3. Store keys: tell me what I need (App Store Connect API key, Google Play service account JSON) and how to create them, following "Get store keys" in the guide. I will run `appship credentials add &lt;profile&gt;` in my own terminal. Then set credentials.profile in release.yml.
+4. Fill the store content with the skills that init installed: app-content for release/questionnaire.yml, the listing text in release/*/metadata, then store-screenshots. If the skills are not loaded in this session, read their SKILL.md files in .claude/skills/ or .agents/skills/ and follow them. If the app is already live, ask me whether to run `appship metadata pull` first. Ask me for anything the code cannot tell you; leave contacts, demo accounts and passwords as TODO until I give them.
+5. Run `appship doctor` and fix until there is no ✗. List the remaining warnings (!).
+6. Finish with a short summary: what is done, what I still have to do by hand, and the next command to run.
+
+Rules:
+- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
+- Never open, print, copy or commit key files (*.p8, *.p12, *.jks, *.keystore, service account JSON) or anything in release/keys/.
+- Do not commit or push.
+- Reply in the language I write in.</code></pre>
+        </div>
+      </div>
+      <p class="ai-setup-more"><a class="btn btn-ink" href="docs.html#ai-prompts">ほかのプロンプト：CI、毎回のリリース、署名 →</a></p>
+    </div>
+  </section>
+
   <!-- Closing -->
   <section class="closing">
     <div class="wrap closing-inner reveal">

@@ -1,5 +1,11 @@
 # Changelog
 
+## Chưa phát hành
+
+- Prompt dựng sẵn để dán vào AI coding agent (Claude Code, Codex, Antigravity, Cursor…): setup dự án từ đầu (cài fastlane/appship, `init --yes --agents`, chỉ cách lấy key, điền nội dung bằng skill, `doctor`), setup GitHub Actions, mỗi lần release, ký iOS khi không phải owner. Mọi prompt có luật an toàn: không ghi lên store khi chưa được yêu cầu, `--dry-run` trước, `--yes` chỉ sau khi người dùng duyệt dry run, không đụng file key, không tự commit/push. CLI không đổi.
+- Tài liệu mới `docs/prompts.md` (bản gốc của prompt). README (EN, VI) có mục "Set up with an AI agent" kèm prompt setup; `getting-started.md`, `skills.md`, `development.md` trỏ tới prompt.
+- Website: trang docs (8 ngôn ngữ) có mục `#ai-prompts` với 4 prompt và nút Copy; trang chủ (8 ngôn ngữ) có khối `#ai-setup` với prompt setup. Prompt giữ tiếng Anh ở mọi ngôn ngữ.
+
 ## 0.2.0 — 2026-10-01
 
 - Skill mới, được `init` cài cùng `release-notes`:

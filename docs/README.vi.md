@@ -58,6 +58,30 @@ appship submit
 
 Chi tiết: [getting-started.md](getting-started.md)
 
+## Setup bằng AI agent
+
+Dán prompt này vào AI coding agent (Claude Code, Codex, Antigravity, Cursor…) đang mở ở thư mục gốc của dự án. Agent sẽ cài appship, chạy `init`, chỉ bạn cần tạo key store nào, điền listing và questionnaire bằng các skill đi kèm, rồi chạy `appship doctor` đến khi hết lỗi. Agent không ghi gì lên store nếu bạn chưa yêu cầu và không đụng vào file key. Prompt viết tiếng Anh nhưng agent sẽ trả lời bằng ngôn ngữ bạn dùng.
+
+```text
+Set up appship-ai in this project so I can release it to the App Store and Google Play.
+appship is a CLI that wraps fastlane. Guide: https://appship.ketchsoft.com/docs.html
+
+1. Check node (22+), fastlane and appship (`appship --version`). Tell me what is missing and ask before installing anything globally (`brew install fastlane`, `npm i -g appship-ai`).
+2. Run `appship init --yes --agents <you>` at the project root, where <you> is claude, codex or antigravity (the agent you are; use claude if none fits). Compare release/release.yml with the project (build_command, artifact paths, bundle id, package name), fix what is wrong and tell me what you changed.
+3. Store keys: tell me what I need (App Store Connect API key, Google Play service account JSON) and how to create them, following "Get store keys" in the guide. I will run `appship credentials add <profile>` in my own terminal. Then set credentials.profile in release.yml.
+4. Fill the store content with the skills that init installed: app-content for release/questionnaire.yml, the listing text in release/*/metadata, then store-screenshots. If the skills are not loaded in this session, read their SKILL.md files in .claude/skills/ or .agents/skills/ and follow them. If the app is already live, ask me whether to run `appship metadata pull` first. Ask me for anything the code cannot tell you; leave contacts, demo accounts and passwords as TODO until I give them.
+5. Run `appship doctor` and fix until there is no ✗. List the remaining warnings (!).
+6. Finish with a short summary: what is done, what I still have to do by hand, and the next command to run.
+
+Rules:
+- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
+- Never open, print, copy or commit key files (*.p8, *.p12, *.jks, *.keystore, service account JSON) or anything in release/keys/.
+- Do not commit or push.
+- Reply in the language I write in.
+```
+
+Các prompt khác (CI, mỗi lần release, ký iOS khi không phải owner) và luật an toàn của chúng: [prompts.md](prompts.md).
+
 ## Tính năng
 
 | Chức năng | iOS | Android |
@@ -174,6 +198,7 @@ Cùng một file chạy được ở cả ba agent, chỉ khác thư mục và c
 - [questionnaire.yml](questionnaire.md): câu hỏi của store, phần nào tự động, phần nào làm tay
 - [Các lệnh](commands.md)
 - [Skill cho AI agent](skills.md): Claude Code, Codex, Antigravity; release notes, screenshots, questionnaire; `appship skills`
+- [Prompt dựng sẵn cho AI agent](prompts.md): setup dự án, CI, mỗi lần release, ký iOS
 - [Chạy trên CI](ci.md)
 - [Xử lý lỗi thường gặp](troubleshooting.md)
 - [Phát triển và phát hành tool](development.md)

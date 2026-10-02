@@ -2,6 +2,8 @@
 
 Hướng dẫn này đi từ một dự án chưa từng lên store đến lúc gửi review.
 
+Dùng AI coding agent (Claude Code, Codex, Antigravity…)? Dán prompt "Setup dự án" trong [prompts.md](prompts.md) vào agent: nó làm các bước 0–4 dưới đây cùng bạn và dừng lại trước mọi lệnh ghi lên store. Phần lấy key vẫn do bạn tự làm.
+
 ## 0. Chuẩn bị
 
 | Cần có | Ghi chú |

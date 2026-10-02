@@ -49,6 +49,16 @@ appship submit --dry-run
 3. Thêm lệnh hoặc tuỳ chọn trong `src/cli.js` và `src/commands/`.
 4. Viết test (`test/`) và cập nhật `docs/commands.md`.
 
+## Prompt dựng sẵn cho AI agent
+
+Bản gốc nằm ở `docs/prompts.md`. Các prompt có mặt ở 3 chỗ, khi sửa phải sửa đủ:
+
+- `docs/prompts.md` (cả 4 prompt)
+- Mục `#ai-prompts` của `website/docs.html` và 7 bản dịch (cả 4 prompt, giữ tiếng Anh ở mọi ngôn ngữ), kèm khối giới thiệu prompt 1 trên trang chủ (`website/index.html` và bản dịch, mục `#ai-setup`)
+- Prompt 1 trong `README.md` và `docs/README.vi.md`
+
+Khi đổi tên lệnh, cờ, đường dẫn trong `release/` hoặc anchor của website, tìm trong prompt: `grep -rn 'appship \|docs.html#' docs/prompts.md`.
+
 ## Phát hành
 
 Thông tin package:

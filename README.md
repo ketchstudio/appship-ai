@@ -94,6 +94,30 @@ appship status
 
 Every command that writes to a store asks for confirmation. Pass `--yes` in CI, and use `--dry-run` to see exactly what would be sent.
 
+## Set up with an AI agent
+
+Paste this into an AI coding agent (Claude Code, Codex, Antigravity, Cursor…) opened at your project root. It installs appship, runs `init`, tells you which store keys to create, fills in the listing and questionnaire with the bundled skills, and runs `appship doctor` until it passes. It never writes to a store unless you ask, and never touches your key files.
+
+```text
+Set up appship-ai in this project so I can release it to the App Store and Google Play.
+appship is a CLI that wraps fastlane. Guide: https://appship.ketchsoft.com/docs.html
+
+1. Check node (22+), fastlane and appship (`appship --version`). Tell me what is missing and ask before installing anything globally (`brew install fastlane`, `npm i -g appship-ai`).
+2. Run `appship init --yes --agents <you>` at the project root, where <you> is claude, codex or antigravity (the agent you are; use claude if none fits). Compare release/release.yml with the project (build_command, artifact paths, bundle id, package name), fix what is wrong and tell me what you changed.
+3. Store keys: tell me what I need (App Store Connect API key, Google Play service account JSON) and how to create them, following "Get store keys" in the guide. I will run `appship credentials add <profile>` in my own terminal. Then set credentials.profile in release.yml.
+4. Fill the store content with the skills that init installed: app-content for release/questionnaire.yml, the listing text in release/*/metadata, then store-screenshots. If the skills are not loaded in this session, read their SKILL.md files in .claude/skills/ or .agents/skills/ and follow them. If the app is already live, ask me whether to run `appship metadata pull` first. Ask me for anything the code cannot tell you; leave contacts, demo accounts and passwords as TODO until I give them.
+5. Run `appship doctor` and fix until there is no ✗. List the remaining warnings (!).
+6. Finish with a short summary: what is done, what I still have to do by hand, and the next command to run.
+
+Rules:
+- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
+- Never open, print, copy or commit key files (*.p8, *.p12, *.jks, *.keystore, service account JSON) or anything in release/keys/.
+- Do not commit or push.
+- Reply in the language I write in.
+```
+
+More ready-made prompts (CI, every release, iOS signing without owner access) are in [docs/prompts.md](docs/prompts.md) (explanations in Vietnamese, prompts in English) and on the [website](https://appship.ketchsoft.com/docs.html#ai-prompts).
+
 ## Project layout
 
 ```
@@ -227,6 +251,7 @@ The detailed guides are currently in Vietnamese:
 - [Questionnaire reference](docs/questionnaire.md)
 - [Commands](docs/commands.md)
 - [AI agent skills](docs/skills.md)
+- [Ready-made prompts for AI agents](docs/prompts.md)
 - [CI](docs/ci.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Design decisions](docs/design.md)
