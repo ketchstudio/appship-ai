@@ -113,6 +113,15 @@ Nếu validate lỗi thì lệnh push dừng lại. Dùng `--force` để bỏ q
 
 Push đẩy mọi thư mục locale trong `release/*/metadata/`, gồm cả release notes của từng ngôn ngữ. Cách thêm ngôn ngữ mới: xem "Release notes nhiều ngôn ngữ" trong [configuration.md](configuration.md).
 
+## `appship header` (iOS)
+
+```bash
+appship header --file release/ios/header/en-US.png --app-version 1.2 --locale en-US --dry-run
+appship header --file release/ios/header/en-US.png --app-version 1.2 --locale en-US --yes
+```
+
+Lệnh này upload ảnh lên Asset Library của Apple và đặt ảnh vào **Product Page Header** của phiên bản iOS có thể chỉnh sửa. `--locale` mặc định lấy từ `app.primary_locale`; `--app-version` có thể lấy từ `ios.version` trong `release.yml`. Ảnh phải là PNG/JPEG 3840×1646 hoặc PNG 5244×2950, không có alpha. Nếu đã có header ở locale đó, lệnh thay placement cũ. Sau đó submit phiên bản để Apple duyệt. Lệnh này dùng App Store Connect API; `appship metadata` qua Fastlane không upload header. Video header và cập nhật header của phiên bản đã phát hành chưa được hỗ trợ.
+
 ## `appship submit`
 
 - **iOS:** đẩy metadata, chọn build (mới nhất hoặc `--build-number`), trả lời export compliance và content rights, rồi gửi **App Review**.

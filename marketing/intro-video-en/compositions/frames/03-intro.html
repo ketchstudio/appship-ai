@@ -1,0 +1,427 @@
+<template>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    /* vietnamese */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 400;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-400-vietnamese.woff2') format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 400;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-400-latin-ext.woff2') format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 400;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-400-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    /* vietnamese */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 600;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-600-vietnamese.woff2') format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 600;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-600-latin-ext.woff2') format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 600;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-600-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    /* vietnamese */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 700;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-700-vietnamese.woff2') format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 700;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-700-latin-ext.woff2') format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 700;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-700-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    /* vietnamese */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 800;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-800-vietnamese.woff2') format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 800;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-800-latin-ext.woff2') format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 800;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-800-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    /* vietnamese */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 900;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-900-vietnamese.woff2') format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 900;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-900-latin-ext.woff2') format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 900;
+      font-stretch: 100%;
+      font-display: block;
+      src: url('assets/fonts/Archivo-900-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    /* vietnamese */
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: block;
+      src: url('assets/fonts/IBMPlexMono-400-vietnamese.woff2') format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: block;
+      src: url('assets/fonts/IBMPlexMono-400-latin-ext.woff2') format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: block;
+      src: url('assets/fonts/IBMPlexMono-400-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    /* vietnamese */
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 500;
+      font-display: block;
+      src: url('assets/fonts/IBMPlexMono-500-vietnamese.woff2') format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 500;
+      font-display: block;
+      src: url('assets/fonts/IBMPlexMono-500-latin-ext.woff2') format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 500;
+      font-display: block;
+      src: url('assets/fonts/IBMPlexMono-500-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    /* vietnamese */
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 600;
+      font-display: block;
+      src: url('assets/fonts/IBMPlexMono-600-vietnamese.woff2') format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 600;
+      font-display: block;
+      src: url('assets/fonts/IBMPlexMono-600-latin-ext.woff2') format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 600;
+      font-display: block;
+      src: url('assets/fonts/IBMPlexMono-600-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+    }
+    #intro-03-ground {
+      position: absolute;
+      inset: 0;
+      background: #ffc530;
+    }
+    #intro-03-stage {
+      position: absolute;
+      inset: 0;
+      transform-origin: 5.5cqw 46cqh;
+    }
+    .intro-03-block {
+      position: absolute;
+      left: 5.5cqw;
+      top: 26.5cqh;
+      width: 80cqw;
+      color: #0b1826;
+    }
+    .intro-03-kicker-row {
+      display: flex;
+      align-items: center;
+      gap: 1.2cqw;
+      height: 2cqw;
+    }
+    .intro-03-rule {
+      width: 36px;
+      height: 2px;
+      background: #0b1826;
+      flex: none;
+      transform-origin: left center;
+    }
+    .intro-03-kicker {
+      font-family: "IBM Plex Mono", monospace;
+      font-weight: 500;
+      font-size: 1.05cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(17, 17, 17, 0.78);
+      white-space: pre;
+    }
+    .intro-03-caret {
+      display: inline-block;
+      width: 0.55cqw;
+      height: 1.15cqw;
+      margin-left: 0.15cqw;
+      background: rgba(17, 17, 17, 0.55);
+      vertical-align: -0.15cqw;
+    }
+    .intro-03-wordmark {
+      margin-top: 1.4cqw;
+      font-family: "Archivo", sans-serif;
+      font-weight: 900;
+      font-size: 13cqw;
+      line-height: 0.88;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+      color: #0b1826;
+      transform-origin: left center;
+      white-space: nowrap;
+    }
+    .intro-03-dot {
+      display: inline-block;
+      transform-origin: 50% 85%;
+    }
+    .intro-03-lead {
+      margin-top: 2.6cqw;
+      font-family: "Archivo", sans-serif;
+      font-weight: 700;
+      font-size: 3.4cqw;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: rgba(17, 17, 17, 0.75);
+      white-space: nowrap;
+    }
+    .intro-03-word {
+      display: inline-block;
+      margin-right: 0.28em;
+    }
+    .intro-03-sub {
+      margin-top: 1.6cqw;
+      display: flex;
+      align-items: center;
+      gap: 1cqw;
+      font-family: "IBM Plex Mono", monospace;
+      font-weight: 500;
+      font-size: 1.25cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #0b1826;
+    }
+    .intro-03-sub-mark {
+      color: rgba(17, 17, 17, 0.78);
+    }
+  </style>
+
+  <div id="root" data-composition-id="03-intro" data-start="0" data-duration="3.5" data-width="1920" data-height="1080">
+    <div id="intro-03-ground" class="clip" data-start="0" data-duration="3.5" data-track-index="0"></div>
+
+    <div id="intro-03-stage" class="clip" data-start="0" data-duration="3.5" data-track-index="1">
+      <div class="intro-03-block">
+        <div class="intro-03-kicker-row">
+          <div class="intro-03-rule" id="intro-03-rule"></div>
+          <div class="intro-03-kicker" id="intro-03-kicker"></div>
+        </div>
+        <div class="intro-03-wordmark" id="intro-03-wordmark">appship<span class="intro-03-dot" id="intro-03-dot">.</span></div>
+        <div class="intro-03-lead" id="intro-03-lead"><span class="intro-03-word">one</span><span class="intro-03-word">config.</span><span class="intro-03-word">two</span><span class="intro-03-word">stores.</span></div>
+        <div class="intro-03-sub" id="intro-03-sub"><span class="intro-03-sub-mark">/</span><span>App Store + Google Play</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const DUR = 3;
+      const tl = gsap.timeline({ paused: true });
+      const root = document.querySelector('[data-composition-id="03-intro"]');
+      const q = (s) => root.querySelector(s);
+      const qa = (s) => Array.from(root.querySelectorAll(s));
+
+      // One beat grid drives every reveal (fast tempo, silent frame).
+      const BEATS = [0.05, 0.9, 1.7, 2.15];
+
+      // Kicker built as per-char spans for a deterministic type-on.
+      const kicker = q("#intro-03-kicker");
+      const KICKER = "APPSHIP-AI · CLI · BUILT ON FASTLANE";
+      const chars = Array.from(KICKER).map((c) => {
+        const s = document.createElement("span");
+        s.textContent = c;
+        kicker.appendChild(s);
+        return s;
+      });
+      const caret = document.createElement("span");
+      caret.className = "intro-03-caret";
+      kicker.appendChild(caret);
+
+      // Macro move: slow push on the whole stage underneath every beat.
+      tl.fromTo(q("#intro-03-stage"), { scale: 1 }, { scale: 1.035, duration: DUR, ease: "none" }, 0);
+
+      // Scene 1: wordmark slams in from oversized to rest; the dot snaps a beat later.
+      tl.fromTo(
+        q("#intro-03-wordmark"),
+        { scale: 1.7, opacity: 0, filter: "blur(18px)" },
+        { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power4.out" },
+        BEATS[0]
+      );
+      tl.fromTo(
+        q("#intro-03-dot"),
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(3)" },
+        BEATS[0] + 0.5
+      );
+
+      // Scene 2: rule stub draws left to right, mono kicker types on beside it.
+      tl.fromTo(q("#intro-03-rule"), { scaleX: 0 }, { scaleX: 1, duration: 0.25, ease: "expo.out" }, BEATS[1]);
+      tl.set(chars, { display: "none" }, 0);
+      tl.set(caret, { opacity: 0 }, 0);
+      tl.set(caret, { opacity: 1 }, BEATS[1] + 0.1);
+      const typeStart = BEATS[1] + 0.12;
+      const step = 0.014;
+      chars.forEach((c, i) => tl.set(c, { display: "inline" }, typeStart + i * step));
+      const typeEnd = typeStart + chars.length * step;
+      // Caret blinks after typing, then hides (discrete, seek-safe).
+      tl.set(caret, { opacity: 0 }, typeEnd + 0.12);
+      tl.set(caret, { opacity: 1 }, typeEnd + 0.24);
+      tl.set(caret, { opacity: 0 }, typeEnd + 0.36);
+
+      // Scene 3: lead line reveals per word, then the mono sub-line snaps in. Holds.
+      tl.fromTo(
+        qa("#intro-03-lead .intro-03-word"),
+        { y: 48, opacity: 0, filter: "blur(8px)" },
+        { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.35, ease: "circ.out", stagger: 0.055 },
+        BEATS[2]
+      );
+      tl.fromTo(
+        q("#intro-03-sub"),
+        { x: -60, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.3, ease: "expo.out" },
+        BEATS[3]
+      );
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["03-intro"] = tl;
+    })();
+  </script>
+</template>

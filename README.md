@@ -38,6 +38,7 @@ appship wraps fastlane in a small CLI:
 | Create the app | `first-release --create-app` (needs an Apple ID login) | Manual: Google Play has no API. You get a checklist |
 | Upload a build | TestFlight | internal / alpha / beta / production, staged rollout |
 | Listing text and screenshots | push / pull | push / pull |
+| Product Page Header image | upload to Asset Library and place on an editable version | — |
 | Store questionnaires | Age rating, export compliance, content rights, review contact, App Privacy | Checklist pre-filled with your answers (content rating, data safety, target audience, ads, app access) |
 | Submit | App Review | Promote a track to production |
 | Status | Live / in review / pending / editable, latest TestFlight build | Version codes per track |
@@ -211,6 +212,7 @@ appship doctor                                    # profile type/expiry/team/bun
 | `build` | Run the configured build commands |
 | `upload` | `.ipa` to TestFlight, `.aab` to a Play track (`--track`, `--rollout 20%`) |
 | `metadata [push\|pull]` | Sync listing text and screenshots |
+| `header --file <path> --app-version <version>` | Upload and place an iOS Product Page Header image |
 | `submit` | iOS App Review / Android promote to production |
 | `promote` | Move an Android release between tracks or raise its rollout |
 | `status` | Review state and versions on both stores |

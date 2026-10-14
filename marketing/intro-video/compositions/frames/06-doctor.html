@@ -1,0 +1,579 @@
+<template>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-400-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-400-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-600-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-600-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-600-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-700-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-700-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 800;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-800-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 800;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-800-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 800;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-800-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 900;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-900-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 900;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-900-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 900;
+  font-stretch: 100%;
+  font-display: block;
+  src: url('assets/fonts/Archivo-900-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('assets/fonts/IBMPlexMono-400-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('assets/fonts/IBMPlexMono-400-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('assets/fonts/IBMPlexMono-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url('assets/fonts/IBMPlexMono-500-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url('assets/fonts/IBMPlexMono-500-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url('assets/fonts/IBMPlexMono-500-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url('assets/fonts/IBMPlexMono-600-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url('assets/fonts/IBMPlexMono-600-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url('assets/fonts/IBMPlexMono-600-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      font-family: 'Archivo', sans-serif;
+      color: #e4ecf3;
+    }
+    [data-scope="06-doctor"] {
+      position: absolute;
+      inset: 0;
+    }
+    [data-scope="06-doctor"] .bg {
+      position: absolute;
+      inset: 0;
+      background: #0b1826;
+    }
+
+    /* ---------- terminal (left ~60%) ---------- */
+    [data-scope="06-doctor"] .term {
+      position: absolute;
+      left: 5.5cqw;
+      top: 16.5cqh;
+      width: 54cqw;
+      background: #13283d;
+      border: 1px solid #20384f;
+      border-radius: 0;
+    }
+    [data-scope="06-doctor"] .term-bar {
+      height: 2.3cqw;
+      border-bottom: 1px solid #20384f;
+      display: flex;
+      align-items: center;
+      gap: 0.45cqw;
+      padding: 0 1.1cqw;
+    }
+    [data-scope="06-doctor"] .term-dot {
+      width: 0.55cqw;
+      height: 0.55cqw;
+      background: #20384f;
+    }
+    [data-scope="06-doctor"] .term-body {
+      padding: 1.9cqw 2.3cqw 2cqw;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 500;
+      font-size: 1.6cqw;
+      line-height: 1.6;
+      white-space: normal;
+    }
+    [data-scope="06-doctor"] .cmd,
+    [data-scope="06-doctor"] .txt,
+    [data-scope="06-doctor"] .spin,
+    [data-scope="06-doctor"] .summary { white-space: pre; }
+    [data-scope="06-doctor"] .cmd {
+      color: #e4ecf3;
+      margin-bottom: 0.9cqw;
+    }
+    [data-scope="06-doctor"] .cmd .prompt { color: #74c9ea; }
+    [data-scope="06-doctor"] .cmd .ch { display: inline-block; white-space: pre; }
+    [data-scope="06-doctor"] .caret {
+      display: inline-block;
+      width: 0.62em;
+      height: 1.05em;
+      vertical-align: -0.18em;
+      background: #e4ecf3;
+      margin-left: 0.08em;
+    }
+
+    [data-scope="06-doctor"] .row {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 2.95cqw;
+      padding-left: 1.2cqw;
+    }
+    [data-scope="06-doctor"] .row .bar {
+      position: absolute;
+      left: 0;
+      top: 0.25cqw;
+      bottom: 0.25cqw;
+      width: 0.22cqw;
+      background: transparent;
+    }
+    [data-scope="06-doctor"] .row .tint {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0.25cqw;
+      bottom: 0.25cqw;
+      background: rgba(255, 122, 107, 0.10);
+    }
+    [data-scope="06-doctor"] .row.bad .bar { background: #ff7a6b; }
+    [data-scope="06-doctor"] .ico {
+      position: relative;
+      width: 1.35cqw;
+      height: 1.35cqw;
+      flex: 0 0 auto;
+      margin-right: 1cqw;
+    }
+    [data-scope="06-doctor"] .ico svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform-origin: 50% 50%;
+    }
+    [data-scope="06-doctor"] .txt {
+      position: relative;
+      color: #e4ecf3;
+      display: inline-flex;
+      align-items: center;
+    }
+    [data-scope="06-doctor"] .le {
+      display: inline-block;
+      width: 0.62em;
+      height: 0.62em;
+      margin: 0 0.25em;
+    }
+    [data-scope="06-doctor"] .swap {
+      position: relative;
+      flex: 1 1 auto;
+      height: 100%;
+    }
+    [data-scope="06-doctor"] .swap .txt {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      transform-origin: 0% 50%;
+    }
+    [data-scope="06-doctor"] .swap .txt-bad { color: #ff7a6b; z-index: 1; }
+    [data-scope="06-doctor"] .swap .txt-good { color: #e4ecf3; z-index: 2; }
+
+    [data-scope="06-doctor"] .foot {
+      position: relative;
+      margin-top: 1.1cqw;
+      height: 3.6cqw;
+    }
+    [data-scope="06-doctor"] .rule {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 1px;
+      background: #20384f;
+      transform-origin: 0% 50%;
+    }
+    [data-scope="06-doctor"] .spin,
+    [data-scope="06-doctor"] .summary {
+      position: absolute;
+      left: 0;
+      top: 0.75cqw;
+      display: flex;
+      align-items: center;
+    }
+    [data-scope="06-doctor"] .spin { color: #74c9ea; }
+    [data-scope="06-doctor"] .spin .glyphs {
+      position: relative;
+      display: inline-block;
+      width: 0.62em;
+      height: 1.2em;
+      margin-right: 0.8em;
+    }
+    [data-scope="06-doctor"] .spin .g {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+    }
+    [data-scope="06-doctor"] .summary {
+      color: #ffc530;
+      font-weight: 600;
+    }
+
+    /* ---------- right column ---------- */
+    [data-scope="06-doctor"] .side {
+      position: absolute;
+      left: 65cqw;
+      right: 5.5cqw;
+      top: 27cqh;
+    }
+    [data-scope="06-doctor"] .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 500;
+      font-size: 1cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #ffc530;
+    }
+    [data-scope="06-doctor"] .stub {
+      width: 36px;
+      height: 2px;
+      background: #ffc530;
+      margin: 1.4cqw 0 1.6cqw;
+      transform-origin: 0% 50%;
+    }
+    [data-scope="06-doctor"] .h2 {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 4.5cqw;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      text-transform: lowercase;
+      color: #e4ecf3;
+    }
+    [data-scope="06-doctor"] .h2 .w {
+      display: inline-block;
+      margin-right: 0.22em;
+    }
+  </style>
+
+  <div id="root" data-composition-id="06-doctor" data-start="0" data-duration="3.5" data-width="1920" data-height="1080">
+    <div data-scope="06-doctor">
+      <div class="bg clip" id="f06-doctor-bg" data-start="0" data-duration="3.5" data-track-index="0"></div>
+
+      <div class="clip" id="f06-doctor-content" data-start="0" data-duration="3.5" data-track-index="1">
+        <!-- Terminal: the focal cutout -->
+        <div class="term" id="f06-doctor-term">
+          <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span></div>
+          <div class="term-body">
+            <div class="cmd" id="f06-doctor-cmd"><span class="prompt">$ </span><span id="f06-doctor-typed"></span><span class="caret" id="f06-doctor-caret"></span></div>
+
+            <div class="row" id="f06-doctor-r1">
+              <span class="bar"></span>
+              <span class="ico"><svg viewBox="0 0 24 24"><path d="M3.5 12.5 L9.5 18.5 L20.5 5.5" fill="none" stroke="#5fd89c" stroke-width="3.2" stroke-linecap="square"/></svg></span>
+              <span class="txt">ios title<svg class="le" viewBox="0 0 10 10"><path d="M8.5 1 L1.8 4.2 L8.5 7.2 M1.5 9.3 L8.5 9.3" fill="none" stroke="#e4ecf3" stroke-width="1.3"/></svg>30 chars</span>
+            </div>
+            <div class="row" id="f06-doctor-r2">
+              <span class="bar"></span>
+              <span class="ico"><svg viewBox="0 0 24 24"><path d="M3.5 12.5 L9.5 18.5 L20.5 5.5" fill="none" stroke="#5fd89c" stroke-width="3.2" stroke-linecap="square"/></svg></span>
+              <span class="txt">screenshots 1320×2868</span>
+            </div>
+            <div class="row bad" id="f06-doctor-r3">
+              <span class="tint" id="f06-doctor-tint"></span>
+              <span class="bar" id="f06-doctor-bar"></span>
+              <span class="ico">
+                <svg id="f06-doctor-x" viewBox="0 0 24 24"><path d="M5 5 L19 19 M19 5 L5 19" fill="none" stroke="#ff7a6b" stroke-width="3.2" stroke-linecap="square"/></svg>
+                <svg id="f06-doctor-v" viewBox="0 0 24 24"><path d="M3.5 12.5 L9.5 18.5 L20.5 5.5" fill="none" stroke="#5fd89c" stroke-width="3.2" stroke-linecap="square"/></svg>
+              </span>
+              <span class="swap">
+                <span class="txt txt-bad" id="f06-doctor-tbad">TODO placeholder in description</span>
+                <span class="txt txt-good" id="f06-doctor-tgood">no placeholder text</span>
+              </span>
+            </div>
+            <div class="row" id="f06-doctor-r4">
+              <span class="bar"></span>
+              <span class="ico"><svg viewBox="0 0 24 24"><path d="M3.5 12.5 L9.5 18.5 L20.5 5.5" fill="none" stroke="#5fd89c" stroke-width="3.2" stroke-linecap="square"/></svg></span>
+              <span class="txt">keys not committed to git</span>
+            </div>
+            <div class="row" id="f06-doctor-r5">
+              <span class="bar"></span>
+              <span class="ico"><svg viewBox="0 0 24 24"><path d="M3.5 12.5 L9.5 18.5 L20.5 5.5" fill="none" stroke="#5fd89c" stroke-width="3.2" stroke-linecap="square"/></svg></span>
+              <span class="txt">android locales valid</span>
+            </div>
+
+            <div class="foot">
+              <div class="rule" id="f06-doctor-rule"></div>
+              <div class="spin" id="f06-doctor-spin">
+                <span class="glyphs"><span class="g">|</span><span class="g">/</span><span class="g">-</span><span class="g">\</span></span><span>checking…</span>
+              </div>
+              <div class="summary" id="f06-doctor-summary">ready to release · 0 errors</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: kicker + h2 -->
+        <div class="side">
+          <div class="kicker" id="f06-doctor-kicker">03 / appship doctor</div>
+          <div class="stub" id="f06-doctor-stub"></div>
+          <div class="h2" id="f06-doctor-h2"><span class="w">bắt</span><span class="w">lỗi</span><span class="w">trước</span><span class="w">khi</span><span class="w">store</span><span class="w">bắt.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById("f06-doctor-" + id); };
+      var tl = gsap.timeline({ paused: true });
+
+      // ---- Scene 1 (0.0-0.6): terminal already settled; kicker + per-word h2; command types on ----
+      tl.fromTo($("kicker"), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.05);
+      tl.fromTo($("stub"), { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out" }, 0.1);
+      var words = $("h2").querySelectorAll(".w");
+      tl.fromTo(words, { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.34, ease: "power3.out", stagger: 0.055 }, 0.12);
+
+      // Typed command: discrete per-character steps (seek-safe)
+      var typed = $("typed");
+      var cmd = "appship doctor";
+      var chars = [];
+      for (var i = 0; i < cmd.length; i++) {
+        var s = document.createElement("span");
+        s.className = "ch";
+        s.textContent = cmd[i];
+        typed.appendChild(s);
+        chars.push(s);
+      }
+      chars.forEach(function (c, k) {
+        tl.fromTo(c, { opacity: 0 }, { opacity: 1, duration: 0.001 }, 0.08 + k * 0.03);
+      });
+      // Caret disappears once the command runs
+      tl.fromTo($("caret"), { opacity: 1 }, { opacity: 0, duration: 0.001, immediateRender: false }, 0.58);
+
+      // ---- Working theater: finite ASCII spinner, killed the instant the summary lands ----
+      var glyphs = $("spin").querySelectorAll(".g");
+      tl.fromTo($("spin"), { opacity: 0 }, { opacity: 1, duration: 0.12 }, 0.58);
+      var SPIN_START = 0.58, SPIN_END = 2.55, STEP = 0.08;
+      var n = 0;
+      for (var t = SPIN_START; t < SPIN_END - 0.0001; t += STEP) {
+        tl.set(glyphs[n % 4], { opacity: 1 }, t);
+        if (n > 0) tl.set(glyphs[(n + 3) % 4], { opacity: 0 }, t);
+        n++;
+      }
+      tl.set($("spin"), { opacity: 0 }, SPIN_END);
+
+      // ---- Scene 2 (0.6-1.85): rows drop in one by one ----
+      ["r1", "r2", "r3", "r4", "r5"].forEach(function (id, k) {
+        tl.fromTo($(id), { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.24, ease: "power3.out" }, 0.62 + k * 0.25);
+      });
+
+      // ---- Scene 3 (2.0-2.55): the failing row flips (scale-swap-transition) ----
+      var TRIGGER = 2.0, EXIT_DUR = 0.25, ENTER_DUR = 0.45, OVERLAP = 0.1, EXIT_SCALE = 0.7, BOUNCE = 1.8;
+      var ENTER_AT = TRIGGER + EXIT_DUR - OVERLAP;
+      // Icon: red cross -> green check at the same center
+      tl.fromTo($("x"), { scale: 1, opacity: 1 }, { scale: EXIT_SCALE, opacity: 0, duration: EXIT_DUR, ease: "power2.in", immediateRender: false }, TRIGGER);
+      tl.fromTo($("v"), { scale: EXIT_SCALE, opacity: 0 }, { scale: 1, opacity: 1, duration: ENTER_DUR, ease: "back.out(" + BOUNCE + ")" }, ENTER_AT);
+      // Label swap
+      tl.fromTo($("tbad"), { scale: 1, opacity: 1 }, { scale: EXIT_SCALE, opacity: 0, duration: EXIT_DUR, ease: "power2.in", immediateRender: false }, TRIGGER);
+      tl.fromTo($("tgood"), { scale: EXIT_SCALE, opacity: 0 }, { scale: 1, opacity: 1, duration: ENTER_DUR, ease: "back.out(" + BOUNCE + ")" }, ENTER_AT);
+      // Red bar turns green; red tint shifts to a faint green
+      tl.fromTo($("bar"), { backgroundColor: "#ff7a6b" }, { backgroundColor: "#5fd89c", duration: 0.3, ease: "power2.out", immediateRender: false }, TRIGGER + 0.1);
+      tl.fromTo($("tint"), { backgroundColor: "rgba(255,122,107,0.10)" }, { backgroundColor: "rgba(95,216,156,0.08)", duration: 0.3, ease: "power2.out", immediateRender: false }, TRIGGER + 0.1);
+
+      // ---- Scene 4 (2.5-3.5): 1px rule draws, summary lands in yellow, holds ----
+      tl.fromTo($("rule"), { scaleX: 0 }, { scaleX: 1, duration: 0.25, ease: "power3.out" }, 2.5);
+      tl.fromTo($("summary"), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.28, ease: "power3.out" }, SPIN_END);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["06-doctor"] = tl;
+    })();
+  </script>
+</template>

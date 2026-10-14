@@ -7,6 +7,7 @@ import { doctorCommand } from './commands/doctor.js';
 import { signingExportOptionsCommand, signingImportCommand } from './commands/signing.js';
 import { skillsAddCommand, skillsListCommand } from './commands/skills.js';
 import { credentialsAddCommand, credentialsListCommand, credentialsRemoveCommand } from './commands/credentials.js';
+import { headerCommand } from './commands/header.js';
 import {
   buildCommand,
   checklistCommand,
@@ -122,6 +123,14 @@ export function buildProgram() {
         .option('-f, --force', 'push even if validation fails'),
     ),
   ).action((action, opts) => metadataCommand(action, opts));
+
+  withSafety(
+    program.command('header')
+      .description('upload an iOS Product Page Header image to Asset Library and place it on an editable version')
+      .requiredOption('--file <path>', '3840×1646 PNG/JPEG or 5244×2950 PNG')
+      .option('--locale <code>', 'App Store locale (default: app.primary_locale)')
+      .option('--app-version <version>', 'iOS App Store version (default: ios.version)'),
+  ).action(headerCommand);
 
   withSafety(
     withPlatforms(

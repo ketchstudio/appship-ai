@@ -1,0 +1,679 @@
+<template>
+  <div
+    id="root"
+    data-composition-id="04-init"
+    data-start="0"
+    data-duration="3.5"
+    data-width="1920"
+    data-height="1080"
+  >
+    <style>
+      /* vietnamese */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-400-vietnamese.woff2') format('woff2');
+        unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+      }
+      /* latin-ext */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-400-latin-ext.woff2') format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-400-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      /* vietnamese */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 600;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-600-vietnamese.woff2') format('woff2');
+        unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+      }
+      /* latin-ext */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 600;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-600-latin-ext.woff2') format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 600;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-600-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      /* vietnamese */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 700;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-700-vietnamese.woff2') format('woff2');
+        unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+      }
+      /* latin-ext */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 700;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-700-latin-ext.woff2') format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 700;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-700-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      /* vietnamese */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 800;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-800-vietnamese.woff2') format('woff2');
+        unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+      }
+      /* latin-ext */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 800;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-800-latin-ext.woff2') format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 800;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-800-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      /* vietnamese */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 900;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-900-vietnamese.woff2') format('woff2');
+        unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+      }
+      /* latin-ext */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 900;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-900-latin-ext.woff2') format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 900;
+        font-stretch: 100%;
+        font-display: block;
+        src: url('assets/fonts/Archivo-900-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      /* vietnamese */
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 400;
+        font-display: block;
+        src: url('assets/fonts/IBMPlexMono-400-vietnamese.woff2') format('woff2');
+        unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+      }
+      /* latin-ext */
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 400;
+        font-display: block;
+        src: url('assets/fonts/IBMPlexMono-400-latin-ext.woff2') format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 400;
+        font-display: block;
+        src: url('assets/fonts/IBMPlexMono-400-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      /* vietnamese */
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 500;
+        font-display: block;
+        src: url('assets/fonts/IBMPlexMono-500-vietnamese.woff2') format('woff2');
+        unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+      }
+      /* latin-ext */
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 500;
+        font-display: block;
+        src: url('assets/fonts/IBMPlexMono-500-latin-ext.woff2') format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 500;
+        font-display: block;
+        src: url('assets/fonts/IBMPlexMono-500-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      /* vietnamese */
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 600;
+        font-display: block;
+        src: url('assets/fonts/IBMPlexMono-600-vietnamese.woff2') format('woff2');
+        unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+      }
+      /* latin-ext */
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 600;
+        font-display: block;
+        src: url('assets/fonts/IBMPlexMono-600-latin-ext.woff2') format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 600;
+        font-display: block;
+        src: url('assets/fonts/IBMPlexMono-600-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        container-type: size;
+        font-family: 'Archivo', sans-serif;
+        color: #e4ecf3;
+      }
+
+      /* Full-bleed dark ground (clip layer, not the root) */
+      #f04init-bg {
+        position: absolute;
+        inset: 0;
+        background: #0b1826;
+      }
+
+      /* World wrapper: carries the slow push-in */
+      #f04init-world {
+        position: absolute;
+        inset: 0;
+        transform-origin: 66% 46%;
+      }
+
+      /* ---------- Left column: kicker + h2 ---------- */
+      .f04init-left {
+        position: absolute;
+        left: 5.5cqw;
+        top: 0;
+        width: 30cqw;
+        height: 83cqh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .f04init-rule {
+        width: 36px;
+        height: 2px;
+        background: #ffc530;
+        margin-bottom: 1.4cqw;
+        transform-origin: 0 50%;
+      }
+      .f04init-kicker {
+        display: flex;
+        align-items: baseline;
+        gap: 0.7cqw;
+        color: #ffc530;
+        font-size: 1.05cqw;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: 1.8cqw;
+        white-space: nowrap;
+      }
+      .f04init-kicker-num {
+        font-family: 'IBM Plex Mono', monospace;
+        font-weight: 500;
+      }
+      .f04init-kicker-txt {
+        font-family: 'Archivo', sans-serif;
+        font-weight: 600;
+      }
+      .f04init-h2 {
+        font-family: 'Archivo', sans-serif;
+        font-weight: 700;
+        font-size: 4.9cqw;
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        text-transform: lowercase;
+        color: #e4ecf3;
+      }
+      .f04init-wmask {
+        display: inline-block;
+        overflow: hidden;
+        vertical-align: top;
+        padding: 0.08em 0.02em 0.12em 0;
+        margin-bottom: -0.12em;
+      }
+      .f04init-word {
+        display: inline-block;
+      }
+      .f04init-accent {
+        color: #ffc530;
+      }
+
+      /* ---------- Terminal ---------- */
+      #f04init-term {
+        position: absolute;
+        left: 39cqw;
+        top: 13cqh;
+        width: 55.5cqw;
+        height: 67cqh;
+        background: #13283d;
+        border: 1px solid #20384f;
+        border-radius: 0;
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      .f04init-titlebar {
+        height: 2.6cqw;
+        border-bottom: 1px solid #20384f;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.4cqw;
+        font-size: 0.82cqw;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #6d8398;
+      }
+      .f04init-tb-marks {
+        display: flex;
+        gap: 0.5cqw;
+      }
+      .f04init-tb-mark {
+        width: 0.62cqw;
+        height: 0.62cqw;
+        border: 1px solid #20384f;
+        background: #0b1826;
+      }
+      .f04init-body {
+        position: relative;
+        padding: 2cqw 2.4cqw;
+        font-size: 1.6cqw;
+        line-height: 1.6;
+        color: #e4ecf3;
+        white-space: nowrap;
+      }
+      .f04init-line {
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 1.6em;
+      }
+      .f04init-prompt {
+        color: #8ea2b7;
+        margin-right: 0.6em;
+      }
+      .f04init-cmd {
+        display: inline-block;
+        min-width: 12ch;
+        white-space: pre;
+        color: #e4ecf3;
+        font-weight: 500;
+      }
+      .f04init-caret-wrap {
+        display: inline-flex;
+        align-items: center;
+        height: 1.6em;
+      }
+      .f04init-caret {
+        display: inline-block;
+        width: 0.56em;
+        height: 1.05em;
+        background: #e4ecf3;
+      }
+      .f04init-gap {
+        height: 0.5em;
+      }
+      .f04init-check {
+        width: 0.9em;
+        height: 0.9em;
+        margin-right: 0.7em;
+        flex: none;
+      }
+      .f04init-check polyline {
+        fill: none;
+        stroke: #5fd89c;
+        stroke-width: 3.2;
+        stroke-linecap: square;
+      }
+      .f04init-label {
+        display: inline-block;
+        width: 11ch;
+        color: #8ea2b7;
+      }
+      .f04init-val {
+        color: #e4ecf3;
+      }
+      .f04init-cyan {
+        color: #74c9ea;
+      }
+      .f04init-ok {
+        color: #5fd89c;
+      }
+
+      /* Tree drawn with CSS connectors (box-drawing glyphs are not in the shipped fonts) */
+      .f04init-tree-root {
+        color: #74c9ea;
+        font-weight: 500;
+      }
+      .f04init-br {
+        position: relative;
+        display: inline-block;
+        width: 1.7em;
+        height: 1.6em;
+        flex: none;
+      }
+      .f04init-br::before {
+        content: '';
+        position: absolute;
+        left: 0.45em;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #6d8398;
+      }
+      .f04init-br.f04init-last::before {
+        bottom: 50%;
+      }
+      .f04init-br::after {
+        content: '';
+        position: absolute;
+        left: 0.45em;
+        top: 50%;
+        width: 0.9em;
+        height: 2px;
+        background: #6d8398;
+      }
+      .f04init-hlbar {
+        position: absolute;
+        left: -2.4cqw;
+        top: 0.15em;
+        bottom: 0.15em;
+        width: 0.32cqw;
+        background: #ffc530;
+        transform-origin: 50% 50%;
+      }
+      .f04init-hlfill {
+        position: absolute;
+        left: -2.4cqw;
+        right: -2.4cqw;
+        top: 0;
+        bottom: 0;
+        background: rgba(255, 197, 48, 0.08);
+        transform-origin: 0 50%;
+      }
+      .f04init-hltext {
+        position: relative;
+        color: #ffc530;
+        font-weight: 600;
+      }
+      .f04init-dirs span {
+        color: #74c9ea;
+        margin-right: 1.1em;
+      }
+    </style>
+
+    <div id="f04init-bg" class="clip" data-start="0" data-duration="3.5" data-track-index="0"></div>
+
+    <div id="f04init-world" class="clip" data-start="0" data-duration="3.5" data-track-index="1">
+      <!-- Left column -->
+      <div class="f04init-left">
+        <div class="f04init-rule" id="f04init-rule"></div>
+        <div class="f04init-kicker" id="f04init-kicker">
+          <span class="f04init-kicker-num">01 /</span>
+          <span class="f04init-kicker-txt">Tự nhận diện dự án</span>
+        </div>
+        <div class="f04init-h2">
+          <span class="f04init-wmask"><span class="f04init-word">init</span></span>
+          <span class="f04init-wmask"><span class="f04init-word">một</span></span>
+          <span class="f04init-wmask"><span class="f04init-word">lần</span></span>
+          <span class="f04init-wmask"><span class="f04init-word">là</span></span>
+          <span class="f04init-wmask"><span class="f04init-word f04init-accent">xong.</span></span>
+        </div>
+      </div>
+
+      <!-- Terminal (focal) -->
+      <div id="f04init-term">
+        <div class="f04init-titlebar">
+          <div class="f04init-tb-marks">
+            <span class="f04init-tb-mark"></span>
+            <span class="f04init-tb-mark"></span>
+            <span class="f04init-tb-mark"></span>
+          </div>
+          <span>~/my-app &#8212; zsh</span>
+          <span>01</span>
+        </div>
+        <div class="f04init-body">
+          <!-- command line -->
+          <div class="f04init-line">
+            <span class="f04init-prompt">$</span>
+            <span class="f04init-cmd" id="f04init-cmd"></span>
+            <span class="f04init-caret-wrap" id="f04init-caretwrap1"><span class="f04init-caret" id="f04init-caret1"></span></span>
+          </div>
+          <div class="f04init-gap"></div>
+
+          <!-- detection output -->
+          <div class="f04init-line f04init-out">
+            <svg class="f04init-check" viewBox="0 0 20 20"><polyline points="3,10.5 8,15.5 17,4.5" /></svg>
+            <span class="f04init-label">framework</span><span class="f04init-val">flutter</span>
+          </div>
+          <div class="f04init-line f04init-out">
+            <svg class="f04init-check" viewBox="0 0 20 20"><polyline points="3,10.5 8,15.5 17,4.5" /></svg>
+            <span class="f04init-label">bundle id</span><span class="f04init-val">com.you.app</span>
+          </div>
+          <div class="f04init-line f04init-out">
+            <svg class="f04init-check" viewBox="0 0 20 20"><polyline points="3,10.5 8,15.5 17,4.5" /></svg>
+            <span class="f04init-label">package</span><span class="f04init-val">com.you.app</span>
+          </div>
+          <div class="f04init-line f04init-out">
+            <svg class="f04init-check" viewBox="0 0 20 20"><polyline points="3,10.5 8,15.5 17,4.5" /></svg>
+            <span class="f04init-cyan">release/</span>&nbsp;<span class="f04init-ok">created</span>
+          </div>
+          <div class="f04init-gap"></div>
+
+          <!-- release/ tree -->
+          <div class="f04init-line f04init-tree">
+            <span class="f04init-tree-root">release/</span>
+          </div>
+          <div class="f04init-line f04init-tree">
+            <span class="f04init-hlfill" id="f04init-hlfill"></span>
+            <span class="f04init-hlbar" id="f04init-hlbar"></span>
+            <span class="f04init-br"></span><span class="f04init-hltext">release.yml</span>
+          </div>
+          <div class="f04init-line f04init-tree">
+            <span class="f04init-br"></span><span>questionnaire.yml</span>
+          </div>
+          <div class="f04init-line f04init-tree">
+            <span class="f04init-br f04init-last"></span>
+            <span class="f04init-dirs"><span>ios/</span><span>android/</span><span>metadata/</span></span>
+          </div>
+
+          <!-- fresh prompt for the hold -->
+          <div class="f04init-line" id="f04init-prompt2">
+            <span class="f04init-prompt">$</span>
+            <span class="f04init-caret-wrap"><span class="f04init-caret" id="f04init-caret2"></span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      (function () {
+        const DURATION = 3.5;
+        const root = document.querySelector('[data-composition-id="04-init"]');
+        const $ = (id) => document.getElementById(id);
+        const $$ = (sel) => Array.prototype.slice.call(root.querySelectorAll(sel));
+
+        const tl = gsap.timeline({ paused: true });
+
+        // ---- Scene 1 (0.0–0.6): kicker, per-word h2, terminal slides in ----
+        tl.fromTo($('f04init-rule'), { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: 'power3.out' }, 0);
+        tl.fromTo(
+          $('f04init-kicker'),
+          { opacity: 0, x: -24 },
+          { opacity: 1, x: 0, duration: 0.3, ease: 'power3.out' },
+          0.02,
+        );
+        tl.fromTo(
+          $$('.f04init-word'),
+          { yPercent: 105, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.34, ease: 'power3.out', stagger: 0.055 },
+          0.1,
+        );
+        tl.fromTo(
+          $('f04init-term'),
+          { x: 320, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.5, ease: 'expo.out' },
+          0.04,
+        );
+
+        // Slow push-in under the whole shot (one camera move, decelerating)
+        tl.fromTo($('f04init-world'), { scale: 1 }, { scale: 1.025, duration: DURATION, ease: 'sine.out' }, 0);
+
+        // ---- Scene 2 (0.6–1.3): "appship init" types (smooth slice) + caret ----
+        // ---- Caret blink: deterministic square wave on the same driver ----
+        const CMD = 'appship init';
+        const TYPE_START = 0.62;
+        const TYPE_END = 1.12; // 12 chars in 0.5s = 24 chars/s
+        const ENTER_AT = 1.24;
+        const PROMPT2_AT = 3.0;
+        const cmdEl = $('f04init-cmd');
+        const caret1 = $('f04init-caret1');
+        const caret2 = $('f04init-caret2');
+        let lastLen = -1;
+
+        function typedLen(t) {
+          if (t <= TYPE_START) return 0;
+          if (t >= TYPE_END) return CMD.length;
+          return Math.floor(((t - TYPE_START) / (TYPE_END - TYPE_START)) * CMD.length);
+        }
+        function blinkOn(t) {
+          return Math.sin((t / 0.6) * Math.PI * 2) >= 0;
+        }
+
+        const driver = { t: 0 };
+        function render() {
+          const t = driver.t;
+          const n = typedLen(t);
+          if (n !== lastLen) {
+            cmdEl.textContent = CMD.substring(0, n);
+            lastLen = n;
+          }
+          // caret 1: solid while typing, blinking before, gone after Enter
+          if (t >= ENTER_AT) caret1.style.opacity = '0';
+          else if (t >= TYPE_START - 0.05) caret1.style.opacity = '1';
+          else caret1.style.opacity = blinkOn(t) ? '1' : '0';
+          // caret 2: fresh prompt in the hold, blinking
+          caret2.style.opacity = t >= PROMPT2_AT && blinkOn(t - PROMPT2_AT) ? '1' : '0';
+        }
+        render();
+        tl.to(driver, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: render }, 0);
+
+        // ---- Scene 3 (1.3–2.6): detection lines drop in one by one ----
+        const outs = $$('.f04init-out');
+        outs.forEach(function (el, i) {
+          const at = 1.3 + i * 0.25;
+          tl.fromTo(el, { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }, at);
+          const check = el.querySelector('.f04init-check');
+          tl.fromTo(
+            check,
+            { scale: 0.4 },
+            { scale: 1, duration: 0.24, ease: 'back.out(2.4)', transformOrigin: '50% 50%' },
+            at,
+          );
+        });
+
+        // ---- Scene 4 (2.55–3.5): release/ tree prints, release.yml highlighted, hold ----
+        const trees = $$('.f04init-tree');
+        trees.forEach(function (el, i) {
+          tl.fromTo(
+            el,
+            { opacity: 0, x: -12 },
+            { opacity: 1, x: 0, duration: 0.15, ease: 'power2.out' },
+            2.55 + i * 0.07,
+          );
+        });
+        tl.fromTo($('f04init-hlbar'), { scaleY: 0 }, { scaleY: 1, duration: 0.2, ease: 'power3.out' }, 2.78);
+        tl.fromTo($('f04init-hlfill'), { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: 'power3.out' }, 2.8);
+        tl.fromTo($('f04init-prompt2'), { opacity: 0 }, { opacity: 1, duration: 0.12, ease: 'none' }, PROMPT2_AT);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines['04-init'] = tl;
+      })();
+    </script>
+  </div>
+</template>
