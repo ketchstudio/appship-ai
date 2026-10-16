@@ -1,7 +1,11 @@
 # Changelog
 
-## Chưa phát hành
+## 0.3.0 — 2026-10-16
 
+- Lệnh mới `appship header --file <ảnh> [--app-version] [--locale] [--dry-run|--yes]` (iOS): upload ảnh lên App Asset Library của App Store Connect và gắn vào **Product Page Header** của phiên bản iOS đang sửa được (`PREPARE_FOR_SUBMISSION`, các trạng thái bị reject). Ảnh phải là PNG/JPEG 3840×1646 hoặc PNG 5244×2950, không có alpha; lệnh kiểm tra trước khi gọi Apple. Nếu locale đã có header thì thay placement cũ; tạo placement mới lỗi thì gắn lại ảnh cũ. Hỏi xác nhận trước khi ghi, chế độ không tương tác phải có `--yes`. Chưa hỗ trợ video header và phiên bản đã phát hành.
+- Lệnh này gọi thẳng App Store Connect API (JWT ES256 từ API key, không qua fastlane), vì fastlane 2.232.2 chưa có Asset Library. Ghi thành quyết định 10 trong `design.md`.
+- Prompt dựng sẵn cho AI agent (`docs/prompts.md`, README EN/VI, website 8 ngôn ngữ) thêm `header` vào danh sách lệnh ghi lên store không được tự chạy.
+- 5 test mới cho `header` (tổng 38).
 - Prompt dựng sẵn để dán vào AI coding agent (Claude Code, Codex, Antigravity, Cursor…): setup dự án từ đầu (cài fastlane/appship, `init --yes --agents`, chỉ cách lấy key, điền nội dung bằng skill, `doctor`), setup GitHub Actions, mỗi lần release, ký iOS khi không phải owner. Mọi prompt có luật an toàn: không ghi lên store khi chưa được yêu cầu, `--dry-run` trước, `--yes` chỉ sau khi người dùng duyệt dry run, không đụng file key, không tự commit/push. CLI không đổi.
 - Tài liệu mới `docs/prompts.md` (bản gốc của prompt). README (EN, VI) có mục "Set up with an AI agent" kèm prompt setup; `getting-started.md`, `skills.md`, `development.md` trỏ tới prompt.
 - Website: trang docs (8 ngôn ngữ) có mục `#ai-prompts` với 4 prompt và nút Copy; trang chủ (8 ngôn ngữ) có khối `#ai-setup` với prompt setup. Prompt giữ tiếng Anh ở mọi ngôn ngữ.

@@ -86,7 +86,7 @@
   <section class="hero">
     <div class="wrap hero-grid">
       <div class="hero-copy">
-        <p class="badge"><span class="badge-dot"></span>v0.2.0 · versão preliminar</p>
+        <p class="badge"><span class="badge-dot"></span>v0.3.0 · versão preliminar</p>
         <h1 class="display">Um arquivo.<br>Duas lojas.<br><span class="hl">Publique.</span></h1>
         <p class="lede">
           O appship publica seu app iOS e Android na App Store e no Google Play a partir de uma única pasta
@@ -369,7 +369,7 @@ appship is a CLI that wraps fastlane. Guide: https://appship.ketchsoft.com/docs.
 6. Finish with a short summary: what is done, what I still have to do by hand, and the next command to run.
 
 Rules:
-- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
+- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import, header) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
 - Never open, print, copy or commit key files (*.p8, *.p12, *.jks, *.keystore, service account JSON) or anything in release/keys/.
 - Do not commit or push.
 - Reply in the language I write in.</code></pre>
@@ -392,7 +392,7 @@ Rules:
         <a class="btn btn-ink" href="docs.html">Guia de integração →</a>
       </div>
       <p class="status-note">
-        A v0.2.0 é coberta por testes e dry-runs, mas ainda não foi executada nas lojas reais.
+        A v0.3.0 é coberta por testes e dry-runs, mas ainda não foi executada nas lojas reais.
         Comece com <code>--dry-run</code> e comandos somente leitura, como <code>appship status</code>.
       </p>
     </div>

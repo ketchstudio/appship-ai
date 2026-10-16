@@ -33,7 +33,7 @@ appship is a CLI that wraps fastlane. Guide: https://appship.ketchsoft.com/docs.
 6. Finish with a short summary: what is done, what I still have to do by hand, and the next command to run.
 
 Rules:
-- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
+- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import, header) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
 - Never open, print, copy or commit key files (*.p8, *.p12, *.jks, *.keystore, service account JSON) or anything in release/keys/.
 - Do not commit or push.
 - Reply in the language I write in.

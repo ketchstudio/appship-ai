@@ -80,7 +80,7 @@
 
 <section class="doc-hero">
   <div class="wrap">
-    <p class="badge"><span class="badge-dot"></span>Guide d’intégration · v0.2.0</p>
+    <p class="badge"><span class="badge-dot"></span>Guide d’intégration · v0.3.0</p>
     <h1 class="h1-doc">Ajoutez appship à votre projet</h1>
     <p class="lede">
       D’une app qui n’a jamais été sur les stores à un build en App Review. Comptez environ une heure la première fois,
@@ -118,7 +118,7 @@
   <article class="doc">
 
     <div class="callout">
-      <strong>Version préliminaire.</strong> La v0.2.0 est couverte par des tests et des dry-runs, mais n’a pas encore été exécutée sur les vrais stores.
+      <strong>Version préliminaire.</strong> La v0.3.0 est couverte par des tests et des dry-runs, mais n’a pas encore été exécutée sur les vrais stores.
       Chaque commande qui écrit sur un store accepte <code>--dry-run</code> ; commencez par des commandes en lecture seule comme <code>appship status</code>.
     </div>
 
@@ -148,7 +148,7 @@ appship is a CLI that wraps fastlane. Guide: https://appship.ketchsoft.com/docs.
 6. Finish with a short summary: what is done, what I still have to do by hand, and the next command to run.
 
 Rules:
-- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
+- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import, header) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
 - Never open, print, copy or commit key files (*.p8, *.p12, *.jks, *.keystore, service account JSON) or anything in release/keys/.
 - Do not commit or push.
 - Reply in the language I write in.</code></pre>

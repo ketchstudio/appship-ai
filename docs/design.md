@@ -45,6 +45,7 @@ Apple và Google cố ý để một số bước phải làm tay, nhất là �
 | Tạo app lần đầu | `produce`, cần Apple ID vì API key không tạo được app | **Không có API.** Phải tạo trên Play Console |
 | Upload build đầu tiên | Tự động | Nên upload AAB đầu tiên **bằng tay**. Tài khoản cá nhân mới cần closed test với 12 tester trong 14 ngày |
 | Metadata, screenshots | Tự động | Tự động |
+| Product Page Header (ảnh) | Tự động, `appship header` gọi thẳng App Store Connect API | n/a |
 | Age rating, export compliance, content rights, thông tin cho reviewer | Tự động | n/a |
 | App Privacy | `upload_app_privacy_details_to_app_store`, cần Apple ID | n/a |
 | Content rating (IARC), Data safety, Target audience, Ads, App access | n/a | **Không có API**, dùng checklist |
@@ -93,6 +94,10 @@ Mỗi dự án chỉ có thêm thư mục `release/`. **Dự án không có Fast
    - Một định dạng `SKILL.md` chạy được ở cả ba, nên nội dung skill phải trung lập, không nhắc riêng agent nào.
    - Skill chỉ ghi file trong `release/` và chạy `appship doctor`; việc ghi lên store vẫn qua lệnh có xác nhận (quyết định 6).
 9. **Tên tham số fastlane được đối chiếu với mã nguồn fastlane 2.232.2**, không viết theo trí nhớ. Khóa age rating dùng tên của App Store Connect API (bộ câu hỏi mới năm 2025: `ageAssurance`, `lootBox`, `messagingAndChat`…).
+
+10. **Chỉ gọi thẳng App Store Connect API khi fastlane chưa hỗ trợ.** Lệnh `appship header` (Product Page Header) là trường hợp đầu tiên: fastlane 2.232.2 không có Asset Library (đã tìm `appAssetLibrar`, `PRODUCT_PAGE_HEADER` trong mã nguồn đã cài, không thấy). Code nằm ở `src/apple-header.js`, tự ký JWT ES256 từ cùng API key mà fastlane dùng, không thêm dependency.
+    - Đây là ngoại lệ của quyết định 1, không phải hướng mới. Khi fastlane hỗ trợ tính năng tương ứng thì chuyển sang lane trong Fastfile.
+    - Vẫn theo quyết định 6: có `--dry-run`, hỏi xác nhận, chế độ không tương tác cần `--yes`.
 
 ## 6. Đặt tên và phát hành
 

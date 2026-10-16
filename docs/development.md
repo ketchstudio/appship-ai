@@ -13,6 +13,7 @@ src/signing.js          ký iOS từ file: đọc .mobileprovision, kiểm tra p
 src/questionnaire.js    questionnaire → JSON cho fastlane, checklist cho phần làm tay
 src/skills.js           liệt kê skill đi kèm, so sánh với bản trong dự án, copy vào .claude/skills/
 src/context.js          gom config và key thành JSON context cho lane
+src/apple-header.js     gọi thẳng App Store Connect API cho Product Page Header (Asset Library), vì fastlane chưa hỗ trợ; xem quyết định 10 trong design.md
 src/fastlane.js         chạy fastlane trong release/.appship/fastlane-run
 src/commands/*.js       từng lệnh (signing.js: `appship signing import|export-options`; skills.js: `appship skills list|add`)
 fastlane/Fastfile       lane dùng chung; chỉ đọc context JSON, không tự parse YAML
@@ -71,7 +72,7 @@ Thông tin package:
 **Cài từ git** (một phiên bản cụ thể theo tag):
 
 ```bash
-npm i -g git+https://github.com/ketchstudio/appship-ai.git#v0.2.0
+npm i -g git+https://github.com/ketchstudio/appship-ai.git#v0.3.0
 ```
 
 **Đã publish** (tài khoản npm `jackty`, tài khoản cá nhân; chưa kèm bước "chạy thật với store", xem `roadmap.md`):

@@ -86,7 +86,7 @@
   <section class="hero">
     <div class="wrap hero-grid">
       <div class="hero-copy">
-        <p class="badge"><span class="badge-dot"></span>v0.2.0 · 초기 릴리스</p>
+        <p class="badge"><span class="badge-dot"></span>v0.3.0 · 초기 릴리스</p>
         <h1 class="display">파일 하나.<br>스토어 둘.<br><span class="hl">Ship.</span></h1>
         <p class="lede">
           appship은 <code>release/</code> 폴더 하나로 iOS와 Android 앱을 App Store와 Google Play에 릴리스합니다.
@@ -369,7 +369,7 @@ appship is a CLI that wraps fastlane. Guide: https://appship.ketchsoft.com/docs.
 6. Finish with a short summary: what is done, what I still have to do by hand, and the next command to run.
 
 Rules:
-- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
+- Never run a command that writes to a store (upload, metadata push, submit, promote, first-release, signing import, header) unless I ask. Then run it with --dry-run first and wait for my OK. Add --yes only after I approved the dry run in this chat.
 - Never open, print, copy or commit key files (*.p8, *.p12, *.jks, *.keystore, service account JSON) or anything in release/keys/.
 - Do not commit or push.
 - Reply in the language I write in.</code></pre>
@@ -392,7 +392,7 @@ Rules:
         <a class="btn btn-ink" href="docs.html">통합 가이드 →</a>
       </div>
       <p class="status-note">
-        v0.2.0은 테스트와 dry-run으로 검증했지만 아직 실제 스토어에서는 실행해 보지 않았습니다.
+        v0.3.0은 테스트와 dry-run으로 검증했지만 아직 실제 스토어에서는 실행해 보지 않았습니다.
         <code>--dry-run</code>과 <code>appship status</code> 같은 읽기 전용 명령어부터 시작하세요.
       </p>
     </div>
