@@ -79,6 +79,7 @@ npm i -g git+https://github.com/ketchstudio/appship-ai.git#v0.3.0
 
 - `appship-ai@0.1.0`, ngày 2026-10-01, tag git `v0.1.0`.
 - `appship-ai@0.2.0`, ngày 2026-10-01, tag git `v0.2.0`. Dùng Granular Access Token có Bypass 2FA; xoá khỏi máy ngay sau khi publish. Token lần này bị dán vào chat; đã revoke trên npmjs.com ngay sau đó.
+- `appship-ai@0.3.0`, ngày 2026-10-16, tag git `v0.3.0`. Granular Access Token chỉ cho gói `appship-ai`, truyền qua file `--userconfig` tạm (không ghi vào `~/.npmrc`) và xoá ngay sau khi publish. Token lại bị dán vào chat nên phải revoke trên npmjs.com.
 
 Sau khi publish, registry có thể vẫn trả version cũ vài phút (cache). Kiểm tra bằng `curl -s https://registry.npmjs.org/appship-ai` thay vì chỉ `npm view`.
 
